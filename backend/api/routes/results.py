@@ -67,16 +67,13 @@ async def get_result_detail(
 
 @router.post("/{result_id}/share", response_model=SocialShareResponse)
 async def create_social_share(
+    share_data: SocialShareCreate,
     result_id: uuid.UUID = Path(..., description="ID du résultat"),
-    share_data: SocialShareCreate = None,
     db: Session = Depends(get_db)
 ):
     """Génère un lien de partage social pour un résultat"""
     
-    if share_data is None:
-        share_data = SocialShareCreate(result_id=result_id, platform="general")
-    else:
-        share_data.result_id = result_id
+    share_data.result_id = result_id
     
     service = SocialService(db)
     try:

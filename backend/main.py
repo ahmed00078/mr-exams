@@ -8,7 +8,7 @@ import time
 import logging
 
 from config import settings
-from api.routes import results, references
+from api.routes import results, references, auth, admin, social, stats
 from database import engine, Base
 
 # Configuration du logging
@@ -108,6 +108,10 @@ async def root():
 # Inclure les routes
 app.include_router(results.router, prefix="/api")
 app.include_router(references.router, prefix="/api")
+app.include_router(auth.router, prefix="/api")
+app.include_router(admin.router, prefix="/api")
+app.include_router(social.router, prefix="/api")
+app.include_router(stats.router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn

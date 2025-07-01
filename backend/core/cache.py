@@ -7,8 +7,11 @@ from config import settings
 class CacheManager:
     def __init__(self):
         self.redis = None
+        self.cache_enabled = False  # Désactiver le cache Redis
     
     async def get_redis(self):
+        if not self.cache_enabled:
+            return None
         if not self.redis:
             self.redis = await get_redis()
         return self.redis
@@ -21,7 +24,11 @@ class CacheManager:
     
     async def get(self, key: str) -> Optional[Any]:
         """Récupère une valeur du cache"""
+        if not self.cache_enabled:
+            return None
         redis = await self.get_redis()
+        if not redis:
+            return None
         value = await redis.get(key)
         if value:
             try:
@@ -32,14 +39,22 @@ class CacheManager:
     
     async def set(self, key: str, value: Any, ttl: int = 3600):
         """Stocke une valeur dans le cache"""
+        if not self.cache_enabled:
+            return
         redis = await self.get_redis()
+        if not redis:
+            return
         if isinstance(value, (dict, list)):
             value = json.dumps(value, default=str)
         await redis.setex(key, ttl, value)
     
     async def delete(self, key: str):
         """Supprime une clé du cache"""
+        if not self.cache_enabled:
+            return
         redis = await self.get_redis()
+        if not redis:
+            return
         await redis.delete(key)
     
     async def cache_search_results(self, search_params: dict, results: dict):

@@ -3,6 +3,7 @@ import secrets
 from datetime import datetime, timedelta
 from typing import Optional
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from models.database import SocialShare, ExamResult
 from models.schemas import SocialShareCreate, SocialShareResponse, SocialSharePublic
 from config import settings

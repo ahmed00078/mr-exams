@@ -193,3 +193,23 @@ class BulkUploadStatus(BaseModel):
     success_count: int
     error_count: int
     errors: List[str] = []
+
+class SessionResponse(BaseModel):
+    id: int
+    year: int
+    exam_type: str
+    session_name: str
+    start_date: Optional[date]
+    end_date: Optional[date]
+    publication_date: Optional[datetime]
+    is_published: bool
+    total_candidates: int
+    total_passed: int
+    pass_rate: Optional[Decimal]
+    
+    class Config:
+        from_attributes = True
+
+class SessionListResponse(BaseModel):
+    sessions: List[SessionResponse]
+    total: int

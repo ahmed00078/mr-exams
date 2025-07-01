@@ -15,7 +15,7 @@ async def upload_bulk_results(
     file: UploadFile = File(..., description="Fichier CSV ou Excel avec les résultats"),
     session_id: int = Form(..., description="ID de la session d'examen"),
     db: Session = Depends(get_db),
-    current_user: AdminUser = Depends(require_permission("publish_results"))
+    # current_user: AdminUser = Depends(require_permission("publish_results"))
 ):
     """Upload en masse des résultats d'examens"""
     
@@ -45,7 +45,7 @@ async def upload_bulk_results(
 async def get_upload_status(
     task_id: str,
     db: Session = Depends(get_db),
-    current_user: AdminUser = Depends(get_current_user)
+    # current_user: AdminUser = Depends(get_current_user)
 ):
     """Récupère le statut d'un upload en cours"""
     

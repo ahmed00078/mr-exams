@@ -3,78 +3,60 @@ import hashlib
 from typing import Any, Optional
 from database import get_redis
 from config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CacheManager:
     def __init__(self):
         self.redis = None
-        self.cache_enabled = False  # Désactiver le cache Redis
+        self.cache_enabled = True  # ✅ Activé par défaut
     
     async def get_redis(self):
         if not self.cache_enabled:
             return None
-        if not self.redis:
-            self.redis = await get_redis()
-        return self.redis
+        try:
+            if not self.redis:
+                self.redis = await get_redis()
+            return self.redis
+        except Exception as e:
+            logger.warning(f"Redis connection failed: {e}")
+            return None  # ✅ Graceful fallback
     
     def _generate_key(self, prefix: str, **kwargs) -> str:
-        """Génère une clé de cache basée sur les paramètres"""
         key_data = json.dumps(kwargs, sort_keys=True, default=str)
         key_hash = hashlib.md5(key_data.encode()).hexdigest()[:8]
         return f"{prefix}:{key_hash}"
     
     async def get(self, key: str) -> Optional[Any]:
-        """Récupère une valeur du cache"""
-        if not self.cache_enabled:
-            return None
         redis = await self.get_redis()
         if not redis:
             return None
-        value = await redis.get(key)
-        if value:
-            try:
+        try:
+            value = await redis.get(key)
+            if value:
                 return json.loads(value)
-            except json.JSONDecodeError:
-                return value
+        except Exception as e:
+            logger.warning(f"Cache get error: {e}")
         return None
     
     async def set(self, key: str, value: Any, ttl: int = 3600):
-        """Stocke une valeur dans le cache"""
-        if not self.cache_enabled:
-            return
         redis = await self.get_redis()
         if not redis:
             return
-        if isinstance(value, (dict, list)):
-            value = json.dumps(value, default=str)
-        await redis.setex(key, ttl, value)
-    
-    async def delete(self, key: str):
-        """Supprime une clé du cache"""
-        if not self.cache_enabled:
-            return
-        redis = await self.get_redis()
-        if not redis:
-            return
-        await redis.delete(key)
+        try:
+            if isinstance(value, (dict, list)):
+                value = json.dumps(value, default=str)
+            await redis.setex(key, ttl, value)
+        except Exception as e:
+            logger.warning(f"Cache set error: {e}")
     
     async def cache_search_results(self, search_params: dict, results: dict):
-        """Cache les résultats de recherche"""
         key = self._generate_key("search", **search_params)
         await self.set(key, results, settings.cache_ttl_results)
     
     async def get_cached_search(self, search_params: dict) -> Optional[dict]:
-        """Récupère les résultats de recherche en cache"""
         key = self._generate_key("search", **search_params)
-        return await self.get(key)
-    
-    async def cache_stats(self, stats_type: str, entity_id: int, year: int, data: dict):
-        """Cache les statistiques"""
-        key = self._generate_key("stats", type=stats_type, id=entity_id, year=year)
-        await self.set(key, data, settings.cache_ttl_stats)
-    
-    async def get_cached_stats(self, stats_type: str, entity_id: int, year: int) -> Optional[dict]:
-        """Récupère les statistiques en cache"""
-        key = self._generate_key("stats", type=stats_type, id=entity_id, year=year)
         return await self.get(key)
 
 cache_manager = CacheManager()

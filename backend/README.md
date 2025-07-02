@@ -40,6 +40,7 @@ GRANT ALL PRIVILEGES ON DATABASE mauritania_exams TO mauritania_user;
 
 # Exécuter le schéma SQL
 psql -U mauritania_user -d mauritania_exams -f database_schema.sql
+"/c/Program Files/PostgreSQL/17/bin/psql.exe" -U postgres -d mauritania_exams -f mauritania_database_schema.sql
 ```
 
 ### 3. Configuration Redis

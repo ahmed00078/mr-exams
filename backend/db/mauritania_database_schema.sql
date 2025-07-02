@@ -356,87 +356,21 @@ CREATE INDEX idx_social_shares_token ON social_shares(share_token);
 CREATE INDEX idx_social_shares_result ON social_shares(result_id);
 
 -- =====================================================
--- 7. VUES POUR FACILITER LES REQUÊTES
+-- 6.1. CONTRAINTES SUPPLÉMENTAIRES (AJOUT)
 -- =====================================================
 
--- Vue complète des résultats avec toutes les informations
-CREATE VIEW v_exam_results_complete AS
-SELECT 
-    er.id,
-    er.nni,
-    er.numero_dossier,
-    er.nom_complet_fr,
-    er.nom_complet_ar,
-    er.lieu_naissance,
-    er.date_naissance,
-    er.sexe,
-    er.moyenne_generale,
-    er.decision,
-    er.mention,
-    er.rang_etablissement,
-    er.rang_wilaya,
-    er.rang_national,
-    
-    -- Session info
-    es.year,
-    es.exam_type,
-    es.session_name,
-    
-    -- Établissement
-    et.name_fr as etablissement_fr,
-    et.name_ar as etablissement_ar,
-    et.code as etablissement_code,
-    
-    -- Série
-    rs.name_fr as serie_fr,
-    rs.name_ar as serie_ar,
-    rs.code as serie_code,
-    
-    -- Wilaya
-    rw.name_fr as wilaya_fr,
-    rw.name_ar as wilaya_ar,
-    rw.code as wilaya_code,
-    
-    -- Moughata
-    rm.name_fr as moughata_fr,
-    rm.name_ar as moughata_ar,
-    
-    er.created_at,
-    er.published_at
-FROM exam_results er
-LEFT JOIN exam_sessions es ON er.session_id = es.id
-LEFT JOIN ref_etablissements et ON er.etablissement_id = et.id
-LEFT JOIN ref_series rs ON er.serie_id = rs.id
-LEFT JOIN ref_wilayas rw ON er.wilaya_id = rw.id
-LEFT JOIN ref_moughatas rm ON er.moughata_id = rm.id;
+-- Contrainte sur la moyenne (doit être entre 0 et 20)
+ALTER TABLE exam_results ADD CONSTRAINT check_moyenne 
+CHECK (moyenne_generale >= 0 AND moyenne_generale <= 20);
 
--- Vue pour statistiques publiques par wilaya
-CREATE VIEW v_stats_wilayas_public AS
-SELECT 
-    sw.id,
-    sw.session_id,
-    sw.wilaya_id,
-    sw.total_candidats,
-    sw.total_admis,
-    sw.taux_reussite,
-    sw.moyenne_wilaya,
-    sw.rang_national,
-    sw.stats_par_serie,
-    sw.candidats_masculins,
-    sw.candidats_feminins,
-    sw.admis_masculins,
-    sw.admis_feminins,
-    sw.evolution_vs_annee_precedente,
-    sw.last_calculated,
-    sw.created_at,
-    rw.name_fr as wilaya_name_fr,
-    rw.name_ar as wilaya_name_ar,
-    es.year,
-    es.exam_type
-FROM stats_wilayas sw
-JOIN ref_wilayas rw ON sw.wilaya_id = rw.id
-JOIN exam_sessions es ON sw.session_id = es.id
-WHERE es.is_published = true;
+-- Contrainte d'unicité: un candidat = un résultat par session
+ALTER TABLE exam_results ADD CONSTRAINT unique_nni_session 
+UNIQUE (nni, session_id);
+
+-- Contrainte d'unicité sur numéro de dossier (si présent)
+CREATE UNIQUE INDEX IF NOT EXISTS unique_dossier_session 
+ON exam_results (numero_dossier, session_id) 
+WHERE numero_dossier IS NOT NULL;
 
 -- =====================================================
 -- 8. FONCTIONS UTILITAIRES
@@ -524,40 +458,51 @@ $$ LANGUAGE plpgsql;
 
 -- Insertion des wilayas mauritaniennes
 INSERT INTO ref_wilayas (code, name_fr, name_ar) VALUES
-('01', 'Hodh Ech Chargui', 'الحوض الشرقي'),
-('02', 'Hodh El Gharbi', 'الحوض الغربي'),
-('03', 'Assaba', 'العصابة'),
-('04', 'Gorgol', 'كركول'),
-('05', 'Brakna', 'البراكنة'),
-('06', 'Trarza', 'اترارزه'),
-('07', 'Adrar', 'أدرار'),
-('08', 'Dakhlet Nouadhibou', 'داخلة نواذيبو'),
-('09', 'Tagant', 'تكانت'),
-('10', 'Guidimaka', 'كيديماغا'),
-('11', 'Tiris Zemmour', 'تيرس زمور'),
-('12', 'Inchiri', 'انشيري'),
-('13', 'Nouakchott Nord', 'نواكشوط الشمالية'),
-('14', 'Nouakchott Ouest', 'نواكشوط الغربية'),
-('15', 'Nouakchott Sud', 'نواكشوط الجنوبية');
+    ('01', 'Hodh Ech Chargui', 'الحوض الشرقي'),
+    ('02', 'Hodh El Gharbi', 'الحوض الغربي'),
+    ('03', 'Assaba', 'العصابة'),
+    ('04', 'Gorgol', 'كركول'),
+    ('05', 'Brakna', 'البراكنة'),
+    ('06', 'Trarza', 'اترارزه'),
+    ('07', 'Adrar', 'أدرار'),
+    ('08', 'Dakhlet Nouadhibou', 'داخلة نواذيبو'),
+    ('09', 'Tagant', 'تكانت'),
+    ('10', 'Guidimaka', 'كيديماغا'),
+    ('11', 'Tiris Zemmour', 'تيرس زمور'),
+    ('12', 'Inchiri', 'انشيري'),
+    ('13', 'Nouakchott Nord', 'نواكشوط الشمالية'),
+    ('14', 'Nouakchott Ouest', 'نواكشوط الغربية'),
+    ('15', 'Nouakchott Sud', 'نواكشوط الجنوبية')
+ON CONFLICT (code) DO UPDATE SET
+    name_fr = EXCLUDED.name_fr,
+    name_ar = EXCLUDED.name_ar;
 
 -- Insertion des séries principales
-INSERT INTO ref_series (code, name_fr, name_ar, exam_type) VALUES
-('SN', 'Sciences naturelles', 'العلوم الطبيعية', 'bac'),
-('M', 'Mathématiques', 'العلوم الرياضية', 'bac'),
-('LM', 'Lettres modernes', 'الآداب العصرية', 'bac'),
-('LA', 'Lettres Originales', 'الآداب العربية', 'bac'),
-('TM', 'Filière technique', 'العلوم الاقتصادية', 'bac'),
-('TS', 'Génie électrique', 'ثنائي اللغة', 'bepc'),
-('LA', 'Langues ', 'عربي', 'bepc'),
+INSERT INTO ref_series (code, name_fr, name_ar, exam_type)
+VALUES
+    ('SN', 'Sciences naturelles', 'العلوم الطبيعية', 'bac'),
+    ('M', 'Mathématiques', 'الرياضيات', 'bac'),
+    ('LM', 'Lettres modernes', 'الآداب العصرية', 'bac'),
+    ('LO', 'Lettres Originales', 'الآداب الأصلية', 'bac'),
+    ('TM', 'Filière technique', 'القطاع التقني', 'bac'),
+    ('TS', 'Génie électrique', 'الهندسة الكهربائية', 'bac'),
+    ('LA', 'Langues ', 'اللغات', 'bac')
+ON CONFLICT (code) DO UPDATE SET
+    name_fr = EXCLUDED.name_fr,
+    name_ar = EXCLUDED.name_ar,
+    exam_type = EXCLUDED.exam_type;
+
 
 -- Configuration système initiale
-INSERT INTO system_config (config_key, config_value, description, is_public) VALUES
-('site_title_fr', 'Portail des Résultats d''Examens - Mauritanie', 'Titre du site en français', true),
-('site_title_ar', 'بوابة نتائج الامتحانات - موريتانيا', 'Titre du site en arabe', true),
-('maintenance_mode', 'false', 'Mode maintenance activé/désactivé', false),
-('results_per_page', '50', 'Nombre de résultats par page', false),
-('social_share_enabled', 'true', 'Partage social activé', true),
-('max_search_results', '1000', 'Nombre maximum de résultats de recherche', false);
+INSERT INTO system_config (config_key, config_value, description, is_public)
+VALUES
+    ('site_title_fr', 'Portail des Résultats d''Examens - Mauritanie', 'Titre du site en français', true),
+    ('site_title_ar', 'بوابة نتائج الامتحانات - موريتانيا', 'Titre du site en arabe', true),
+    ('maintenance_mode', 'false', 'Mode maintenance activé', false),
+    ('results_per_page', '50', 'Nombre de résultats par page', false),
+    ('social_share_enabled', 'true', 'Partage social activé', true),
+    ('max_search_results', '1000', 'Nombre maximum de résultats de recherche', false)
+ON CONFLICT (config_key) DO NOTHING;
 
 -- =====================================================
 -- 10. TRIGGERS POUR AUDIT ET MAINTENANCE

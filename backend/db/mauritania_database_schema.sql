@@ -542,14 +542,13 @@ INSERT INTO ref_wilayas (code, name_fr, name_ar) VALUES
 
 -- Insertion des séries principales
 INSERT INTO ref_series (code, name_fr, name_ar, exam_type) VALUES
-('SN', 'Sciences Naturelles', 'العلوم الطبيعية', 'bac'),
-('SM', 'Sciences Mathématiques', 'العلوم الرياضية', 'bac'),
-('LM', 'Lettres Modernes', 'الآداب العصرية', 'bac'),
-('LA', 'Lettres Arabes', 'الآداب العربية', 'bac'),
-('SE', 'Sciences Économiques', 'العلوم الاقتصادية', 'bac'),
-('BIL', 'Bilingue', 'ثنائي اللغة', 'bepc'),
-('AR', 'Arabe', 'عربي', 'bepc'),
-('FR', 'Francais', 'فرنسي', 'bepc');
+('SN', 'Sciences naturelles', 'العلوم الطبيعية', 'bac'),
+('M', 'Mathématiques', 'العلوم الرياضية', 'bac'),
+('LM', 'Lettres modernes', 'الآداب العصرية', 'bac'),
+('LA', 'Lettres Originales', 'الآداب العربية', 'bac'),
+('TM', 'Filière technique', 'العلوم الاقتصادية', 'bac'),
+('TS', 'Génie électrique', 'ثنائي اللغة', 'bepc'),
+('LA', 'Langues ', 'عربي', 'bepc'),
 
 -- Configuration système initiale
 INSERT INTO system_config (config_key, config_value, description, is_public) VALUES

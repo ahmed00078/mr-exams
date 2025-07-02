@@ -2,6 +2,7 @@ import pandas as pd
 import uuid
 from typing import List, Dict, Any, Tuple, Optional
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from fastapi import UploadFile
 from models.database import ExamResult, ExamSession, RefEtablissement, RefWilaya, RefSerie
 from models.schemas import BulkUploadResponse, BulkUploadStatus
@@ -10,9 +11,11 @@ import json
 
 class UploadService:
     
+    # Stockage global des tâches (partagé entre instances)
+    _upload_tasks = {}
+    
     def __init__(self, db: Session):
         self.db = db
-        self.upload_tasks = {}  # In-memory storage for demo, use Redis in production
     
     async def process_bulk_upload(self, file: UploadFile, session_id: int) -> BulkUploadResponse:
         """Traite l'upload en masse de résultats"""
@@ -34,7 +37,7 @@ class UploadService:
         total_rows = len(df)
         
         # Initialiser le statut de la tâche
-        self.upload_tasks[task_id] = BulkUploadStatus(
+        UploadService._upload_tasks[task_id] = BulkUploadStatus(
             task_id=task_id,
             status="pending",
             progress=0,
@@ -46,6 +49,7 @@ class UploadService:
         )
         
         # Lancer le traitement en arrière-plan
+        print(f"Lancement traitement pour tâche {task_id} avec session_id {session_id}")
         asyncio.create_task(self._process_upload_async(task_id, df, session_id))
         
         return BulkUploadResponse(
@@ -57,7 +61,7 @@ class UploadService:
     async def _process_upload_async(self, task_id: str, df: pd.DataFrame, session_id: int):
         """Traite l'upload de manière asynchrone"""
         
-        task_status = self.upload_tasks[task_id]
+        task_status = UploadService._upload_tasks[task_id]
         task_status.status = "processing"
         
         # Vérifier que la session existe
@@ -205,4 +209,5 @@ class UploadService:
     
     def get_upload_status(self, task_id: str) -> Optional[BulkUploadStatus]:
         """Récupère le statut d'un upload"""
-        return self.upload_tasks.get(task_id)
+        print(f"Recherche tâche {task_id}, tâches disponibles: {list(UploadService._upload_tasks.keys())}")
+        return UploadService._upload_tasks.get(task_id)

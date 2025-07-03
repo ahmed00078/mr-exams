@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class CacheManager:
     def __init__(self):
         self.redis = None
-        self.cache_enabled = True  # ✅ Activé par défaut
+        self.cache_enabled = False  # ❌ Désactivé temporairement
     
     async def get_redis(self):
         if not self.cache_enabled:

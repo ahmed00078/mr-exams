@@ -173,7 +173,7 @@ export const adminApi = {
         formData.append('file', file);
         formData.append('session_id', session_id.toString());
 
-        return fetchApi('/admin/upload', {
+        const response = await fetch(`${API_BASE_URL}/admin/upload`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -181,6 +181,12 @@ export const adminApi = {
             },
             body: formData,
         });
+
+        if (!response.ok) {
+            throw new ApiError(response.status, `HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
     },
 
     getUploadStatus: async (task_id: string, token: string): Promise<BulkUploadStatus> => {

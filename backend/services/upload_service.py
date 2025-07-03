@@ -64,69 +64,98 @@ class UploadService:
         task_status = UploadService._upload_tasks[task_id]
         task_status.status = "processing"
         
-        # Vérifier que la session existe
-        session = self.db.query(ExamSession).filter(ExamSession.id == session_id).first()
-        if not session:
-            task_status.status = "failed"
-            task_status.errors.append("Session d'examen introuvable")
-            return
-        
-        # Créer des caches pour les références
-        etablissements_cache = {e.code: e.id for e in self.db.query(RefEtablissement).all()}
-        wilayas_cache = {w.code: w.id for w in self.db.query(RefWilaya).all()}
-        series_cache = {s.code: s.id for s in self.db.query(RefSerie).all()}
-        
-        success_count = 0
-        error_count = 0
-        
-        for index, row in df.iterrows():
-            try:
-                # Valider et créer le résultat
-                result_data = self._validate_and_map_row(row, session_id, etablissements_cache, wilayas_cache, series_cache)
-                
-                if result_data:
-                    # Vérifier si le résultat existe déjà
-                    existing = self.db.query(ExamResult).filter(
-                        and_(
-                            ExamResult.nni == result_data["nni"],
-                            ExamResult.session_id == session_id
-                        )
-                    ).first()
+        try:
+            # Vérifier que la session existe
+            session = self.db.query(ExamSession).filter(ExamSession.id == session_id).first()
+            if not session:
+                task_status.status = "failed"
+                task_status.errors.append("Session d'examen introuvable")
+                return
+            
+            # Créer des caches pour les références
+            etablissements_cache = {e.code: e.id for e in self.db.query(RefEtablissement).all()}
+            wilayas_cache = {w.code: w.id for w in self.db.query(RefWilaya).all()}
+            series_cache = {s.code: s.id for s in self.db.query(RefSerie).all()}
+            
+            success_count = 0
+            error_count = 0
+            
+            print(f"Début traitement {len(df)} lignes pour la tâche {task_id}")
+            
+            for index, row in df.iterrows():
+                try:
+                    # Valider et créer le résultat
+                    result_data = self._validate_and_map_row(row, session_id, etablissements_cache, wilayas_cache, series_cache)
                     
-                    if existing:
-                        # Mettre à jour
-                        for key, value in result_data.items():
-                            setattr(existing, key, value)
+                    if result_data:
+                        # Vérifier si le résultat existe déjà
+                        existing = self.db.query(ExamResult).filter(
+                            and_(
+                                ExamResult.nni == result_data["nni"],
+                                ExamResult.session_id == session_id
+                            )
+                        ).first()
+                        
+                        if existing:
+                            # Mettre à jour
+                            for key, value in result_data.items():
+                                setattr(existing, key, value)
+                            print(f"Ligne {index + 1}: Mise à jour NNI {result_data['nni']}")
+                        else:
+                            # Créer nouveau
+                            result = ExamResult(**result_data)
+                            self.db.add(result)
+                            print(f"Ligne {index + 1}: Ajout NNI {result_data['nni']}")
+                        
+                        success_count += 1
                     else:
-                        # Créer nouveau
-                        result = ExamResult(**result_data)
-                        self.db.add(result)
+                        error_count += 1
+                        error_msg = f"Ligne {index + 2}: Données invalides"
+                        task_status.errors.append(error_msg)
+                        print(error_msg)
                     
-                    success_count += 1
-                else:
+                except Exception as e:
                     error_count += 1
-                    task_status.errors.append(f"Ligne {index + 2}: Données invalides")
+                    error_msg = f"Ligne {index + 2}: {str(e)}"
+                    task_status.errors.append(error_msg)
+                    print(f"Erreur: {error_msg}")
                 
-            except Exception as e:
-                error_count += 1
-                task_status.errors.append(f"Ligne {index + 2}: {str(e)}")
+                # Mettre à jour le progrès
+                task_status.processed_rows = index + 1
+                task_status.success_count = success_count
+                task_status.error_count = error_count
+                task_status.progress = int((index + 1) / len(df) * 100)
+                
+                # Commit par batches pour la performance
+                if (index + 1) % 100 == 0:
+                    try:
+                        self.db.commit()
+                        print(f"Commit batch à la ligne {index + 1}")
+                    except Exception as e:
+                        print(f"Erreur commit batch: {e}")
+                        self.db.rollback()
             
-            # Mettre à jour le progrès
-            task_status.processed_rows = index + 1
-            task_status.success_count = success_count
-            task_status.error_count = error_count
-            task_status.progress = int((index + 1) / len(df) * 100)
-            
-            # Commit par batches pour la performance
-            if (index + 1) % 100 == 0:
+            # Commit final
+            try:
                 self.db.commit()
-        
-        # Commit final
-        self.db.commit()
-        
-        # Finaliser le statut
-        task_status.status = "completed"
-        task_status.progress = 100
+                print(f"Commit final - {success_count} succès, {error_count} erreurs")
+            except Exception as e:
+                print(f"Erreur commit final: {e}")
+                self.db.rollback()
+                task_status.status = "failed"
+                task_status.errors.append(f"Erreur lors du commit final: {str(e)}")
+                return
+            
+            # Finaliser le statut
+            task_status.status = "completed"
+            task_status.progress = 100
+            print(f"Traitement terminé pour la tâche {task_id}")
+            
+        except Exception as e:
+            print(f"Erreur globale dans _process_upload_async: {e}")
+            task_status.status = "failed"
+            task_status.errors.append(f"Erreur globale: {str(e)}")
+            self.db.rollback()
     
     def _validate_and_map_row(self, row: pd.Series, session_id: int, etablissements_cache: Dict, wilayas_cache: Dict, series_cache: Dict) -> Dict[str, Any]:
         """Valide et mappe une ligne du fichier vers un ExamResult"""

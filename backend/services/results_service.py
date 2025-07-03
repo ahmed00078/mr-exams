@@ -17,7 +17,7 @@ class ResultsService:
         # Vérifier le cache d'abord
         cache_key = params.dict()
         cached_result = await cache_manager.get_cached_search(cache_key)
-        if cached_result:
+        if cached_result and isinstance(cached_result, dict):
             return SearchResponse(**cached_result)
         
         # Construire la requête
@@ -77,7 +77,7 @@ class ResultsService:
         
         # Convertir en schéma de réponse
         result_data = {
-            "results": [ExamResultResponse.from_orm(result) for result in results],
+            "results": [ExamResultResponse.model_validate(result).model_dump() for result in results],
             "total": total,
             "page": params.page,
             "size": params.size,

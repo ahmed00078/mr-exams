@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { ExamResultDetail } from '@/types';
 import { resultsApi } from '@/lib/api';
-import { generateShareUrl, copyToClipboard } from '@/lib/utils';
+import { generateShareUrl, copyToClipboard, formatMoyenne } from '@/lib/utils';
 
 interface SocialShareProps {
     result: ExamResultDetail;
@@ -161,7 +161,7 @@ export default function SocialShare({ result, onClose }: SocialShareProps) {
                             <p><strong>Examen:</strong> {result.serie?.exam_type?.toUpperCase() || 'BAC'} 2024</p>
                             <p><strong>Décision:</strong> {result.decision}</p>
                             {result.moyenne_generale && (
-                                <p><strong>Moyenne:</strong> {result.moyenne_generale.toFixed(2)}/20</p>
+                                <p><strong>Moyenne:</strong> {formatMoyenne(result.moyenne_generale)}</p>
                             )}
                             {result.wilaya && !isAnonymous && (
                                 <p><strong>Wilaya:</strong> {result.wilaya.name_fr}</p>

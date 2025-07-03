@@ -45,8 +45,7 @@ class CacheManager:
         if not redis:
             return
         try:
-            if isinstance(value, (dict, list)):
-                value = json.dumps(value, default=str)
+            value = json.dumps(value, default=str)
             await redis.setex(key, ttl, value)
         except Exception as e:
             logger.warning(f"Cache set error: {e}")

@@ -86,32 +86,32 @@ Le backend sera accessible sur : **http://localhost:8000**
 ## 📖 Endpoints Principaux
 
 ### Documentation API
-- **Swagger UI** : http://localhost:8000/api/docs
-- **ReDoc** : http://localhost:8000/api/redoc
+- **Swagger UI** : http://localhost:8000/docs
+- **ReDoc** : http://localhost:8000/redoc
 
 ### Endpoints Publics
 
 #### Recherche de Résultats
 ```bash
 # Recherche par NNI
-GET /api/results/search?nni=1234567890
+GET /results/search?nni=1234567890
 
 # Recherche par nom
-GET /api/results/search?nom=Ahmed&wilaya_id=6
+GET /results/search?nom=Ahmed&wilaya_id=6
 
 # Recherche complexe
-GET /api/results/search?year=2024&exam_type=bac&serie_id=1&page=1&size=50
+GET /results/search?year=2024&exam_type=bac&serie_id=1&page=1&size=50
 ```
 
 #### Détails d'un Résultat
 ```bash
-GET /api/results/{result_id}
+GET /results/{result_id}
 ```
 
 #### Partage Social
 ```bash
 # Générer un lien de partage
-POST /api/results/{result_id}/share
+POST /results/{result_id}/share
 {
   "platform": "whatsapp",
   "is_anonymous": false
@@ -124,25 +124,25 @@ GET /share/{token}
 #### Références
 ```bash
 # Liste des wilayas
-GET /api/references/wilayas
+GET /references/wilayas
 
 # Liste des établissements
-GET /api/references/etablissements?wilaya_id=6
+GET /references/etablissements?wilaya_id=6
 
 # Liste des séries
-GET /api/references/series?exam_type=bac
+GET /references/series?exam_type=bac
 ```
 
 #### Statistiques Publiques
 ```bash
 # Stats par wilaya
-GET /api/stats/wilaya/6?year=2024&exam_type=bac
+GET /stats/wilaya/6?year=2024&exam_type=bac
 
 # Stats par établissement
-GET /api/stats/etablissement/1?year=2024&exam_type=bac
+GET /stats/etablissement/1?year=2024&exam_type=bac
 
 # Stats globales
-GET /api/stats/global?year=2024&exam_type=bac
+GET /stats/global?year=2024&exam_type=bac
 ```
 
 ### Endpoints d'Administration
@@ -150,21 +150,21 @@ GET /api/stats/global?year=2024&exam_type=bac
 #### Authentification
 ```bash
 # Login
-POST /api/auth/login
+POST /auth/login
 {
   "username": "admin",
   "password": "admin123"
 }
 
 # Profil utilisateur
-GET /api/auth/me
+GET /auth/me
 Authorization: Bearer {token}
 ```
 
 #### Upload en Masse
 ```bash
 # Upload de résultats
-POST /api/admin/upload
+POST /admin/upload
 Content-Type: multipart/form-data
 Authorization: Bearer {token}
 
@@ -172,7 +172,7 @@ file: {fichier.csv ou .xlsx}
 session_id: 1
 
 # Status de l'upload
-GET /api/admin/upload/{task_id}/status
+GET /admin/upload/{task_id}/status
 Authorization: Bearer {token}
 ```
 
@@ -227,10 +227,10 @@ docker run -d --name api-mauritania \
 curl http://localhost:8000/health
 
 # Test de recherche
-curl "http://localhost:8000/api/results/search?nni=1234567890"
+curl "http://localhost:8000/results/search?nni=1234567890"
 
 # Test d'authentification
-curl -X POST http://localhost:8000/api/auth/login \
+curl -X POST http://localhost:8000/auth/login \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=admin&password=admin123"
 ```
@@ -242,11 +242,11 @@ curl -X POST http://localhost:8000/api/auth/login \
 sudo apt-get install apache2-utils
 
 # Test de charge simple
-ab -n 1000 -c 10 http://localhost:8000/api/results/search?nni=1234567890
+ab -n 1000 -c 10 http://localhost:8000/results/search?nni=1234567890
 
 # Test avec authentification
 ab -n 100 -c 5 -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:8000/api/auth/me
+  http://localhost:8000/auth/me
 ```
 
 ## 📊 Monitoring et Logs
@@ -359,7 +359,7 @@ server {
     # Rate limiting
     limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
     
-    location /api/ {
+    location / {
         limit_req zone=api burst=20 nodelay;
         
         proxy_pass http://127.0.0.1:8000;
@@ -551,7 +551,7 @@ df -h
 Pour toute question ou problème :
 
 1. **Logs** : Vérifiez `app.log` pour les erreurs
-2. **Documentation** : http://localhost:8000/api/docs
+2. **Documentation** : http://localhost:8000/docs
 3. **Health Check** : http://localhost:8000/health
 4. **Database** : Vérifiez les connexions et performances
 

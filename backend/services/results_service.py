@@ -58,10 +58,10 @@ class ResultsService:
             query = query.filter(ExamResult.decision == params.decision)
         
         if params.year:
-            query = query.join(ExamSession).filter(ExamSession.year == params.year)
+            query = query.filter(ExamResult.session.has(ExamSession.year == params.year))
         
         if params.exam_type:
-            query = query.join(ExamSession).filter(ExamSession.exam_type == params.exam_type)
+            query = query.filter(ExamResult.session.has(ExamSession.exam_type == params.exam_type))
         
         # Compter le total
         total = query.count()

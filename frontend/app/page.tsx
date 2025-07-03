@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { Search, Users, BookOpen, Award, TrendingUp } from 'lucide-react';
 import SearchForm from '@/components/SearchForm';
-// import StatsCards from '@/components/StatsCards';
+import StatsCards from '@/components/StatsCards';
 import { sessionsApi } from '@/lib/api';
 import { Session } from '@/types';
+import { formatTauxReussite } from '@/lib/utils';
 
 export default function HomePage() {
     const [currentSessions, setCurrentSessions] = useState<Session[]>([]);
@@ -133,7 +134,7 @@ export default function HomePage() {
                                         </div>
                                         <div className="text-right">
                                             <p className="text-2xl font-bold text-mauritania-primary">
-                                                {/* {session.pass_rate?.toFixed(1)}% */}
+                                                {session.pass_rate ? formatTauxReussite(session.pass_rate) : 'N/A'}
                                             </p>
                                             <p className="text-sm text-gray-500">Réussite</p>
                                         </div>

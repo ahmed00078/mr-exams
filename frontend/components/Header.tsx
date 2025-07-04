@@ -3,15 +3,22 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Search, BarChart3, Home } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+    Menu,
+    Search,
+    BarChart3,
+    Home,
+    GraduationCap,
+    Shield
+} from 'lucide-react';
 
 export default function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const pathname = usePathname();
-
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
 
     const navigationItems = [
         { href: '/', label: 'Accueil', icon: Home },
@@ -26,21 +33,33 @@ export default function Header() {
         return pathname.startsWith(href);
     };
 
+    // Gestion de la recherche rapide
+    const handleQuickSearch = () => {
+        if (searchTerm.trim()) {
+            window.location.href = `/search?nom=${encodeURIComponent(searchTerm)}`;
+        }
+    };
+
     return (
-        <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center h-16">
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="container mx-auto px-4">
+                <div className="flex h-16 items-center justify-between">
 
                     {/* Logo et titre */}
                     <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                        <div className="mauritania-flag w-8 h-6"></div>
-                        <div className="flex flex-col">
-                            <h1 className="text-lg font-bold text-gray-900 leading-tight">
+                        <div className="mauritania-flag w-8 h-6 rounded-sm"></div>
+                        <div className="hidden sm:flex flex-col">
+                            <h1 className="text-lg font-bold text-foreground leading-tight">
                                 Résultats d'Examens
                             </h1>
-                            <p className="text-xs text-gray-600 leading-tight">
+                            <p className="text-xs text-muted-foreground leading-tight">
                                 République Islamique de Mauritanie
                             </p>
+                        </div>
+                        <div className="sm:hidden">
+                            <h1 className="text-base font-bold text-foreground">
+                                Examens MR
+                            </h1>
                         </div>
                     </Link>
 
@@ -51,85 +70,203 @@ export default function Header() {
                             const isActive = isActiveLink(item.href);
 
                             return (
-                                <Link
+                                <Button
                                     key={item.href}
-                                    href={item.href}
-                                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${isActive
-                                            ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                                            : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                                        }`}
+                                    asChild
+                                    variant={isActive ? "default" : "ghost"}
+                                    className="h-9"
                                 >
-                                    <Icon className="w-4 h-4" />
-                                    <span>{item.label}</span>
-                                </Link>
+                                    <Link href={item.href}>
+                                        <Icon className="w-4 h-4 mr-2" />
+                                        {item.label}
+                                    </Link>
+                                </Button>
                             );
                         })}
+
+                        {/* Lien Admin seulement si on est sur localhost ou dev */}
+                        {(typeof window !== 'undefined' &&
+                            (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
+                        ) && (
+                                <Button
+                                    asChild
+                                    variant={pathname === '/admin' ? "default" : "ghost"}
+                                    className="h-9"
+                                >
+                                    <Link href="/admin">
+                                        <Shield className="w-4 h-4 mr-2" />
+                                        Admin
+                                    </Link>
+                                </Button>
+                            )}
                     </nav>
 
-                    {/* Bouton de recherche rapide */}
-                    <div className="hidden md:flex items-center">
-                        <Link
-                            href="/"
-                            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                        >
-                            <Search className="w-4 h-4" />
-                            <span>Rechercher</span>
-                        </Link>
-                    </div>
-
-                    {/* Bouton menu mobile */}
-                    <button
-                        onClick={toggleMenu}
-                        className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                        aria-label="Toggle menu"
-                    >
-                        {isMenuOpen ? (
-                            <X className="w-6 h-6" />
-                        ) : (
-                            <Menu className="w-6 h-6" />
-                        )}
-                    </button>
-                </div>
-
-                {/* Menu mobile */}
-                {isMenuOpen && (
-                    <div className="md:hidden py-4 border-t border-gray-200">
-                        <nav className="space-y-1">
-                            {navigationItems.map((item) => {
-                                const Icon = item.icon;
-                                const isActive = isActiveLink(item.href);
-
-                                return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className={`flex items-center space-x-3 px-3 py-3 rounded-lg font-medium transition-all duration-200 ${isActive
-                                                ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                                                : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-                                            }`}
-                                    >
-                                        <Icon className="w-5 h-5" />
-                                        <span>{item.label}</span>
-                                    </Link>
-                                );
-                            })}
-
-                            {/* Séparateur */}
-                            <div className="border-t border-gray-200 my-3"></div>
-
-                            {/* Bouton de recherche mobile */}
-                            <Link
-                                href="/"
-                                onClick={() => setIsMenuOpen(false)}
-                                className="flex items-center space-x-3 bg-blue-600 text-white px-3 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                    {/* Recherche rapide desktop */}
+                    <div className="hidden lg:flex items-center space-x-2 max-w-sm">
+                        <div className="relative flex-1">
+                            <Input
+                                placeholder="Rechercher un candidat..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
+                                className="h-9 pr-9"
+                            />
+                            <Button
+                                size="sm"
+                                onClick={handleQuickSearch}
+                                disabled={!searchTerm.trim()}
+                                className="absolute right-1 top-1 h-7 w-7 p-0"
                             >
-                                <Search className="w-5 h-5" />
-                                <span>Rechercher un résultat</span>
-                            </Link>
-                        </nav>
+                                <Search className="w-3 h-3" />
+                            </Button>
+                        </div>
                     </div>
-                )}
+
+                    {/* Bouton de recherche mobile */}
+                    <div className="flex items-center space-x-2 lg:hidden">
+                        <Button
+                            asChild
+                            size="sm"
+                            variant="outline"
+                        >
+                            <Link href="/">
+                                <Search className="w-4 h-4" />
+                            </Link>
+                        </Button>
+
+                        {/* Menu mobile */}
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="sm" className="md:hidden">
+                                    <Menu className="w-5 h-5" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="w-80">
+                                <div className="flex flex-col space-y-4 mt-8">
+                                    {/* Logo dans le menu mobile */}
+                                    <div className="flex items-center space-x-3 pb-4">
+                                        <div className="mauritania-flag w-8 h-6 rounded-sm"></div>
+                                        <div>
+                                            <h2 className="text-lg font-bold text-foreground">
+                                                Examens Mauritanie
+                                            </h2>
+                                            <p className="text-xs text-muted-foreground">
+                                                Portail officiel
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Recherche mobile */}
+                                    <div className="space-y-3">
+                                        <h3 className="text-sm font-medium text-foreground">Recherche rapide</h3>
+                                        <div className="flex space-x-2">
+                                            <Input
+                                                placeholder="Nom du candidat..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
+                                            />
+                                            <Button
+                                                onClick={handleQuickSearch}
+                                                disabled={!searchTerm.trim()}
+                                                size="sm"
+                                            >
+                                                <Search className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Navigation mobile */}
+                                    <div className="space-y-3">
+                                        <h3 className="text-sm font-medium text-foreground">Navigation</h3>
+                                        <nav className="space-y-2">
+                                            {navigationItems.map((item) => {
+                                                const Icon = item.icon;
+                                                const isActive = isActiveLink(item.href);
+
+                                                return (
+                                                    <Button
+                                                        key={item.href}
+                                                        asChild
+                                                        variant={isActive ? "default" : "ghost"}
+                                                        className="w-full justify-start h-10"
+                                                    >
+                                                        <Link href={item.href}>
+                                                            <Icon className="w-4 h-4 mr-3" />
+                                                            {item.label}
+                                                        </Link>
+                                                    </Button>
+                                                );
+                                            })}
+
+                                            {/* Admin mobile */}
+                                            {(typeof window !== 'undefined' &&
+                                                (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
+                                            ) && (
+                                                    <Button
+                                                        asChild
+                                                        variant={pathname === '/admin' ? "default" : "ghost"}
+                                                        className="w-full justify-start h-10"
+                                                    >
+                                                        <Link href="/admin">
+                                                            <Shield className="w-4 h-4 mr-3" />
+                                                            Administration
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                        </nav>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Raccourcis mobiles */}
+                                    <div className="space-y-3">
+                                        <h3 className="text-sm font-medium text-foreground">Raccourcis</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Button
+                                                asChild
+                                                variant="outline"
+                                                size="sm"
+                                                className="h-16 flex-col space-y-2"
+                                            >
+                                                <Link href="/">
+                                                    <GraduationCap className="w-6 h-6" />
+                                                    <span className="text-xs">BAC</span>
+                                                </Link>
+                                            </Button>
+
+                                            <Button
+                                                asChild
+                                                variant="outline"
+                                                size="sm"
+                                                className="h-16 flex-col space-y-2"
+                                            >
+                                                <Link href="/">
+                                                    <GraduationCap className="w-6 h-6" />
+                                                    <span className="text-xs">BEPC</span>
+                                                </Link>
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <Separator />
+
+                                    {/* Informations */}
+                                    <div className="space-y-2 text-center text-xs text-muted-foreground">
+                                        <p>République Islamique de Mauritanie</p>
+                                        <p>Ministère de l'Éducation Nationale</p>
+                                        <p className="font-medium">Portail Officiel des Résultats</p>
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                </div>
             </div>
         </header>
     );

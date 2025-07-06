@@ -223,34 +223,152 @@ class StatsService:
             and_(ExamResult.session_id == session.id, ExamResult.is_published == True)
         ).group_by(RefSerie.id, RefSerie.code, RefSerie.name_fr, RefSerie.name_ar).all()
         
-        return {
-            "year": year,
-            "exam_type": exam_type,
-            "total_candidats": session.total_candidates,
-            "total_admis": session.total_passed,
-            "taux_reussite_global": float(session.pass_rate) if session.pass_rate else 0,
-            "wilayas": [
-                {
+        # Trier les wilayas par taux de réussite décroissant
+        wilayas_sorted = []
+        for w in wilaya_stats:
+            if w.total_candidats > 0:
+                taux_reussite = round((w.total_admis / w.total_candidats * 100), 2)
+                wilayas_sorted.append({
                     "id": w.id,
                     "name_fr": w.name_fr,
                     "name_ar": w.name_ar,
                     "candidats": w.total_candidats,
                     "admis": w.total_admis,
-                    "taux_reussite": round((w.total_admis / w.total_candidats * 100), 2) if w.total_candidats > 0 else 0,
+                    "taux_reussite": taux_reussite,
                     "moyenne": round(float(w.moyenne), 2) if w.moyenne else None
-                }
-                for w in wilaya_stats
-            ],
-            "series": [
-                {
+                })
+        
+        # Trier par taux de réussite décroissant
+        wilayas_sorted.sort(key=lambda x: x["taux_reussite"], reverse=True)
+        
+        # Trier les séries par taux de réussite décroissant
+        series_sorted = []
+        for s in serie_stats:
+            if s.total_candidats > 0:
+                taux_reussite = round((s.total_admis / s.total_candidats * 100), 2)
+                series_sorted.append({
                     "id": s.id,
                     "code": s.code,
                     "name_fr": s.name_fr,
                     "name_ar": s.name_ar,
                     "candidats": s.total_candidats,
                     "admis": s.total_admis,
-                    "taux_reussite": round((s.total_admis / s.total_candidats * 100), 2) if s.total_candidats > 0 else 0
-                }
-                for s in serie_stats
-            ]
+                    "taux_reussite": taux_reussite
+                })
+        
+        # Trier par taux de réussite décroissant
+        series_sorted.sort(key=lambda x: x["taux_reussite"], reverse=True)
+
+        return {
+            "year": year,
+            "exam_type": exam_type,
+            "total_candidats": session.total_candidates,
+            "total_admis": session.total_passed,
+            "taux_reussite_global": float(session.pass_rate) if session.pass_rate else 0,
+            "wilayas": wilayas_sorted,
+            "series": series_sorted
         }
+    
+    def get_top_students(self, year: int, exam_type: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Récupère le top des élèves pour une année donnée"""
+        
+        session = self.db.query(ExamSession).filter(
+            and_(ExamSession.year == year, ExamSession.exam_type == exam_type)
+        ).first()
+        
+        if not session:
+            return []
+        
+        # Récupérer les meilleurs élèves
+        top_students = self.db.query(
+            ExamResult.id,
+            ExamResult.nom_complet_fr,
+            ExamResult.moyenne_generale,
+            ExamResult.decision,
+            RefWilaya.name_fr.label('wilaya_name'),
+            RefSerie.code.label('serie_code'),
+            RefEtablissement.name_fr.label('etablissement_name')
+        ).join(
+            RefWilaya, ExamResult.wilaya_id == RefWilaya.id
+        ).join(
+            RefSerie, ExamResult.serie_id == RefSerie.id
+        ).join(
+            RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
+        ).filter(
+            and_(
+                ExamResult.session_id == session.id,
+                ExamResult.is_published == True,
+                ExamResult.decision.in_(['Admis', 'Passable']),
+                ExamResult.moyenne_generale.isnot(None)
+            )
+        ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
+        
+        return [
+            {
+                "id": str(student.id),
+                "nom_complet": student.nom_complet_fr,
+                "moyenne": float(student.moyenne_generale),
+                "decision": student.decision,
+                "wilaya": student.wilaya_name,
+                "serie": student.serie_code,
+                "etablissement": student.etablissement_name
+            }
+            for student in top_students
+        ]
+    
+    def get_top_schools(self, year: int, exam_type: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Récupère le top des écoles pour une année donnée"""
+        
+        session = self.db.query(ExamSession).filter(
+            and_(ExamSession.year == year, ExamSession.exam_type == exam_type)
+        ).first()
+        
+        if not session:
+            return []
+        
+        # Calculer les statistiques par établissement
+        etablissement_stats = self.db.query(
+            RefEtablissement.id,
+            RefEtablissement.name_fr,
+            RefEtablissement.name_ar,
+            RefWilaya.name_fr.label('wilaya_name'),
+            func.count(ExamResult.id).label('total_candidats'),
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('total_admis'),
+            func.avg(ExamResult.moyenne_generale).label('moyenne_etablissement')
+        ).join(
+            ExamResult, RefEtablissement.id == ExamResult.etablissement_id
+        ).join(
+            RefWilaya, RefEtablissement.wilaya_id == RefWilaya.id
+        ).filter(
+            and_(
+                ExamResult.session_id == session.id,
+                ExamResult.is_published == True
+            )
+        ).group_by(
+            RefEtablissement.id,
+            RefEtablissement.name_fr,
+            RefEtablissement.name_ar,
+            RefWilaya.name_fr
+        ).having(
+            func.count(ExamResult.id) >= 5  # Au moins 5 candidats pour être considéré
+        ).all()
+        
+        # Calculer le taux de réussite et trier
+        schools_with_rates = []
+        for etab in etablissement_stats:
+            if etab.total_candidats > 0:
+                taux_reussite = round((etab.total_admis / etab.total_candidats * 100), 2)
+                schools_with_rates.append({
+                    "id": etab.id,
+                    "nom": etab.name_fr,
+                    "wilaya": etab.wilaya_name,
+                    "candidats": etab.total_candidats,
+                    "admis": etab.total_admis,
+                    "taux_reussite": taux_reussite,
+                    "moyenne": round(float(etab.moyenne_etablissement), 2) if etab.moyenne_etablissement else None
+                })
+        
+        # Trier par taux de réussite puis par moyenne
+        schools_with_rates.sort(key=lambda x: (x["taux_reussite"], x["moyenne"] or 0), reverse=True)
+        
+        return schools_with_rates[:limit]

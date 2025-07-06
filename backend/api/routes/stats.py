@@ -57,3 +57,31 @@ async def get_global_statistics(
         raise HTTPException(status_code=404, detail="Statistiques non trouvées")
     
     return stats
+
+@router.get("/top-students")
+async def get_top_students(
+    year: int = Query(..., description="Année de l'examen"),
+    exam_type: str = Query(..., description="Type d'examen (bac, bepc, concours)"),
+    limit: int = Query(10, description="Nombre d'élèves à retourner"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Récupère le top des élèves pour une année donnée"""
+    
+    service = StatsService(db)
+    top_students = service.get_top_students(year, exam_type, limit)
+    
+    return {"top_students": top_students}
+
+@router.get("/top-schools")
+async def get_top_schools(
+    year: int = Query(..., description="Année de l'examen"),
+    exam_type: str = Query(..., description="Type d'examen (bac, bepc, concours)"),
+    limit: int = Query(10, description="Nombre d'écoles à retourner"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    """Récupère le top des écoles pour une année donnée"""
+    
+    service = StatsService(db)
+    top_schools = service.get_top_schools(year, exam_type, limit)
+    
+    return {"top_schools": top_schools}

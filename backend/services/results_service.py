@@ -69,9 +69,12 @@ class ResultsService:
         # Compter le total
         total = query.count()
         
-        # Appliquer la pagination
+        # Appliquer la pagination avec tri par moyenne décroissante
         offset = (params.page - 1) * params.size
-        results = query.order_by(desc(ExamResult.created_at)).offset(offset).limit(params.size).all()
+        results = query.order_by(
+            ExamResult.moyenne_generale.desc().nullslast(),
+            desc(ExamResult.created_at)
+        ).offset(offset).limit(params.size).all()
         
         # Calculer les métadonnées de pagination
         total_pages = (total + params.size - 1) // params.size

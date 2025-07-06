@@ -259,12 +259,20 @@ class StatsService:
         # Trier par taux de réussite décroissant
         series_sorted.sort(key=lambda x: x["taux_reussite"], reverse=True)
 
+        # Calculer le nombre d'établissements ayant des candidats
+        total_etablissements = self.db.query(
+            func.count(func.distinct(ExamResult.etablissement_id))
+        ).filter(
+            and_(ExamResult.session_id == session.id, ExamResult.is_published == True)
+        ).scalar()
+
         return {
             "year": year,
             "exam_type": exam_type,
             "total_candidats": session.total_candidates,
             "total_admis": session.total_passed,
             "taux_reussite_global": float(session.pass_rate) if session.pass_rate else 0,
+            "total_etablissements": total_etablissements or 0,
             "wilayas": wilayas_sorted,
             "series": series_sorted
         }

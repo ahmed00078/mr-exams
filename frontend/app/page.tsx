@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     GraduationCap,
-    Search,
     BookOpen,
     Award,
-    Users,
-    TrendingUp
+    Calendar,
+    Bell,
+    Clock,
+    AlertCircle
 } from 'lucide-react';
 import { sessionsApi } from '@/lib/api';
 import { Session } from '@/types';
@@ -19,7 +20,6 @@ import { formatTauxReussite } from '@/lib/utils';
 
 export default function HomePage() {
     const [sessions, setSessions] = useState<Session[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -36,17 +36,29 @@ export default function HomePage() {
         fetchSessions();
     }, []);
 
-    const handleQuickSearch = () => {
-        if (searchTerm.trim()) {
-            // Recherche directe comme mauribac - si c'est un numéro, chercher par NNI, sinon par nom
-            const isNumber = /^\d+$/.test(searchTerm.trim());
-            if (isNumber) {
-                window.location.href = `/search/numero/${searchTerm}`;
-            } else {
-                window.location.href = `/search/nom/${encodeURIComponent(searchTerm)}`;
-            }
+    const announcements = [
+        {
+            id: 1,
+            type: 'urgent',
+            title: 'Publication des résultats BAC 2024',
+            date: '15 Juillet 2024',
+            message: 'Les résultats du Baccalauréat session 2024 sont désormais disponibles'
+        },
+        {
+            id: 2,
+            type: 'info',
+            title: 'Calendrier des examens 2025',
+            date: '1er Janvier 2025',
+            message: 'Le calendrier officiel des examens 2025 sera publié prochainement'
+        },
+        {
+            id: 3,
+            type: 'reminder',
+            title: 'Vérification des résultats',
+            date: 'Permanent',
+            message: 'Utilisez votre NNI pour une recherche plus précise'
         }
-    };
+    ];
 
     const getExamIcon = (type: string) => {
         switch (type) {
@@ -66,44 +78,75 @@ export default function HomePage() {
         return labels[type] || type.toUpperCase();
     };
 
+    const getAnnouncementIcon = (type: string) => {
+        switch (type) {
+            case 'urgent': return AlertCircle;
+            case 'info': return Bell;
+            case 'reminder': return Clock;
+            default: return Bell;
+        }
+    };
+
+    const getAnnouncementColor = (type: string) => {
+        switch (type) {
+            case 'urgent': return 'border-red-500 bg-red-50 text-red-800';
+            case 'info': return 'border-blue-500 bg-blue-50 text-blue-800';
+            case 'reminder': return 'border-yellow-500 bg-yellow-50 text-yellow-800';
+            default: return 'border-gray-500 bg-gray-50 text-gray-800';
+        }
+    };
+
     return (
         <div className="min-h-screen bg-background">
-            {/* Hero Section - Plus simple et direct */}
-            <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground py-20">
-                <div className="container mx-auto px-4 text-center">
-                    {/* Drapeau mauritanien */}
-                    <div className="mauritania-flag w-16 h-12 rounded-md mx-auto mb-6"></div>
-
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                        Résultats d'Examens
-                    </h1>
-                    <p className="text-xl mb-8 opacity-90">
-                        République Islamique de Mauritanie
-                    </p>
-
-                    {/* Recherche principale - Plus prominente */}
-                    <div className="max-w-lg mx-auto mb-8">
-                        <div className="flex gap-3">
-                            <Input
-                                placeholder="Votre NNI ou nom..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
-                                className="bg-background text-foreground text-lg h-12"
-                            />
-                            <Button
-                                onClick={handleQuickSearch}
-                                disabled={!searchTerm.trim()}
-                                size="lg"
-                                className="px-8"
-                            >
-                                <Search className="w-5 h-5 mr-2" />
-                                Rechercher
-                            </Button>
-                        </div>
-                        <p className="text-sm mt-2 opacity-75">
-                            Saisissez votre NNI (ex: 1234567890) ou votre nom
+            {/* Hero Section - Actualités et Annonces */}
+            <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground py-12 md:py-16">
+                <div className="container mx-auto px-4">
+                    {/* En-tête */}
+                    <div className="text-center mb-8">
+                        <div className="text-4xl mb-4">🇲🇷</div>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-2">
+                            Résultats d'Examens
+                        </h1>
+                        <p className="text-lg opacity-90">
+                            République Islamique de Mauritanie
                         </p>
+                    </div>
+
+                    {/* Actualités */}
+                    <div className="max-w-4xl mx-auto">
+                        <div className="flex items-center justify-center gap-2 mb-6">
+                            <Bell className="w-5 h-5" />
+                            <h2 className="text-xl font-semibold">Actualités et Annonces</h2>
+                        </div>
+                        
+                        <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                            {announcements.map((announcement) => {
+                                const Icon = getAnnouncementIcon(announcement.type);
+                                return (
+                                    <Card key={announcement.id} className={`border-2 ${getAnnouncementColor(announcement.type)}`}>
+                                        <CardContent className="p-3 sm:p-4">
+                                            <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                                <Icon className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />
+                                                <div className="min-w-0 flex-1">
+                                                    <h3 className="font-semibold text-xs sm:text-sm leading-tight">
+                                                        {announcement.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-1 mt-1">
+                                                        <Calendar className="w-3 h-3 flex-shrink-0" />
+                                                        <span className="text-xs opacity-75 truncate">
+                                                            {announcement.date}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="text-xs sm:text-sm leading-relaxed">
+                                                {announcement.message}
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </section>
@@ -134,7 +177,7 @@ export default function HomePage() {
                                 return (
                                     <Link
                                         key={session.id}
-                                        href={`/${session.exam_type}-${session.year}`}
+                                        href={`/${session.exam_type}-${session.year}-${session.id}`}
                                         className="group"
                                     >
                                         <Card className="h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105 relative overflow-hidden">

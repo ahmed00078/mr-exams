@@ -169,7 +169,7 @@ export default function SearchResultsPage() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-
+        
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -186,7 +186,7 @@ export default function SearchResultsPage() {
     const handlePageChange = (newPage: number) => {
         setFormData(prev => ({ ...prev, page: newPage }));
         const params = { ...buildSearchParams(), page: newPage };
-
+        
         // Mettre à jour l'URL
         const query = new URLSearchParams();
         Object.entries(params).forEach(([key, value]) => {
@@ -194,7 +194,7 @@ export default function SearchResultsPage() {
                 query.append(key, value.toString());
             }
         });
-
+        
         window.history.pushState({}, '', `?${query.toString()}`);
         performSearch();
     };
@@ -269,8 +269,8 @@ export default function SearchResultsPage() {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle>Affiner la recherche</CardTitle>
-                            <Button
-                                variant="ghost"
+                            <Button 
+                                variant="ghost" 
                                 size="sm"
                                 onClick={() => setShowFilters(false)}
                             >
@@ -518,8 +518,8 @@ export default function SearchResultsPage() {
                                         </div>
                                         <div>
                                             <p className="text-2xl font-bold text-red-600">
-                                                {searchData.results.filter(r =>
-                                                    r.decision.toLowerCase().includes('ajourné') ||
+                                                {searchData.results.filter(r => 
+                                                    r.decision.toLowerCase().includes('ajourné') || 
                                                     r.decision.toLowerCase().includes('ajourne')
                                                 ).length}
                                             </p>
@@ -613,7 +613,7 @@ export default function SearchResultsPage() {
                                                 </div>
 
                                                 <div className="lg:text-right">
-                                                    <Badge
+                                                    <Badge 
                                                         variant={result.decision.toLowerCase().includes('admis') ? 'default' : 'destructive'}
                                                         className="mb-2"
                                                     >

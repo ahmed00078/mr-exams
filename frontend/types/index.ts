@@ -64,8 +64,11 @@ export interface ExamResult {
     view_count: number;
     created_at: string;
     etablissement?: Etablissement;
+    etablissement_name?: string;
     serie?: Serie;
+    serie_code?: string;
     wilaya?: Wilaya;
+    wilaya_name?: string;
 }
 
 export interface ExamResultDetail extends ExamResult {
@@ -84,6 +87,7 @@ export interface SearchParams {
     wilaya_id?: number;
     etablissement_id?: number;
     serie_id?: number;
+    serie_code?: string;
     decision?: string;
     year?: number;
     exam_type?: string;

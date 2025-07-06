@@ -132,6 +132,14 @@ export const statsApi = {
     getGlobalStats: async (year: number, exam_type: string): Promise<any> => {
         return fetchApi(`/stats/global?year=${year}&exam_type=${exam_type}`);
     },
+
+    getTopStudents: async (year: number, exam_type: string, limit: number = 10): Promise<any> => {
+        return fetchApi(`/stats/top-students?year=${year}&exam_type=${exam_type}&limit=${limit}`);
+    },
+
+    getTopSchools: async (year: number, exam_type: string, limit: number = 10): Promise<any> => {
+        return fetchApi(`/stats/top-schools?year=${year}&exam_type=${exam_type}&limit=${limit}`);
+    },
 };
 
 // API functions pour le partage social

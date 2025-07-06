@@ -174,17 +174,9 @@ export default function IndividualResultPage() {
                     <div className={`${isAdmis ? 'bg-gradient-to-r from-green-600 to-green-700' : 'bg-gradient-to-r from-red-600 to-red-700'} text-white p-6`}>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
-                                <div className="mauritania-flag w-12 h-9 rounded"></div>
                                 <div>
-                                    <h1 className="text-xl font-bold">République Islamique de Mauritanie</h1>
-                                    <p className="text-sm opacity-90">Ministère de l'Éducation Nationale</p>
+                                    <h1 className="text-xl font-bold">{getExamTypeLabel(result.serie?.exam_type || '')} {currentYear}</h1>
                                 </div>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-lg font-semibold">Résultat Officiel</p>
-                                <p className="text-sm opacity-90">
-                                    {getExamTypeLabel(result.serie?.exam_type || '')} {currentYear}
-                                </p>
                             </div>
                         </div>
                     </div>
@@ -196,11 +188,6 @@ export default function IndividualResultPage() {
 
                             {/* Informations personnelles */}
                             <div className="lg:col-span-2">
-                                <div className="flex items-center space-x-3 mb-6">
-                                    <User className="w-6 h-6 text-primary" />
-                                    <h2 className="text-2xl font-bold text-foreground">Informations du candidat</h2>
-                                </div>
-
                                 <div className="space-y-6">
                                     {/* Nom principal */}
                                     <Card className="bg-primary/5 border-primary/20">

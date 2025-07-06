@@ -98,6 +98,7 @@ class SearchParams(BaseModel):
     wilaya_id: Optional[int] = None
     etablissement_id: Optional[int] = None
     serie_id: Optional[int] = None
+    serie_code: Optional[str] = None
     decision: Optional[str] = None
     year: Optional[int] = None
     exam_type: Optional[str] = None

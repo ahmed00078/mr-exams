@@ -54,6 +54,9 @@ class ResultsService:
         if params.serie_id:
             query = query.filter(ExamResult.serie_id == params.serie_id)
         
+        if params.serie_code:
+            query = query.filter(ExamResult.serie.has(RefSerie.code == params.serie_code))
+        
         if params.decision:
             query = query.filter(ExamResult.decision == params.decision)
         

@@ -22,7 +22,6 @@ export default function Header() {
 
     const navigationItems = [
         { href: '/', label: 'Accueil', icon: Home },
-        { href: '/stats', label: 'Statistiques', icon: BarChart3 },
     ];
 
     // Fonction pour vérifier si un lien est actif
@@ -36,7 +35,7 @@ export default function Header() {
     // Gestion de la recherche rapide
     const handleQuickSearch = () => {
         if (searchTerm.trim()) {
-            window.location.href = `/search?nom=${encodeURIComponent(searchTerm)}`;
+            router.push(`/search?nom=${encodeURIComponent(searchTerm)}`);
         }
     };
 
@@ -84,21 +83,6 @@ export default function Header() {
                             );
                         })}
 
-                        {/* Lien Admin seulement si on est sur localhost ou dev */}
-                        {(typeof window !== 'undefined' &&
-                            (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
-                        ) && (
-                                <Button
-                                    asChild
-                                    variant={pathname === '/admin' ? "default" : "ghost"}
-                                    className="h-9"
-                                >
-                                    <Link href="/admin">
-                                        <Shield className="w-4 h-4 mr-2" />
-                                        Admin
-                                    </Link>
-                                </Button>
-                            )}
                     </nav>
 
                     {/* Recherche rapide desktop */}
@@ -205,9 +189,7 @@ export default function Header() {
                                             })}
 
                                             {/* Admin mobile */}
-                                            {(typeof window !== 'undefined' &&
-                                                (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
-                                            ) && (
+                                            {process.env.NODE_ENV === 'development' && (
                                                     <Button
                                                         asChild
                                                         variant={pathname === '/admin' ? "default" : "ghost"}

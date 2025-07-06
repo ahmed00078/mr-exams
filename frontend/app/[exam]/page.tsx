@@ -165,14 +165,14 @@ export default function ExamPage() {
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center space-x-4">
-                        <Button
+                        {/* <Button
                             variant="ghost"
                             onClick={() => router.push('/')}
                             className="p-2"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Accueil
-                        </Button>
+                        </Button> */}
 
                         <div className="flex items-center space-x-3">
                             <GraduationCap className="w-8 h-8 text-primary" />

@@ -156,14 +156,14 @@ export default function ResultatsPage() {
             <div className="border-b bg-card">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        <Button
+                        {/* <Button
                             variant="ghost"
                             onClick={() => router.push(`/${examParam}`)}
                             className="self-start"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Retour
-                        </Button>
+                        </Button> */}
                         <div className="flex items-center space-x-3 min-w-0 flex-1">
                             <GraduationCap className="w-6 sm:w-8 h-6 sm:h-8 text-primary flex-shrink-0" />
                             <div className="min-w-0">

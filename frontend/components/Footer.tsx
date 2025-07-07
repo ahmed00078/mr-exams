@@ -10,7 +10,7 @@ export default function Footer() {
                             <h3 className="text-lg font-bold">La plateforme d’examens de référence en Mauritanie</h3>
                         </div>
                         <p className="text-gray-300 mb-4">
-                            Portail officiel des résultats d&apos;examens mauritaniens.
+                            La plateforme d’examens de référence en Mauritanie.
                             Consultez vos résultats du BAC, BEPC et autres concours en toute sécurité.
                         </p>
                         <p className="text-sm text-gray-400">
@@ -60,7 +60,7 @@ export default function Footer() {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-white transition-colors duration-200">
+                                <a href="/contact" className="hover:text-white transition-colors duration-200">
                                     Contact
                                 </a>
                             </li>

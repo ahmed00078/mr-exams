@@ -120,7 +120,7 @@ async def get_social_share_page(
                 {'<div class="details">Wilaya: ' + share_data.wilaya + '</div>' if share_data.wilaya else ''}
                 
                 <div class="details">
-                    <small>Portail officiel des résultats d'examens mauritaniens</small>
+                    <small>La plateforme d’examens de référence en Mauritanie</small>
                 </div>
             </div>
             

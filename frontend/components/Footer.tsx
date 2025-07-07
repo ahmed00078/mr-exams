@@ -7,7 +7,7 @@ export default function Footer() {
                     <div className="lg:col-span-2">
                         <div className="flex items-center space-x-3 mb-4">
                             <div className="mauritania-flag"></div>
-                            <h3 className="text-lg font-bold">République Islamique de Mauritanie</h3>
+                            <h3 className="text-lg font-bold">La plateforme d’examens de référence en Mauritanie</h3>
                         </div>
                         <p className="text-gray-300 mb-4">
                             Portail officiel des résultats d&apos;examens mauritaniens.
@@ -75,7 +75,7 @@ export default function Footer() {
 
                 <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-gray-400 text-sm">
-                        © 2024 République Islamique de Mauritanie. Tous droits réservés.
+                        © 2024 La plateforme d’examens de référence en Mauritanie. Tous droits réservés.
                     </p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">

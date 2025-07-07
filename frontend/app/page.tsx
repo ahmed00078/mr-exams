@@ -108,7 +108,7 @@ export default function HomePage() {
                             Résultats d'Examens
                         </h1>
                         <p className="text-lg opacity-90">
-                            République Islamique de Mauritanie
+                            La plateforme d’examens de référence en Mauritanie
                         </p>
                     </div>
 

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: 'Portail des Résultats d\'Examens - Mauritanie',
     description: 'Consultez vos résultats d\'examens mauritaniens en ligne - BAC, BEPC, Concours',
     keywords: 'résultats, examens, mauritanie, bac, bepc, concours, nni',
-    authors: [{ name: 'République Islamique de Mauritanie' }],
+    authors: [{ name: 'La plateforme d’examens de référence en Mauritanie' }],
     viewport: 'width=device-width, initial-scale=1',
     robots: 'index, follow',
     openGraph: {

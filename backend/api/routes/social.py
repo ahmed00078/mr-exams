@@ -103,7 +103,7 @@ async def get_social_share_page(
         <div class="card">
             <div class="header">
                 <span class="flag"></span>
-                <h1>République Islamique de Mauritanie</h1>
+                <h1>La plateforme d’examens de référence en Mauritanie</h1>
                 <h2>Résultat d'Examen {share_data.exam_type.upper()} {share_data.year}</h2>
             </div>
             

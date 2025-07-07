@@ -52,7 +52,7 @@ export default function Header() {
                                 Résultats d'Examens
                             </h1>
                             <p className="text-xs text-muted-foreground leading-tight">
-                                République Islamique de Mauritanie
+                                La plateforme d’examens de référence en Mauritanie
                             </p>
                         </div>
                         <div className="sm:hidden">
@@ -240,7 +240,7 @@ export default function Header() {
 
                                     {/* Informations */}
                                     <div className="space-y-2 text-center text-xs text-muted-foreground">
-                                        <p>République Islamique de Mauritanie</p>
+                                        <p>La plateforme d’examens de référence en Mauritanie</p>
                                         <p>Ministère de l'Éducation Nationale</p>
                                         <p className="font-medium">Portail Officiel des Résultats</p>
                                     </div>

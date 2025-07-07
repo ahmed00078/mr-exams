@@ -98,32 +98,54 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-background">
-            {/* Hero Section - Actualités et Annonces */}
-            <section className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 text-primary-foreground py-12 md:py-16">
-                <div className="container mx-auto px-4">
-                    {/* En-tête */}
-                    <div className="text-center mb-8">
-                        <div className="text-4xl mb-4">🇲🇷</div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-2">
-                            Résultats d'Examens
+            {/* Hero Section - Modern Angular Design */}
+            <section className="relative overflow-hidden">
+                {/* Background with geometric shapes */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+                    <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-500/10 rounded-full blur-2xl"></div>
+                </div>
+
+                {/* Geometric shapes */}
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/30 transform rotate-45 rounded-lg"></div>
+                    <div className="absolute top-40 right-20 w-16 h-16 bg-purple-500/30 transform rotate-12 rounded-lg"></div>
+                    <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-yellow-500/30 transform rotate-45 rounded-lg"></div>
+                </div>
+
+                <div className="relative z-10 container mx-auto px-4 py-20">
+                    <div className="max-w-4xl mx-auto text-center text-white">
+                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-8">
+                            <div className="text-2xl">🇲🇷</div>
+                            <span className="text-sm font-medium">Plateforme Officielle</span>
+                        </div>
+                        
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                            Résultats
+                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                                d' Examens
+                            </span>
                         </h1>
-                        <p className="text-lg opacity-90">
-                            La plateforme d’examens de référence en Mauritanie
+                        
+                        <p className="text-xl md:text-2xl mb-8 text-slate-300 font-light">
+                            La plateforme moderne et sécurisée pour consulter vos résultats
                         </p>
+
                     </div>
 
-                    {/* Actualités */}
-                    <div className="max-w-4xl mx-auto">
+                    {/* Actualités intégrées dans le hero */}
+                    <div className="max-w-4xl mx-auto mt-16">
                         <div className="flex items-center justify-center gap-2 mb-6">
-                            <Bell className="w-5 h-5" />
-                            <h2 className="text-xl font-semibold">Actualités et Annonces</h2>
+                            <Bell className="w-5 h-5 text-white" />
+                            <h2 className="text-xl font-semibold text-white">Actualités et Annonces</h2>
                         </div>
                         
                         <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                             {announcements.map((announcement) => {
                                 const Icon = getAnnouncementIcon(announcement.type);
                                 return (
-                                    <Card key={announcement.id} className={`border-2 ${getAnnouncementColor(announcement.type)}`}>
+                                    <Card key={announcement.id} className={`border-2 rounded-lg transition-colors duration-200 hover:shadow-md ${getAnnouncementColor(announcement.type)}`}>
                                         <CardContent className="p-3 sm:p-4">
                                             <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
                                                 <Icon className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />
@@ -161,9 +183,9 @@ export default function HomePage() {
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {[1, 2, 3].map((i) => (
-                                <Card key={i} className="animate-pulse">
+                                <Card key={i} className="animate-pulse rounded-lg">
                                     <CardContent className="p-8">
-                                        <div className="h-24 bg-muted rounded"></div>
+                                        <div className="h-24 bg-muted rounded-lg"></div>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -180,15 +202,15 @@ export default function HomePage() {
                                         href={`/${session.exam_type}-${session.year}-${session.id}`}
                                         className="group"
                                     >
-                                        <Card className="h-full hover:shadow-xl transition-all duration-300 group-hover:scale-105 relative overflow-hidden">
+                                        <Card className="h-full rounded-lg hover:shadow-xl transition-colors duration-200 hover:border-slate-300 relative overflow-hidden">
                                             {isRecent && (
-                                                <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                                <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
                                                     NOUVEAU
                                                 </div>
                                             )}
 
                                             <CardContent className="p-8 text-center">
-                                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                                                     <ExamIcon className="w-8 h-8 text-primary" />
                                                 </div>
 
@@ -215,7 +237,7 @@ export default function HomePage() {
                                                     </div>
                                                 </div>
 
-                                                <Button className="w-full mt-4" variant="outline">
+                                                <Button className="w-full mt-4 rounded-lg" variant="outline">
                                                     Consulter les résultats
                                                 </Button>
                                             </CardContent>
@@ -235,7 +257,7 @@ export default function HomePage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                         <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold mb-4">
+                            <div className="w-12 h-12 bg-primary text-primary-foreground rounded-lg flex items-center justify-center text-xl font-bold mb-4">
                                 1
                             </div>
                             <h4 className="font-semibold mb-2">Choisissez l'examen</h4>
@@ -245,7 +267,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">
+                            <div className="w-12 h-12 bg-green-500 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-4">
                                 2
                             </div>
                             <h4 className="font-semibold mb-2">Recherchez</h4>
@@ -255,7 +277,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-purple-500 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">
+                            <div className="w-12 h-12 bg-purple-500 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-4">
                                 3
                             </div>
                             <h4 className="font-semibold mb-2">Consultez</h4>

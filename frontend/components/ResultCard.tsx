@@ -160,12 +160,6 @@ export default function ResultCard({ result, showDetails = true }: ResultCardPro
                                 <span>{result.view_count} vues</span>
                             </div>
 
-                            {result.social_share_count > 0 && (
-                                <div className="flex items-center space-x-1">
-                                    <span>•</span>
-                                    <span>{result.social_share_count} partages</span>
-                                </div>
-                            )}
                         </div>
 
                         <Link

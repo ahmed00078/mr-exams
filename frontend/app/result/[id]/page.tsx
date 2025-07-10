@@ -128,15 +128,15 @@ export default function IndividualResultPage() {
     const currentYear = new Date(result.created_at).getFullYear();
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Barre de navigation (masquée à l'impression) */}
-            <div className="print:hidden border-b bg-card">
-                <div className="container mx-auto px-4 py-4">
+        <div className="min-h-screen bg-gray-50">
+            {/* Barre de navigation - Style TailAdmin */}
+            <div className="print:hidden bg-white border-b border-gray-200 shadow-sm">
+                <div className="container mx-auto px-3 py-3">
                     <div className="flex items-center justify-between">
                         <Button
                             variant="ghost"
                             onClick={() => router.back()}
-                            className="p-2"
+                            className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Retour
@@ -146,17 +146,17 @@ export default function IndividualResultPage() {
                             <Button
                                 onClick={handleShare}
                                 variant="outline"
-                                size="sm"
+                                className="px-3 py-2 text-xs md:text-sm rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 transition-colors"
                             >
-                                <Share2 className="w-4 h-4 mr-2" />
+                                <Share2 className="w-4 h-4 mr-1" />
                                 Partager
                             </Button>
 
                             <Button
                                 onClick={handlePrint}
-                                size="sm"
+                                className="px-3 py-2 text-xs md:text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-xl hidden sm:flex transition-colors"
                             >
-                                <Download className="w-4 h-4 mr-2" />
+                                <Download className="w-4 h-4 mr-1" />
                                 Imprimer
                             </Button>
                         </div>
@@ -164,289 +164,222 @@ export default function IndividualResultPage() {
                 </div>
             </div>
 
-            {/* Contenu principal - Optimisé pour capture d'écran */}
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
+            {/* Contenu principal - Style TailAdmin */}
+            <div className="container mx-auto px-3 py-6 max-w-md md:max-w-4xl">
 
-                {/* Carte de résultat principale */}
-                <Card className="overflow-hidden">
+                {/* Carte de résultat - Style TailAdmin */}
+                <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-gray-200 overflow-hidden">
 
-                    {/* En-tête officiel avec drapeau */}
-                    <div className={`${isAdmis ? 'bg-gradient-to-r from-green-600 to-green-700' : 'bg-gradient-to-r from-red-600 to-red-700'} text-white p-6`}>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <div>
-                                    <h1 className="text-xl font-bold">{getExamTypeLabel(result.serie?.exam_type || '')} {currentYear}</h1>
-                                </div>
+                    {/* En-tête officiel - Style TailAdmin */}
+                    <div className={`${isAdmis ? 'bg-gradient-to-r from-green-500 to-green-600' : 'bg-gradient-to-r from-red-500 to-red-600'} text-white p-4 md:p-6`}>
+                        <div className="text-center">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-xl text-sm font-medium mb-2">
+                                <GraduationCap className="w-4 h-4" />
+                                {getExamTypeLabel(result.serie?.exam_type || '')} {currentYear}
                             </div>
                         </div>
                     </div>
 
-                    <CardContent className="p-8">
+                    <div className="p-4 md:p-8">
 
-                        {/* Section candidat */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                        {/* Section candidat - Layout Mobile-First */}
+                        <div className="space-y-4 md:space-y-6">
 
-                            {/* Informations personnelles */}
-                            <div className="lg:col-span-2">
-                                <div className="space-y-6">
-                                    {/* Nom principal */}
-                                    <Card className="bg-primary/5 border-primary/20">
-                                        <CardContent className="p-4">
-                                            <CardDescription className="text-primary font-medium mb-1">
-                                                Nom complet
-                                            </CardDescription>
-                                            <h3 className="text-2xl font-bold text-primary">
-                                                {result.nom_complet_fr}
-                                            </h3>
-                                            {result.nom_complet_ar && (
-                                                <p className="text-lg text-primary/80 mt-1" dir="rtl">
-                                                    {result.nom_complet_ar}
-                                                </p>
-                                            )}
-                                        </CardContent>
-                                    </Card>
+                            {/* Nom principal - Compact pour mobile */}
+                            <div className="text-center">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                                    {result.nom_complet_fr}
+                                </h3>
+                                {result.nom_complet_ar && (
+                                    <p className="text-base md:text-lg text-gray-700 mb-3" dir="rtl">
+                                        {result.nom_complet_ar}
+                                    </p>
+                                )}
+                            </div>
 
-                                    {/* Identifiants */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <Card>
-                                            <CardContent className="p-4">
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <CreditCard className="w-4 h-4 text-muted-foreground" />
-                                                    <CardDescription>NNI</CardDescription>
-                                                </div>
-                                                <p className="text-lg font-mono font-semibold text-foreground">
-                                                    {formatNNI(result.nni)}
-                                                </p>
-                                            </CardContent>
-                                        </Card>
+                            {/* Résultat principal - Style TailAdmin */}
+                            <div className={`${isAdmis ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border-2 rounded-2xl p-4 text-center shadow-sm`}>
+                                {/* Icône et décision */}
+                                <div className="flex items-center justify-center gap-3 mb-3">
+                                    {isAdmis ? (
+                                        <CheckCircle className="w-8 h-8 md:w-12 md:h-12 text-green-500" />
+                                    ) : (
+                                        <AlertCircle className="w-8 h-8 md:w-12 md:h-12 text-red-500" />
+                                    )}
+                                    <Badge
+                                        variant={isAdmis ? "default" : "destructive"}
+                                        className="text-lg md:text-xl font-bold px-4 py-2"
+                                    >
+                                        {result.decision}
+                                    </Badge>
+                                </div>
 
-                                        {result.numero_dossier && (
-                                            <Card>
-                                                <CardContent className="p-4">
-                                                    <CardDescription className="mb-2">N° Dossier</CardDescription>
-                                                    <p className="text-lg font-mono font-semibold text-foreground">
-                                                        {result.numero_dossier}
-                                                    </p>
-                                                </CardContent>
-                                            </Card>
-                                        )}
-                                    </div>
-
-                                    {/* Informations complémentaires */}
-                                    {(result.lieu_naissance || result.date_naissance) && (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {result.lieu_naissance && (
-                                                <div>
-                                                    <CardDescription className="mb-1">Lieu de naissance</CardDescription>
-                                                    <p className="font-medium text-foreground">{result.lieu_naissance}</p>
-                                                </div>
-                                            )}
-
-                                            {result.date_naissance && (
-                                                <div>
-                                                    <CardDescription className="mb-1">Date de naissance</CardDescription>
-                                                    <p className="font-medium text-foreground">
-                                                        {formatDate(result.date_naissance)}
-                                                    </p>
-                                                </div>
-                                            )}
+                                {/* Moyenne et mention sur la même ligne */}
+                                <div className="flex items-center justify-center gap-4 flex-wrap">
+                                    {result.moyenne_generale && (
+                                        <div className="text-center">
+                                            <p className={`text-2xl md:text-3xl font-bold ${isAdmis ? 'text-green-600' : 'text-red-600'}`}>
+                                                {formatMoyenne(result.moyenne_generale)}
+                                            </p>
+                                            {/* <p className="text-xs md:text-sm text-gray-600">Moyenne</p> */}
                                         </div>
+                                    )}
+                                    
+                                    {result.mention && (
+                                        <Badge variant="outline" className="text-sm">
+                                            <Star className="w-4 h-4 mr-1" />
+                                            {result.mention}
+                                        </Badge>
                                     )}
                                 </div>
                             </div>
 
-                            {/* Résultat principal */}
-                            <div className="lg:col-span-1">
-                                <Card className={`${isAdmis ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'} border-2`}>
-                                    <CardContent className="p-6 text-center">
-                                        {/* Icône de résultat */}
-                                        <div className="mb-4">
-                                            {isAdmis ? (
-                                                <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-                                            ) : (
-                                                <AlertCircle className="w-16 h-16 text-red-500 mx-auto" />
-                                            )}
-                                        </div>
-
-                                        {/* Décision */}
-                                        <Badge
-                                            variant={isAdmis ? "default" : "destructive"}
-                                            className="text-xl font-bold px-6 py-3 mb-4"
-                                        >
-                                            {result.decision}
-                                        </Badge>
-
-                                        {/* Moyenne */}
-                                        {result.moyenne_generale && (
-                                            <div className="mb-4">
-                                                <p className={`text-4xl font-bold ${isAdmis ? 'text-green-600' : 'text-red-600'} mb-1`}>
-                                                    {formatMoyenne(result.moyenne_generale)}
-                                                </p>
-                                                <CardDescription>Moyenne générale</CardDescription>
-                                            </div>
-                                        )}
-
-                                        {/* Mention */}
-                                        {result.mention && (
-                                            <Badge variant="outline" className="text-sm">
-                                                <Star className="w-4 h-4 mr-1" />
-                                                {result.mention}
-                                            </Badge>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </div>
-
-                        {/* Informations de l'examen et établissement */}
-                        <div className="border-t pt-8 mb-8">
-                            <h3 className="text-xl font-bold text-foreground mb-6">Informations de l'examen</h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                                {/* Wilaya */}
-                                {result.wilaya && (
-                                    <Card>
-                                        <CardContent className="p-4">
-                                            <div className="flex items-center space-x-3">
-                                                <MapPin className="w-6 h-6 text-blue-600" />
-                                                <div>
-                                                    <CardDescription>Wilaya</CardDescription>
-                                                    <p className="font-semibold text-foreground">
-                                                        {result.wilaya.name_fr}
-                                                    </p>
-                                                    {result.wilaya.name_ar && (
-                                                        <p className="text-sm text-muted-foreground" dir="rtl">
-                                                            {result.wilaya.name_ar}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-
-                                {/* Établissement */}
-                                {result.etablissement && (
-                                    <Card>
-                                        <CardContent className="p-4">
-                                            <div className="flex items-center space-x-3">
-                                                <Building className="w-6 h-6 text-green-600" />
-                                                <div>
-                                                    <CardDescription>Établissement</CardDescription>
-                                                    <p className="font-semibold text-foreground leading-tight">
-                                                        {result.etablissement.name_fr}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-
-                                {/* Série */}
-                                {result.serie && (
-                                    <Card>
-                                        <CardContent className="p-4">
-                                            <div className="flex items-center space-x-3">
-                                                <GraduationCap className="w-6 h-6 text-purple-600" />
-                                                <div>
-                                                    <CardDescription>Série</CardDescription>
-                                                    <p className="font-semibold text-foreground">
-                                                        {result.serie.name_fr}
-                                                    </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Code: {result.serie.code}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-                            </div>
-
-                            {/* Centre d'examen */}
-                            {result.centre_examen && (
-                                <Card className="mt-6 bg-blue-50 border-blue-200">
-                                    <CardContent className="p-4">
-                                        <CardDescription className="text-blue-700 mb-1">Centre d'examen</CardDescription>
-                                        <p className="font-semibold text-blue-900">{result.centre_examen}</p>
-                                    </CardContent>
-                                </Card>
-                            )}
-                        </div>
-
-                        {/* Classements - Section mise en évidence */}
-                        {(result.rang_etablissement || result.rang_wilaya || result.rang_national) && (
-                            <div className="border-t pt-8">
-                                <div className="flex items-center space-x-3 mb-6">
-                                    <Trophy className="w-6 h-6 text-yellow-500" />
-                                    <h3 className="text-xl font-bold text-foreground">Classements</h3>
+                            {/* Identifiants - Style TailAdmin */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-blue-50 rounded-xl p-3 text-center border border-blue-100 hover:shadow-md transition-shadow">
+                                    <div className="flex items-center justify-center gap-1 mb-1">
+                                        <CreditCard className="w-3 h-3 text-blue-600" />
+                                        <span className="text-xs text-blue-700 font-medium">NNI</span>
+                                    </div>
+                                    <p className="text-sm md:text-base font-mono font-bold text-blue-900">
+                                        {formatNNI(result.nni)}
+                                    </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {result.numero_dossier && (
+                                    <div className="bg-purple-50 rounded-xl p-3 text-center border border-purple-100 hover:shadow-md transition-shadow">
+                                        <span className="text-xs text-purple-700 font-medium block mb-1">N° Dossier</span>
+                                        <p className="text-sm md:text-base font-mono font-bold text-purple-900">
+                                            {result.numero_dossier}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
 
+                            {/* Informations d'examen - Style TailAdmin */}
+                            <div className="grid grid-cols-1 gap-3">
+                                {/* Wilaya et Série sur la même ligne */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    {result.wilaya && (
+                                        <div className="bg-green-50 rounded-xl p-3 border border-green-100 hover:shadow-md transition-shadow">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <MapPin className="w-3 h-3 text-green-600" />
+                                                <span className="text-xs text-green-700 font-medium">Wilaya</span>
+                                            </div>
+                                            <p className="text-sm font-semibold text-green-900 leading-tight">
+                                                {result.wilaya.name_fr}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {result.serie && (
+                                        <div className="bg-purple-50 rounded-xl p-3 border border-purple-100 hover:shadow-md transition-shadow">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <GraduationCap className="w-3 h-3 text-purple-600" />
+                                                <span className="text-xs text-purple-700 font-medium">Série</span>
+                                            </div>
+                                            <p className="text-sm font-semibold text-purple-900">
+                                                {result.serie.code}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Établissement sur toute la largeur */}
+                                {result.etablissement && (
+                                    <div className="bg-orange-50 rounded-xl p-3 border border-orange-100 hover:shadow-md transition-shadow">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Building className="w-3 h-3 text-orange-600" />
+                                            <span className="text-xs text-orange-700 font-medium">Établissement</span>
+                                        </div>
+                                        <p className="text-sm font-semibold text-orange-900 leading-tight">
+                                            {result.etablissement.name_fr}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Centre d'examen si disponible */}
+                                {result.centre_examen && (
+                                    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100 hover:shadow-md transition-shadow">
+                                        <span className="text-xs text-gray-700 font-medium block mb-1">Centre d'examen</span>
+                                        <p className="text-sm font-semibold text-gray-900 leading-tight">
+                                            {result.centre_examen}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+
+                        {/* Classements - Style TailAdmin */}
+                        {(result.rang_etablissement || result.rang_wilaya || result.rang_national) && (
+                            <div className="border-t border-gray-200 pt-4">
+                                <div className="flex items-center justify-center gap-2 mb-4">
+                                    <div className="w-8 h-8 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                        <Trophy className="w-4 h-4 text-yellow-600" />
+                                    </div>
+                                    <h3 className="text-base md:text-lg font-bold text-gray-900">Classements</h3>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2 md:gap-4">
                                     {result.rang_etablissement && (
-                                        <Card className="text-center bg-yellow-50 border-yellow-200">
-                                            <CardContent className="p-6">
-                                                <Medal className="w-12 h-12 text-yellow-600 mx-auto mb-3" />
-                                                <p className="text-3xl font-bold text-yellow-600 mb-2">
-                                                    #{result.rang_etablissement}
-                                                </p>
-                                                <CardDescription className="font-medium text-yellow-800">
-                                                    Classement Établissement
-                                                </CardDescription>
-                                            </CardContent>
-                                        </Card>
+                                        <div className="text-center bg-yellow-50 border border-yellow-200 rounded-xl p-3 hover:shadow-md transition-shadow">
+                                            <Medal className="w-6 h-6 md:w-8 md:h-8 text-yellow-600 mx-auto mb-2" />
+                                            <p className="text-lg md:text-2xl font-bold text-yellow-600 mb-1">
+                                                #{result.rang_etablissement}
+                                            </p>
+                                            <p className="text-xs md:text-sm font-medium text-yellow-800">
+                                                Établissement
+                                            </p>
+                                        </div>
                                     )}
 
                                     {result.rang_wilaya && (
-                                        <Card className="text-center bg-blue-50 border-blue-200">
-                                            <CardContent className="p-6">
-                                                <Award className="w-12 h-12 text-blue-600 mx-auto mb-3" />
-                                                <p className="text-3xl font-bold text-blue-600 mb-2">
-                                                    #{result.rang_wilaya}
-                                                </p>
-                                                <CardDescription className="font-medium text-blue-800">
-                                                    Classement Wilaya
-                                                </CardDescription>
-                                            </CardContent>
-                                        </Card>
+                                        <div className="text-center bg-blue-50 border border-blue-200 rounded-xl p-3 hover:shadow-md transition-shadow">
+                                            <Award className="w-6 h-6 md:w-8 md:h-8 text-blue-600 mx-auto mb-2" />
+                                            <p className="text-lg md:text-2xl font-bold text-blue-600 mb-1">
+                                                #{result.rang_wilaya}
+                                            </p>
+                                            <p className="text-xs md:text-sm font-medium text-blue-800">
+                                                Wilaya
+                                            </p>
+                                        </div>
                                     )}
 
                                     {result.rang_national && (
-                                        <Card className="text-center bg-green-50 border-green-200">
-                                            <CardContent className="p-6">
-                                                <Trophy className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                                                <p className="text-3xl font-bold text-green-600 mb-2">
-                                                    #{result.rang_national}
-                                                </p>
-                                                <CardDescription className="font-medium text-green-800">
-                                                    Classement National
-                                                </CardDescription>
-                                            </CardContent>
-                                        </Card>
+                                        <div className="text-center bg-green-50 border border-green-200 rounded-xl p-3 hover:shadow-md transition-shadow">
+                                            <Trophy className="w-6 h-6 md:w-8 md:h-8 text-green-600 mx-auto mb-2" />
+                                            <p className="text-lg md:text-2xl font-bold text-green-600 mb-1">
+                                                #{result.rang_national}
+                                            </p>
+                                            <p className="text-xs md:text-sm font-medium text-green-800">
+                                                National
+                                            </p>
+                                        </div>
                                     )}
                                 </div>
                             </div>
                         )}
 
-                        {/* Footer avec date et authenticité */}
-                        <div className="border-t pt-6 mt-8 text-center">
-                            <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
-                                <div className="flex items-center space-x-1">
-                                    <Calendar className="w-4 h-4" />
-                                    <span>
-                                        Publié le {formatDate(result.published_at || result.created_at)}
-                                    </span>
+                        {/* Footer - Style TailAdmin */}
+                        <div className="border-t border-gray-200 pt-4 mt-6 text-center">
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-gray-600">
+                                    <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+                                    <span>Publié le {formatDate(result.published_at || result.created_at)}</span>
                                 </div>
-                                <Separator orientation="vertical" className="h-4" />
-                                <span className="font-medium">Document officiel certifié</span>
-                                <Separator orientation="vertical" className="h-4" />
-                                <span>Portail des résultats d'examens mauritaniens</span>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center sm:gap-4 text-xs text-gray-500">
+                                    <span className="font-medium">Document officiel certifié</span>
+                                    <span className="hidden sm:inline">•</span>
+                                    <span>Portail des résultats d'examens</span>
+                                </div>
+                                <div className="text-xs text-gray-400">
+                                    République Islamique de Mauritanie
+                                </div>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
 
             {/* CSS pour l'impression */}

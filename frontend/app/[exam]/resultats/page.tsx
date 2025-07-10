@@ -152,37 +152,37 @@ export default function ResultatsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Header - TailAdmin Style */}
+            {/* Header - Mobile Optimized */}
             <div className="bg-white border-b border-gray-200 shadow-sm">
-                <div className="container mx-auto px-4 py-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="flex items-center gap-4">
+                <div className="container mx-auto px-3 md:px-4 py-3 md:py-6">
+                    <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
                             <Button
                                 variant="ghost"
                                 onClick={() => router.push(`/${examParam}`)}
-                                className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+                                className="px-2 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                             >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
-                                Retour
+                                <ArrowLeft className="w-4 h-4 mr-1" />
+                                <span className="text-sm">Retour</span>
                             </Button>
                             
-                            <div className="flex items-center space-x-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
-                                    <GraduationCap className="w-6 h-6 text-white" />
+                            <div className="flex items-center space-x-2 md:space-x-3 flex-1">
+                                <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center">
+                                    <GraduationCap className="w-4 h-4 md:w-6 md:h-6 text-white" />
                                 </div>
-                                <div>
-                                    <h1 className="text-2xl font-bold text-gray-900">
+                                <div className="min-w-0 flex-1">
+                                    <h1 className="text-base md:text-2xl font-bold text-gray-900 truncate">
                                         Résultats {examType.toUpperCase()} {year}
                                     </h1>
-                                    <p className="text-gray-600">
-                                        {totalResults.toLocaleString()} résultats trouvés
+                                    <p className="text-xs md:text-base text-gray-600">
+                                        {totalResults.toLocaleString()} résultats
                                     </p>
                                 </div>
                             </div>
                         </div>
                         
                         {getSearchType() && (
-                            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium">
+                            <div className="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs md:text-sm font-medium">
                                 {getSearchType()}
                             </div>
                         )}
@@ -190,35 +190,38 @@ export default function ResultatsPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-8">
-                {/* Filters Section - TailAdmin Style */}
-                <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6 mb-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                        <div>
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-2">
-                                <Filter className="w-4 h-4" />
-                                Filtres avancés
+            <div className="container mx-auto px-3 md:px-4 py-4 md:py-8">
+                {/* Filters Section - Mobile Compact */}
+                <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-gray-200 p-3 md:p-6 mb-4 md:mb-8">
+                    <div className="flex flex-col gap-3 mb-4 md:mb-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs md:text-sm font-medium mb-2">
+                                    <Filter className="w-3 h-3 md:w-4 md:h-4" />
+                                    Filtres
+                                </div>
+                                <h2 className="text-base md:text-xl font-bold text-gray-900">Affiner la recherche</h2>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900">Affiner votre recherche</h2>
+                            {getActiveFiltersCount() > 0 && (
+                                <Button 
+                                    variant="outline" 
+                                    onClick={clearFilters} 
+                                    className="px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl border-gray-300 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-colors text-xs md:text-sm"
+                                >
+                                    <X className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                                    <span className="hidden sm:inline">Effacer ({getActiveFiltersCount()})</span>
+                                    <span className="sm:hidden">Reset</span>
+                                </Button>
+                            )}
                         </div>
-                        {getActiveFiltersCount() > 0 && (
-                            <Button 
-                                variant="outline" 
-                                onClick={clearFilters} 
-                                className="px-4 py-2 rounded-xl border-gray-300 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-colors"
-                            >
-                                <X className="w-4 h-4 mr-2" />
-                                Effacer les filtres ({getActiveFiltersCount()})
-                            </Button>
-                        )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
                         {/* Wilaya Filter */}
-                        <div className="space-y-3">
-                            <label className="flex items-center text-sm font-semibold text-gray-700">
-                                <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center mr-2">
-                                    <MapPin className="w-4 h-4 text-green-600" />
+                        <div className="space-y-2">
+                            <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
+                                <div className="w-4 h-4 md:w-6 md:h-6 bg-green-100 rounded-lg flex items-center justify-center mr-2">
+                                    <MapPin className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
                                 </div>
                                 Wilaya
                             </label>
@@ -226,8 +229,8 @@ export default function ResultatsPage() {
                                 value={wilayaFilter || 'all'}
                                 onValueChange={(value) => updateFilter('wilaya', value)}
                             >
-                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                                    <SelectValue placeholder="Toutes les wilayas" />
+                                <SelectTrigger className="w-full h-9 md:h-12 rounded-lg md:rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-xs md:text-sm">
+                                    <SelectValue placeholder="Toutes" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Toutes les wilayas</SelectItem>
@@ -241,10 +244,10 @@ export default function ResultatsPage() {
                         </div>
 
                         {/* Serie Filter */}
-                        <div className="space-y-3">
-                            <label className="flex items-center text-sm font-semibold text-gray-700">
-                                <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
-                                    <GraduationCap className="w-4 h-4 text-purple-600" />
+                        <div className="space-y-2">
+                            <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
+                                <div className="w-4 h-4 md:w-6 md:h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
+                                    <GraduationCap className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
                                 </div>
                                 Série
                             </label>
@@ -252,15 +255,15 @@ export default function ResultatsPage() {
                                 value={serieFilter || 'all'}
                                 onValueChange={(value) => updateFilter('serie', value)}
                             >
-                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                                    <SelectValue placeholder="Toutes les séries" />
+                                <SelectTrigger className="w-full h-9 md:h-12 rounded-lg md:rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-xs md:text-sm">
+                                    <SelectValue placeholder="Toutes" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Toutes les séries</SelectItem>
                                     {series.map((serie) => (
                                         <SelectItem key={serie.id} value={serie.code}>
                                             <span className="font-semibold">{serie.code}</span>
-                                            <span className="ml-2 text-gray-500">- {serie.name_fr}</span>
+                                            <span className="ml-2 text-gray-500 hidden sm:inline">- {serie.name_fr}</span>
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -268,10 +271,10 @@ export default function ResultatsPage() {
                         </div>
 
                         {/* Etablissement Filter */}
-                        <div className="space-y-3">
-                            <label className="flex items-center text-sm font-semibold text-gray-700">
-                                <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center mr-2">
-                                    <Building className="w-4 h-4 text-orange-600" />
+                        <div className="space-y-2">
+                            <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
+                                <div className="w-4 h-4 md:w-6 md:h-6 bg-orange-100 rounded-lg flex items-center justify-center mr-2">
+                                    <Building className="w-3 h-3 md:w-4 md:h-4 text-orange-600" />
                                 </div>
                                 École
                             </label>
@@ -280,8 +283,8 @@ export default function ResultatsPage() {
                                 onValueChange={(value) => updateFilter('etablissement', value)}
                                 disabled={!wilayaFilter}
                             >
-                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-50">
-                                    <SelectValue placeholder={wilayaFilter ? "Toutes les écoles" : "Sélectionnez une wilaya d'abord"} />
+                                <SelectTrigger className="w-full h-9 md:h-12 rounded-lg md:rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-50 text-xs md:text-sm">
+                                    <SelectValue placeholder={wilayaFilter ? "Toutes" : "Choisir wilaya"} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">Toutes les écoles</SelectItem>
@@ -296,70 +299,63 @@ export default function ResultatsPage() {
                     </div>
                 </div>
 
-                {/* Results Section - TailAdmin Style with Mobile Optimization */}
-                <div className="space-y-3">
+                {/* Results Section - Mobile-First Compact Design */}
+                <div className="space-y-2 md:space-y-3">
                     {results.map((result) => (
                         <Link key={result.id} href={`/result/${result.id}`} className="block">
-                            <div className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-200 p-3 md:p-4 hover:shadow-md hover:scale-[1.005] transition-all duration-200 cursor-pointer group">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-bold text-base md:text-lg text-gray-900 group-hover:text-blue-600 transition-colors mb-2 truncate">
+                            <div className="bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 p-3 hover:shadow-md hover:scale-[1.005] transition-all duration-200 cursor-pointer group">
+                                {/* Mobile: Stack Layout */}
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-4">
+                                    {/* Top Row: Name + Score (Mobile) */}
+                                    <div className="flex items-center justify-between gap-3">
+                                        <h3 className="font-bold text-sm md:text-lg text-gray-900 group-hover:text-blue-600 transition-colors truncate flex-1">
                                             {result.nom_complet_fr}
                                         </h3>
                                         
-                                        {/* Mobile-First Info Layout */}
-                                        <div className="space-y-1.5 md:space-y-2">
-                                            {/* NNI - Always full width on mobile */}
-                                            <div className="flex items-center gap-2 p-1.5 bg-blue-50 rounded-lg text-xs md:text-sm">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                                                <span className="font-medium text-gray-700">NNI:</span>
-                                                <span className="font-mono text-gray-900 truncate">{result.nni}</span>
-                                            </div>
-                                            
-                                            {/* Wilaya & Serie - Stack on mobile, side by side on larger screens */}
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs md:text-sm">
-                                                <div className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg">
-                                                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                                                    <span className="font-medium text-gray-700">Wilaya:</span>
-                                                    <span className="text-gray-900 truncate">{result.wilaya?.name_fr || 'Non spécifiée'}</span>
+                                        {/* Score - Always visible on mobile */}
+                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                            <div className="text-right">
+                                                <div className="text-base md:text-xl font-bold text-blue-600">
+                                                    {result.moyenne_generale}/20
                                                 </div>
-                                                
-                                                <div className="flex items-center gap-2 p-1.5 bg-purple-50 rounded-lg">
-                                                    <div className="w-2 h-2 bg-purple-500 rounded-full flex-shrink-0"></div>
-                                                    <span className="font-medium text-gray-700">Série:</span>
-                                                    <span className="text-gray-900">{result.serie?.code || 'Non spécifiée'}</span>
+                                                <div className={`px-2 py-0.5 md:px-3 md:py-1 rounded text-xs font-semibold ${
+                                                    result.decision === 'Admis' 
+                                                        ? 'bg-green-100 text-green-700' 
+                                                        : 'bg-red-100 text-red-700'
+                                                }`}>
+                                                    {result.decision}
                                                 </div>
                                             </div>
-                                            
-                                            {/* Etablissement - Full width, smaller on mobile */}
-                                            <div className="p-1.5 bg-gray-50 rounded-lg">
-                                                <div className="flex items-center gap-2">
-                                                    <Building className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                                                    <span className="text-xs md:text-sm text-gray-700 truncate">
-                                                        {result.etablissement?.name_fr || 'Établissement non spécifié'}
-                                                    </span>
-                                                </div>
-                                            </div>
+                                            <ArrowLeft className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors rotate-180 hidden md:block" />
                                         </div>
                                     </div>
-                                    
-                                    {/* Score Section - Mobile optimized */}
-                                    <div className="flex items-center justify-between md:justify-end gap-4 flex-shrink-0">
-                                        <div className="text-center">
-                                            <div className="text-xl md:text-2xl font-bold text-blue-600 mb-1">
-                                                {result.moyenne_generale}/20
-                                            </div>
-                                            <div className={`px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold ${
-                                                result.decision === 'Admis' 
-                                                    ? 'bg-green-100 text-green-700' 
-                                                    : 'bg-red-100 text-red-700'
-                                            }`}>
-                                                {result.decision}
-                                            </div>
+
+                                    {/* Bottom Row: Compact Info (Mobile) */}
+                                    <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm">
+                                        {/* NNI */}
+                                        <div className="flex items-center gap-1 px-2 py-1 bg-blue-50 rounded text-blue-700">
+                                            <span className="font-medium">NNI:</span>
+                                            <span className="font-mono">{result.nni}</span>
                                         </div>
                                         
-                                        <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
-                                            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5 rotate-180" />
+                                        {/* Wilaya */}
+                                        <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded text-green-700">
+                                            <MapPin className="w-3 h-3" />
+                                            <span className="truncate max-w-20 md:max-w-none">{result.wilaya?.name_fr || 'N/A'}</span>
+                                        </div>
+                                        
+                                        {/* Serie */}
+                                        <div className="flex items-center gap-1 px-2 py-1 bg-purple-50 rounded text-purple-700">
+                                            <GraduationCap className="w-3 h-3" />
+                                            <span>{result.serie?.code || 'N/A'}</span>
+                                        </div>
+                                        
+                                        {/* Etablissement - Hidden on very small screens */}
+                                        <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-gray-50 rounded text-gray-700 flex-1 min-w-0">
+                                            <Building className="w-3 h-3 flex-shrink-0" />
+                                            <span className="truncate text-xs">
+                                                {result.etablissement?.name_fr || 'Établissement N/A'}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -368,29 +364,28 @@ export default function ResultatsPage() {
                     ))}
                 </div>
 
-                {/* Pagination - Mobile Responsive */}
+                {/* Pagination - Mobile Compact */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center mt-8 md:mt-12">
-                        <div className="flex items-center gap-1 md:gap-2">
+                    <div className="flex justify-center mt-6 md:mt-12">
+                        <div className="flex items-center gap-1">
                             <Button
                                 variant="outline"
                                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                                 disabled={currentPage === 1}
-                                className="px-2 md:px-4 py-2 rounded-lg md:rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs md:text-sm"
+                                className="px-2 py-2 rounded-lg border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs"
                             >
-                                <ArrowLeft className="w-4 h-4 md:mr-2" />
-                                <span className="hidden md:inline">Précédent</span>
+                                <ArrowLeft className="w-4 h-4" />
                             </Button>
                             
                             <div className="flex items-center gap-1">
-                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                    const page = Math.max(1, Math.min(totalPages - 4, currentPage - 2)) + i;
+                                {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
+                                    const page = Math.max(1, Math.min(totalPages - 2, currentPage - 1)) + i;
                                     return (
                                         <Button
                                             key={page}
                                             variant={currentPage === page ? "default" : "outline"}
                                             onClick={() => setCurrentPage(page)}
-                                            className={`min-w-[36px] md:min-w-[44px] h-9 md:h-11 rounded-lg md:rounded-xl text-xs md:text-sm ${
+                                            className={`min-w-[32px] h-8 md:h-9 rounded-lg text-xs ${
                                                 currentPage === page 
                                                     ? 'bg-blue-600 text-white hover:bg-blue-700' 
                                                     : 'border-gray-300 hover:border-blue-300 hover:bg-blue-50'
@@ -400,34 +395,52 @@ export default function ResultatsPage() {
                                         </Button>
                                     );
                                 })}
+                                
+                                {totalPages > 3 && currentPage < totalPages - 1 && (
+                                    <span className="px-2 text-gray-400 text-xs">...</span>
+                                )}
+                                
+                                {totalPages > 3 && currentPage < totalPages && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setCurrentPage(totalPages)}
+                                        className="min-w-[32px] h-8 md:h-9 rounded-lg text-xs border-gray-300 hover:border-blue-300 hover:bg-blue-50"
+                                    >
+                                        {totalPages}
+                                    </Button>
+                                )}
                             </div>
                             
                             <Button
                                 variant="outline"
                                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                                 disabled={currentPage === totalPages}
-                                className="px-2 md:px-4 py-2 rounded-lg md:rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs md:text-sm"
+                                className="px-2 py-2 rounded-lg border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs"
                             >
-                                <span className="hidden md:inline">Suivant</span>
-                                <ArrowLeft className="w-4 h-4 md:ml-2 rotate-180" />
+                                <ArrowLeft className="w-4 h-4 rotate-180" />
                             </Button>
+                        </div>
+                        
+                        {/* Page info for mobile */}
+                        <div className="absolute mt-12 text-xs text-gray-500">
+                            Page {currentPage} sur {totalPages}
                         </div>
                     </div>
                 )}
 
-                {/* No Results - TailAdmin Style */}
+                {/* No Results - Mobile Optimized */}
                 {results.length === 0 && (
-                    <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-12 text-center">
-                        <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                            <Users className="w-10 h-10 text-gray-400" />
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 md:p-12 text-center">
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-100 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-4 md:mb-6">
+                            <Users className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-4">Aucun résultat trouvé</h3>
-                        <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                            Aucun résultat ne correspond à vos critères de recherche. Essayez de modifier vos filtres ou votre recherche.
+                        <h3 className="text-lg md:text-2xl font-bold text-gray-900 mb-3 md:mb-4">Aucun résultat trouvé</h3>
+                        <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 max-w-md mx-auto">
+                            Aucun résultat ne correspond à vos critères. Essayez de modifier vos filtres.
                         </p>
                         <Button 
                             onClick={clearFilters}
-                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
+                            className="px-4 md:px-6 py-2 md:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg md:rounded-xl font-semibold transition-colors text-sm md:text-base"
                         >
                             Effacer tous les filtres
                         </Button>

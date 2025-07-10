@@ -160,129 +160,252 @@ export default function ExamPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* En-tête avec retour */}
-            <div className="border-b bg-card">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex items-center space-x-4">
-                        {/* <Button
-                            variant="ghost"
-                            onClick={() => router.push('/')}
-                            className="p-2"
-                        >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Accueil
-                        </Button> */}
+        <div className="min-h-screen bg-gray-50">
+            {/* Header - TailAdmin Style */}
+            <div className="bg-white border-b border-gray-200 shadow-sm">
+                <div className="container mx-auto px-4 py-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.push('/')}
+                                className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                Retour à l'accueil
+                            </Button>
+                        </div>
 
-                        <div className="flex items-center space-x-3">
-                            <GraduationCap className="w-8 h-8 text-primary" />
-                            <div>
-                                <h1 className="text-2xl font-bold">
-                                    {getExamTypeLabel(examType)} {year}
-                                </h1>
-                                <p className="text-muted-foreground">{session.session_name}</p>
+                        <div className="text-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                                    <GraduationCap className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                                        {getExamTypeLabel(examType)} {year}
+                                    </h1>
+                                    <p className="text-gray-600 text-sm">{session.session_name}</p>
+                                </div>
                             </div>
                         </div>
+
+                        <div className="w-28"></div> {/* Spacer for centering */}
                     </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-6">
-                {/* Barre de recherche discrète */}
-                <Card className="mb-6">
-                    <CardContent className="p-4">
-                        <div className="max-w-xl mx-auto space-y-4">
-                            <div className="flex gap-2">
-                                <Input
-                                    placeholder="NNI, numéro de dossier ou nom..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                                    className="h-10"
-                                />
-                                <Button
-                                    onClick={handleSearch}
-                                    disabled={!searchTerm.trim()}
-                                    size="sm"
-                                    className="px-4"
-                                >
-                                    <Search className="w-4 h-4" />
+            <div className="container mx-auto px-4 py-8">
+                {/* Search Section - TailAdmin Professional Style */}
+                <div className="bg-white rounded-2xl md:rounded-3xl shadow-lg border border-gray-200 p-4 md:p-8 mb-8">
+                    <div className="text-center mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-4">
+                            <Search className="w-4 h-4" />
+                            Recherche de résultats
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            Trouvez vos résultats
+                        </h2>
+                        <p className="text-gray-600">
+                            Entrez votre NNI, numéro de dossier ou nom complet pour accéder à vos résultats
+                        </p>
+                    </div>
+
+                    <div className="max-w-2xl mx-auto space-y-6">
+                        <div className="flex gap-3">
+                            <Input
+                                placeholder="NNI, numéro de dossier ou nom complet..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                className="h-12 px-4 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-lg"
+                            />
+                            <Button
+                                onClick={handleSearch}
+                                disabled={!searchTerm.trim()}
+                                className="px-6 h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+                            >
+                                <Search className="w-5 h-5 mr-2" />
+                                Rechercher
+                            </Button>
+                        </div>
+                        
+                        <div className="text-center">
+                            <Link href={`/${examParam}/resultats`}>
+                                <Button variant="outline" className="w-full h-12 rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                                    <Users className="w-5 h-5 mr-2" />
+                                    Parcourir tous les résultats avec filtres avancés
                                 </Button>
-                            </div>
-                            
-                            <div className="text-center">
-                                <Link href={`/${examParam}/resultats`}>
-                                    <Button variant="outline" className="w-full">
-                                        <Users className="w-4 h-4 mr-2" />
-                                        Voir tous les résultats avec filtres
-                                    </Button>
-                                </Link>
+                            </Link>
+                        </div>
+
+                        {/* Search Tips */}
+                        <div className="bg-gray-50 rounded-2xl p-4">
+                            <h4 className="font-semibold text-gray-900 mb-2 text-sm">💡 Conseils de recherche :</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-gray-600">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                    <span><strong>NNI :</strong> 10 chiffres minimum</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    <span><strong>Dossier :</strong> 4-9 chiffres</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                    <span><strong>Nom :</strong> Prénom + Nom</span>
+                                </div>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
 
-                {/* Dashboard Grid Layout */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Statistics Dashboard - TailAdmin Style */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                    {/* Quick Stats Cards */}
+                    {globalStats && (
+                        <>
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                                        <Users className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                                    </div>
+                                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">Total</span>
+                                </div>
+                                <div>
+                                    <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
+                                        {globalStats.total_candidats?.toLocaleString()}
+                                    </p>
+                                    <p className="text-sm text-gray-600">Candidats inscrits</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
+                                        <Trophy className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                                    </div>
+                                    <span className="text-xs text-white bg-green-500 px-2 py-1 rounded-lg">Admis</span>
+                                </div>
+                                <div>
+                                    <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
+                                        {globalStats.total_admis?.toLocaleString()}
+                                    </p>
+                                    <p className="text-sm text-gray-600">Candidats admis</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                                        <Target className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                                    </div>
+                                    <span className="text-xs text-white bg-purple-500 px-2 py-1 rounded-lg">Taux</span>
+                                </div>
+                                <div>
+                                    <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
+                                        {formatTauxReussite(globalStats.taux_reussite_global)}
+                                    </p>
+                                    <p className="text-sm text-gray-600">Taux de réussite</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                                        <Building className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                                    </div>
+                                    <span className="text-xs text-white bg-orange-500 px-2 py-1 rounded-lg">Écoles</span>
+                                </div>
+                                <div>
+                                    <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
+                                        {globalStats.total_etablissements?.toLocaleString() || '-'}
+                                    </p>
+                                    <p className="text-sm text-gray-600">Établissements</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* Main Dashboard Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     
-                    {/* Cercle de pourcentage - Bloc principal */}
-                    <Card className="md:col-span-2 lg:col-span-1">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Target className="w-5 h-5" />
-                                Résultats Globaux
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                    {/* Success Rate Visualization - TailAdmin Style */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-lg border border-gray-200">
+                            <div className="text-center mb-6">
+                                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-medium mb-4">
+                                    <Target className="w-4 h-4" />
+                                    Taux de réussite
+                                </div>
+                                <h3 className="text-xl font-bold text-gray-900">Résultats Globaux</h3>
+                            </div>
+
                             {globalStats && (
-                                <div className="space-y-6">
-                                    {/* Graphique circulaire simulé */}
-                                    <div className="relative w-40 h-40 mx-auto">
-                                        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                                            {/* Cercle de fond */}
-                                            <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" strokeWidth="10"/>
-                                            
-                                            {/* Cercle des admis (vert) */}
+                                <div className="space-y-8">
+                                    {/* Modern Circular Progress */}
+                                    <div className="relative w-32 h-32 md:w-48 md:h-48 mx-auto">
+                                        <svg className="w-full h-full -rotate-90" viewBox="0 0 200 200">
+                                            {/* Background circle */}
                                             <circle 
-                                                cx="60" 
-                                                cy="60" 
-                                                r="50" 
+                                                cx="100" 
+                                                cy="100" 
+                                                r="80" 
                                                 fill="none" 
-                                                stroke="#10b981" 
-                                                strokeWidth="10"
-                                                strokeDasharray={`${(globalStats.taux_reussite_global || 0) * 3.14} 314`}
-                                                strokeLinecap="round"
-                                                className="transition-all duration-1000"
+                                                stroke="#f3f4f6" 
+                                                strokeWidth="16"
                                             />
+                                            
+                                            {/* Progress circle */}
+                                            <circle 
+                                                cx="100" 
+                                                cy="100" 
+                                                r="80" 
+                                                fill="none" 
+                                                stroke="url(#gradient)" 
+                                                strokeWidth="16"
+                                                strokeDasharray={`${(globalStats.taux_reussite_global || 0) * 5.03} 503`}
+                                                strokeLinecap="round"
+                                                className="transition-all duration-1000 ease-out"
+                                            />
+                                            
+                                            {/* Gradient definition */}
+                                            <defs>
+                                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stopColor="#10b981" />
+                                                    <stop offset="100%" stopColor="#059669" />
+                                                </linearGradient>
+                                            </defs>
                                         </svg>
                                         
-                                        {/* Pourcentage au centre */}
+                                        {/* Center content */}
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <div className="text-center">
-                                                <div className="text-2xl font-bold text-green-600">
+                                                <div className="text-2xl md:text-3xl font-bold text-green-600 mb-1">
                                                     {formatTauxReussite(globalStats.taux_reussite_global)}
                                                 </div>
-                                                <div className="text-xs text-muted-foreground">Admis</div>
+                                                <div className="text-sm text-gray-500">de réussite</div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Légende */}
-                                    <div className="grid grid-cols-2 gap-4 text-center">
-                                        <div>
-                                            <div className="text-lg font-semibold text-green-600">
+                                    {/* Stats breakdown */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="text-center p-4 bg-green-50 rounded-2xl">
+                                            <div className="text-lg md:text-xl font-bold text-green-600 mb-1">
                                                 {globalStats.total_admis?.toLocaleString()}
                                             </div>
-                                            <div className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                                            <div className="text-xs text-gray-600 flex items-center justify-center gap-2">
                                                 <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                                                 Admis
                                             </div>
                                         </div>
-                                        <div>
-                                            <div className="text-lg font-semibold text-red-600">
+                                        <div className="text-center p-4 bg-red-50 rounded-2xl">
+                                            <div className="text-lg md:text-xl font-bold text-red-600 mb-1">
                                                 {((globalStats.total_candidats || 0) - (globalStats.total_admis || 0)).toLocaleString()}
                                             </div>
-                                            <div className="text-xs text-muted-foreground flex items-center justify-center gap-1">
+                                            <div className="text-xs text-gray-600 flex items-center justify-center gap-2">
                                                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                                                 Ajournés
                                             </div>
@@ -290,166 +413,147 @@ export default function ExamPage() {
                                     </div>
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
 
-                    {/* Top 3 Wilayas */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <MapPin className="w-5 h-5" />
-                                Top Wilayas
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {globalStats?.wilayas?.slice(0, 3).map((wilaya: any, index: number) => (
-                                    <Link 
-                                        key={wilaya.id} 
-                                        href={`/${examParam}/resultats?wilaya=${wilaya.id}`}
-                                        className="block"
-                                    >
-                                        <div className={`flex items-center justify-between p-3 rounded-lg border-l-4 hover:shadow-md transition-shadow cursor-pointer ${
-                                            index === 0 ? 'bg-yellow-50 border-yellow-500 hover:bg-yellow-100' : 
-                                            index === 1 ? 'bg-gray-50 border-gray-400 hover:bg-gray-100' : 
-                                            'bg-orange-50 border-orange-500 hover:bg-orange-100'
-                                        }`}>
-                                            <div className="flex items-center gap-2">
-                                                <Medal className={`w-4 h-4 ${
-                                                    index === 0 ? 'text-yellow-600' : 
-                                                    index === 1 ? 'text-gray-600' : 
-                                                    'text-orange-600'
-                                                }`} />
-                                                <div>
-                                                    <p className="font-medium text-sm">{wilaya.name_fr}</p>
-                                                    <p className="text-xs text-muted-foreground">#{index + 1}</p>
-                                                </div>
-                                            </div>
-                                            <span className={`text-sm font-semibold ${
-                                                index === 0 ? 'text-yellow-700' : 
-                                                index === 1 ? 'text-gray-700' : 
-                                                'text-orange-700'
-                                            }`}>
-                                                {wilaya.taux_reussite}%
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Statistiques générales */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <TrendingUp className="w-5 h-5" />
-                                Statistiques
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {globalStats && (
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="text-center p-3 bg-blue-50 rounded-lg">
-                                        <Users className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold">{globalStats.total_candidats?.toLocaleString()}</p>
-                                        <p className="text-xs text-muted-foreground">Candidats</p>
+                    {/* Rankings Section - 2 Column Layout */}
+                    <div className="lg:col-span-2 space-y-8">
+                        
+                        {/* Top Students - TailAdmin Style */}
+                        <div className="bg-white rounded-3xl p-8 shadow-lg border border-gray-200">
+                            <div className="flex items-center justify-between mb-6">
+                                <div>
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm font-medium mb-2">
+                                        <Award className="w-4 h-4" />
+                                        Classement
                                     </div>
-                                    <div className="text-center p-3 bg-green-50 rounded-lg">
-                                        <Trophy className="w-5 h-5 text-green-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold">{globalStats.total_admis?.toLocaleString()}</p>
-                                        <p className="text-xs text-muted-foreground">Admis</p>
-                                    </div>
-                                    <div className="text-center p-3 bg-purple-50 rounded-lg">
-                                        <Building className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold">
-                                            {globalStats.total_etablissements?.toLocaleString() || '-'}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">Établissements</p>
-                                    </div>
-                                    <div className="text-center p-3 bg-orange-50 rounded-lg">
-                                        <GraduationCap className="w-5 h-5 text-orange-600 mx-auto mb-1" />
-                                        <p className="text-lg font-bold">{globalStats.series?.length || 4}</p>
-                                        <p className="text-xs text-muted-foreground">Séries</p>
-                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900">Top 5 Élèves</h3>
                                 </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                <Link href={`/${examParam}/resultats`} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    Voir tout →
+                                </Link>
+                            </div>
 
-                    {/* Top Élèves - Bloc important */}
-                    <Card className="md:col-span-2 lg:col-span-2">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Award className="w-5 h-5" />
-                                Top 5 Élèves
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {topStudents.map((student: any, index: number) => (
                                     <Link key={student.id} href={`/result/${student.id}`} className="block">
-                                        <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                                    index === 0 ? 'bg-yellow-500 text-white' : 
-                                                    index === 1 ? 'bg-gray-400 text-white' : 
-                                                    index === 2 ? 'bg-orange-500 text-white' : 
-                                                    'bg-blue-500 text-white'
+                                        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border border-gray-100 hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer">
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold ${
+                                                    index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-white' : 
+                                                    index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white' : 
+                                                    index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500 text-white' : 
+                                                    'bg-gradient-to-r from-blue-400 to-blue-500 text-white'
                                                 }`}>
                                                     {index + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-sm hover:text-primary transition-colors">
+                                                    <p className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
                                                         {student.nom_complet}
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground">
+                                                    <p className="text-sm text-gray-500">
                                                         {student.wilaya} • Série {student.serie}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right flex items-center gap-2">
-                                                <div>
-                                                    <p className="text-lg font-bold text-green-600">{student.moyenne.toFixed(2)}</p>
-                                                    <p className="text-xs text-muted-foreground">/ 20</p>
+                                            <div className="text-right">
+                                                <div className="text-2xl font-bold text-green-600 mb-1">
+                                                    {student.moyenne.toFixed(2)}
                                                 </div>
-                                                <ArrowLeft className="w-4 h-4 rotate-180 text-muted-foreground" />
+                                                <div className="text-xs text-gray-500">/ 20</div>
                                             </div>
                                         </div>
                                     </Link>
                                 ))}
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
 
-                    {/* Top Écoles */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <School className="w-5 h-5" />
-                                Top Écoles
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                {topSchools.map((school: any, index: number) => (
-                                    <Link 
-                                        key={school.id} 
-                                        href={`/${examParam}/resultats?etablissement=${school.id}`}
-                                        className="block"
-                                    >
-                                        <div className="flex items-center justify-between p-2 rounded-lg border hover:bg-muted/50 hover:shadow-md transition-all cursor-pointer">
-                                            <div>
-                                                <p className="font-medium text-sm">{school.nom}</p>
-                                                <p className="text-xs text-muted-foreground">{school.wilaya}</p>
+                        {/* Top Regions & Schools Combined */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            {/* Top Wilayas */}
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200">
+                                <div className="mb-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-medium mb-2">
+                                        <MapPin className="w-4 h-4" />
+                                        Régions
+                                    </div>
+                                    <h3 className="text-base md:text-lg font-bold text-gray-900">Top Wilayas</h3>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {globalStats?.wilayas?.slice(0, 5).map((wilaya: any, index: number) => (
+                                        <Link 
+                                            key={wilaya.id} 
+                                            href={`/${examParam}/resultats?wilaya=${wilaya.id}`}
+                                            className="block"
+                                        >
+                                            <div className="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer group">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${
+                                                        index === 0 ? 'bg-yellow-100 text-yellow-700' : 
+                                                        index === 1 ? 'bg-gray-100 text-gray-700' : 
+                                                        index === 2 ? 'bg-orange-100 text-orange-700' : 
+                                                        'bg-blue-100 text-blue-700'
+                                                    }`}>
+                                                        {index + 1}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                                                            {wilaya.name_fr}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-base md:text-lg font-bold text-green-600">
+                                                        {wilaya.taux_reussite}%
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <span className="text-sm font-semibold text-green-600">{school.taux_reussite}%</span>
-                                        </div>
-                                    </Link>
-                                ))}
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            {/* Top Schools */}
+                            <div className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-lg border border-gray-200">
+                                <div className="mb-6">
+                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-xl text-sm font-medium mb-2">
+                                        <School className="w-4 h-4" />
+                                        Établissements
+                                    </div>
+                                    <h3 className="text-base md:text-lg font-bold text-gray-900">Top Écoles</h3>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {topSchools.slice(0, 5).map((school: any, index: number) => (
+                                        <Link 
+                                            key={school.id} 
+                                            href={`/${examParam}/resultats?etablissement=${school.id}`}
+                                            className="block"
+                                        >
+                                            <div className="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer group">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 bg-purple-100 text-purple-700 rounded-xl flex items-center justify-center text-xs font-bold">
+                                                        {index + 1}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                                                            {school.nom}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">{school.wilaya}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-xs md:text-sm font-bold text-green-600 ml-2">
+                                                    {school.taux_reussite}%
+                                                </span>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

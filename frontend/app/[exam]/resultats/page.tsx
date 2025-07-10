@@ -151,199 +151,235 @@ export default function ResultatsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* En-tête */}
-            <div className="border-b bg-card">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                        {/* <Button
-                            variant="ghost"
-                            onClick={() => router.push(`/${examParam}`)}
-                            className="self-start"
-                        >
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Retour
-                        </Button> */}
-                        <div className="flex items-center space-x-3 min-w-0 flex-1">
-                            <GraduationCap className="w-6 sm:w-8 h-6 sm:h-8 text-primary flex-shrink-0" />
-                            <div className="min-w-0">
-                                <h1 className="text-xl sm:text-2xl font-bold truncate">
-                                    Résultats {examType.toUpperCase()} {year}
-                                </h1>
-                                <p className="text-sm sm:text-base text-muted-foreground">
-                                    {totalResults.toLocaleString()} résultats trouvés
-                                </p>
-                                {getSearchType() && (
-                                    <p className="text-sm text-blue-600 font-medium">
-                                        {getSearchType()}
+        <div className="min-h-screen bg-gray-50">
+            {/* Header - TailAdmin Style */}
+            <div className="bg-white border-b border-gray-200 shadow-sm">
+                <div className="container mx-auto px-4 py-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.push(`/${examParam}`)}
+                                className="px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                Retour
+                            </Button>
+                            
+                            <div className="flex items-center space-x-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                                    <GraduationCap className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold text-gray-900">
+                                        Résultats {examType.toUpperCase()} {year}
+                                    </h1>
+                                    <p className="text-gray-600">
+                                        {totalResults.toLocaleString()} résultats trouvés
                                     </p>
-                                )}
+                                </div>
                             </div>
                         </div>
+                        
+                        {getSearchType() && (
+                            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium">
+                                {getSearchType()}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-6">
-                {/* Filtres */}
-                <Card className="mb-6">
-                    <CardHeader className="pb-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <CardTitle className="flex items-center gap-2">
-                                <Filter className="w-5 h-5" />
-                                Filtres
-                            </CardTitle>
-                            {getActiveFiltersCount() > 0 && (
-                                <Button variant="outline" size="sm" onClick={clearFilters} className="self-start sm:self-auto">
-                                    <X className="w-4 h-4 mr-2" />
-                                    Effacer ({getActiveFiltersCount()})
-                                </Button>
-                            )}
+            <div className="container mx-auto px-4 py-8">
+                {/* Filters Section - TailAdmin Style */}
+                <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6 mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-2">
+                                <Filter className="w-4 h-4" />
+                                Filtres avancés
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900">Affiner votre recherche</h2>
                         </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {/* Filtre Wilaya */}
-                            <div className="space-y-2">
-                                <label className="flex items-center text-sm font-medium">
-                                    <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-                                    <span>Wilaya</span>
-                                </label>
-                                <Select
-                                    value={wilayaFilter || 'all'}
-                                    onValueChange={(value) => updateFilter('wilaya', value)}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Toutes les wilayas" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Toutes les wilayas</SelectItem>
-                                        {wilayas.map((wilaya) => (
-                                            <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
-                                                {wilaya.name_fr}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                        {getActiveFiltersCount() > 0 && (
+                            <Button 
+                                variant="outline" 
+                                onClick={clearFilters} 
+                                className="px-4 py-2 rounded-xl border-gray-300 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-colors"
+                            >
+                                <X className="w-4 h-4 mr-2" />
+                                Effacer les filtres ({getActiveFiltersCount()})
+                            </Button>
+                        )}
+                    </div>
 
-                            {/* Filtre Série */}
-                            <div className="space-y-2">
-                                <label className="flex items-center text-sm font-medium">
-                                    <GraduationCap className="w-4 h-4 mr-1 flex-shrink-0" />
-                                    <span>Série</span>
-                                </label>
-                                <Select
-                                    value={serieFilter || 'all'}
-                                    onValueChange={(value) => updateFilter('serie', value)}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Toutes les séries" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Toutes les séries</SelectItem>
-                                        {series.map((serie) => (
-                                            <SelectItem key={serie.id} value={serie.code}>
-                                                <span className="font-semibold">{serie.code}</span>
-                                                <span className="ml-2 text-muted-foreground">- {serie.name_fr}</span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Filtre Établissement */}
-                            <div className="space-y-2 sm:col-span-2 lg:col-span-1">
-                                <label className="flex items-center text-sm font-medium">
-                                    <Building className="w-4 h-4 mr-1 flex-shrink-0" />
-                                    <span>École</span>
-                                </label>
-                                <Select
-                                    value={etablissementFilter || 'all'}
-                                    onValueChange={(value) => updateFilter('etablissement', value)}
-                                    disabled={!wilayaFilter}
-                                >
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder={wilayaFilter ? "Toutes les écoles" : "Sélectionnez une wilaya d'abord"} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Toutes les écoles</SelectItem>
-                                        {etablissements.map((etab) => (
-                                            <SelectItem key={etab.id} value={etab.id.toString()}>
-                                                <span className="truncate">{etab.name_fr}</span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {/* Wilaya Filter */}
+                        <div className="space-y-3">
+                            <label className="flex items-center text-sm font-semibold text-gray-700">
+                                <div className="w-6 h-6 bg-green-100 rounded-lg flex items-center justify-center mr-2">
+                                    <MapPin className="w-4 h-4 text-green-600" />
+                                </div>
+                                Wilaya
+                            </label>
+                            <Select
+                                value={wilayaFilter || 'all'}
+                                onValueChange={(value) => updateFilter('wilaya', value)}
+                            >
+                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectValue placeholder="Toutes les wilayas" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Toutes les wilayas</SelectItem>
+                                    {wilayas.map((wilaya) => (
+                                        <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
+                                            {wilaya.name_fr}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
-                    </CardContent>
-                </Card>
 
-                {/* Résultats */}
-                <div className="space-y-4">
+                        {/* Serie Filter */}
+                        <div className="space-y-3">
+                            <label className="flex items-center text-sm font-semibold text-gray-700">
+                                <div className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
+                                    <GraduationCap className="w-4 h-4 text-purple-600" />
+                                </div>
+                                Série
+                            </label>
+                            <Select
+                                value={serieFilter || 'all'}
+                                onValueChange={(value) => updateFilter('serie', value)}
+                            >
+                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                    <SelectValue placeholder="Toutes les séries" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Toutes les séries</SelectItem>
+                                    {series.map((serie) => (
+                                        <SelectItem key={serie.id} value={serie.code}>
+                                            <span className="font-semibold">{serie.code}</span>
+                                            <span className="ml-2 text-gray-500">- {serie.name_fr}</span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* Etablissement Filter */}
+                        <div className="space-y-3">
+                            <label className="flex items-center text-sm font-semibold text-gray-700">
+                                <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center mr-2">
+                                    <Building className="w-4 h-4 text-orange-600" />
+                                </div>
+                                École
+                            </label>
+                            <Select
+                                value={etablissementFilter || 'all'}
+                                onValueChange={(value) => updateFilter('etablissement', value)}
+                                disabled={!wilayaFilter}
+                            >
+                                <SelectTrigger className="w-full h-12 rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-50">
+                                    <SelectValue placeholder={wilayaFilter ? "Toutes les écoles" : "Sélectionnez une wilaya d'abord"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Toutes les écoles</SelectItem>
+                                    {etablissements.map((etab) => (
+                                        <SelectItem key={etab.id} value={etab.id.toString()}>
+                                            <span className="truncate">{etab.name_fr}</span>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Results Section - TailAdmin Style with Mobile Optimization */}
+                <div className="space-y-3">
                     {results.map((result) => (
                         <Link key={result.id} href={`/result/${result.id}`} className="block">
-                            <Card className="hover:shadow-md hover:bg-muted/20 transition-all cursor-pointer">
-                                <CardContent className="p-4">
-                                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex flex-col sm:flex-row sm:items-start gap-3">
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="font-semibold text-lg truncate">
-                                                        {result.nom_complet_fr}
-                                                    </h3>
-                                                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm text-muted-foreground mt-1">
-                                                        <span className="font-mono">NNI: {result.nni}</span>
-                                                        <span className="hidden sm:inline">•</span>
-                                                        <span className="truncate">{result.wilaya?.name_fr || 'Wilaya non spécifiée'}</span>
-                                                        <span className="hidden sm:inline">•</span>
-                                                        <span>Série {result.serie?.code || 'Non spécifiée'}</span>
-                                                    </div>
-                                                    <div className="text-sm text-muted-foreground mt-1 truncate">
-                                                        {result.etablissement?.name_fr || 'Établissement non spécifié'}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <div className="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-200 p-3 md:p-4 hover:shadow-md hover:scale-[1.005] transition-all duration-200 cursor-pointer group">
+                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="font-bold text-base md:text-lg text-gray-900 group-hover:text-blue-600 transition-colors mb-2 truncate">
+                                            {result.nom_complet_fr}
+                                        </h3>
                                         
-                                        <div className="flex items-center justify-between sm:justify-end gap-4 flex-shrink-0">
-                                            <div className="text-center sm:text-right">
-                                                <div className="text-xl sm:text-2xl font-bold text-primary">
-                                                    {result.moyenne_generale}/20
-                                                </div>
-                                                <Badge 
-                                                    variant={result.decision === 'Admis' ? 'default' : 'secondary'}
-                                                    className={result.decision === 'Admis' ? 'bg-green-100 text-green-800' : ''}
-                                                >
-                                                    {result.decision}
-                                                </Badge>
+                                        {/* Mobile-First Info Layout */}
+                                        <div className="space-y-1.5 md:space-y-2">
+                                            {/* NNI - Always full width on mobile */}
+                                            <div className="flex items-center gap-2 p-1.5 bg-blue-50 rounded-lg text-xs md:text-sm">
+                                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                                                <span className="font-medium text-gray-700">NNI:</span>
+                                                <span className="font-mono text-gray-900 truncate">{result.nni}</span>
                                             </div>
                                             
-                                            <div className="flex items-center text-muted-foreground">
-                                                <ArrowLeft className="w-4 h-4 rotate-180" />
+                                            {/* Wilaya & Serie - Stack on mobile, side by side on larger screens */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs md:text-sm">
+                                                <div className="flex items-center gap-2 p-1.5 bg-green-50 rounded-lg">
+                                                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                                    <span className="font-medium text-gray-700">Wilaya:</span>
+                                                    <span className="text-gray-900 truncate">{result.wilaya?.name_fr || 'Non spécifiée'}</span>
+                                                </div>
+                                                
+                                                <div className="flex items-center gap-2 p-1.5 bg-purple-50 rounded-lg">
+                                                    <div className="w-2 h-2 bg-purple-500 rounded-full flex-shrink-0"></div>
+                                                    <span className="font-medium text-gray-700">Série:</span>
+                                                    <span className="text-gray-900">{result.serie?.code || 'Non spécifiée'}</span>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Etablissement - Full width, smaller on mobile */}
+                                            <div className="p-1.5 bg-gray-50 rounded-lg">
+                                                <div className="flex items-center gap-2">
+                                                    <Building className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                                                    <span className="text-xs md:text-sm text-gray-700 truncate">
+                                                        {result.etablissement?.name_fr || 'Établissement non spécifié'}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                    
+                                    {/* Score Section - Mobile optimized */}
+                                    <div className="flex items-center justify-between md:justify-end gap-4 flex-shrink-0">
+                                        <div className="text-center">
+                                            <div className="text-xl md:text-2xl font-bold text-blue-600 mb-1">
+                                                {result.moyenne_generale}/20
+                                            </div>
+                                            <div className={`px-2 py-1 md:px-3 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold ${
+                                                result.decision === 'Admis' 
+                                                    ? 'bg-green-100 text-green-700' 
+                                                    : 'bg-red-100 text-red-700'
+                                            }`}>
+                                                {result.decision}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                                            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5 rotate-180" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </Link>
                     ))}
                 </div>
 
-                {/* Pagination */}
+                {/* Pagination - Mobile Responsive */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center mt-8">
-                        <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex justify-center mt-8 md:mt-12">
+                        <div className="flex items-center gap-1 md:gap-2">
                             <Button
                                 variant="outline"
-                                size="sm"
                                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                                 disabled={currentPage === 1}
-                                className="px-2 sm:px-4"
+                                className="px-2 md:px-4 py-2 rounded-lg md:rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs md:text-sm"
                             >
-                                <ArrowLeft className="w-4 h-4 sm:mr-2" />
-                                <span className="hidden sm:inline">Précédent</span>
+                                <ArrowLeft className="w-4 h-4 md:mr-2" />
+                                <span className="hidden md:inline">Précédent</span>
                             </Button>
                             
                             <div className="flex items-center gap-1">
@@ -353,9 +389,12 @@ export default function ResultatsPage() {
                                         <Button
                                             key={page}
                                             variant={currentPage === page ? "default" : "outline"}
-                                            size="sm"
                                             onClick={() => setCurrentPage(page)}
-                                            className="min-w-[36px]"
+                                            className={`min-w-[36px] md:min-w-[44px] h-9 md:h-11 rounded-lg md:rounded-xl text-xs md:text-sm ${
+                                                currentPage === page 
+                                                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                                                    : 'border-gray-300 hover:border-blue-300 hover:bg-blue-50'
+                                            }`}
                                         >
                                             {page}
                                         </Button>
@@ -365,28 +404,34 @@ export default function ResultatsPage() {
                             
                             <Button
                                 variant="outline"
-                                size="sm"
                                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                                 disabled={currentPage === totalPages}
-                                className="px-2 sm:px-4"
+                                className="px-2 md:px-4 py-2 rounded-lg md:rounded-xl border-gray-300 hover:border-blue-300 hover:bg-blue-50 disabled:opacity-50 text-xs md:text-sm"
                             >
-                                <span className="hidden sm:inline">Suivant</span>
-                                <ArrowLeft className="w-4 h-4 rotate-180 sm:ml-2" />
+                                <span className="hidden md:inline">Suivant</span>
+                                <ArrowLeft className="w-4 h-4 md:ml-2 rotate-180" />
                             </Button>
                         </div>
                     </div>
                 )}
 
+                {/* No Results - TailAdmin Style */}
                 {results.length === 0 && (
-                    <Card>
-                        <CardContent className="p-8 text-center">
-                            <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                            <h3 className="text-lg font-semibold mb-2">Aucun résultat trouvé</h3>
-                            <p className="text-muted-foreground">
-                                Essayez de modifier vos filtres pour voir plus de résultats.
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-12 text-center">
+                        <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                            <Users className="w-10 h-10 text-gray-400" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">Aucun résultat trouvé</h3>
+                        <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                            Aucun résultat ne correspond à vos critères de recherche. Essayez de modifier vos filtres ou votre recherche.
+                        </p>
+                        <Button 
+                            onClick={clearFilters}
+                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
+                        >
+                            Effacer tous les filtres
+                        </Button>
+                    </div>
                 )}
             </div>
         </div>

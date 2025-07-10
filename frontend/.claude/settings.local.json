@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:tailadmin.com)"
+    ],
+    "deny": []
+  }
+}

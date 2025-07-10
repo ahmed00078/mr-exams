@@ -97,75 +97,71 @@ export default function HomePage() {
     };
 
     return (
-        <div className="min-h-screen bg-background">
-            {/* Hero Section - Modern Angular Design */}
-            <section className="relative overflow-hidden">
-                {/* Background with geometric shapes */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
-                    <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-500/10 rounded-full blur-2xl"></div>
-                </div>
-
-                {/* Geometric shapes */}
-                <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/30 transform rotate-45 rounded-lg"></div>
-                    <div className="absolute top-40 right-20 w-16 h-16 bg-purple-500/30 transform rotate-12 rounded-lg"></div>
-                    <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-yellow-500/30 transform rotate-45 rounded-lg"></div>
-                </div>
-
-                <div className="relative z-10 container mx-auto px-4 py-20">
-                    <div className="max-w-4xl mx-auto text-center text-white">
-                        <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-8">
-                            <div className="text-2xl">🇲🇷</div>
-                            <span className="text-sm font-medium">Plateforme Officielle</span>
+        <div className="min-h-screen bg-slate-50">
+            {/* Hero Section - TailAdmin Professional Style */}
+            <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 overflow-hidden">
+                {/* Subtle background pattern */}
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSIyIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNhKSIvPjwvc3ZnPg==')] opacity-30"></div>
+                
+                <div className="relative z-10 container mx-auto px-4 py-16">
+                    {/* Header */}
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 border border-white/20">
+                            <div className="text-3xl">🇲🇷</div>
+                            <span className="text-sm font-medium text-white">République Islamique de Mauritanie</span>
                         </div>
                         
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                            Résultats
-                            <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-                                d' Examens
+                        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+                            Portail des Résultats
+                            <span className="block text-3xl md:text-5xl mt-2 text-blue-200">
+                                d'Examens Nationaux
                             </span>
                         </h1>
                         
-                        <p className="text-xl md:text-2xl mb-8 text-slate-300 font-light">
-                            La plateforme moderne et sécurisée pour consulter vos résultats
+                        <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto font-light leading-relaxed">
+                            Consultez vos résultats d'examens en toute sécurité sur la plateforme officielle 
+                            du Ministère de l'Éducation Nationale
                         </p>
-
                     </div>
 
-                    {/* Actualités intégrées dans le hero */}
-                    <div className="max-w-4xl mx-auto mt-16">
-                        <div className="flex items-center justify-center gap-2 mb-6">
-                            <Bell className="w-5 h-5 text-white" />
-                            <h2 className="text-xl font-semibold text-white">Actualités et Annonces</h2>
+                    {/* Announcements Section - Professional Cards */}
+                    <div className="max-w-6xl mx-auto">
+                        <div className="text-center mb-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-xl mb-4">
+                                <Bell className="w-4 h-4 text-white" />
+                                <span className="text-sm font-medium text-white">Dernières actualités</span>
+                            </div>
+                            <h2 className="text-2xl font-bold text-white">Actualités et Annonces</h2>
                         </div>
                         
-                        <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {announcements.map((announcement) => {
                                 const Icon = getAnnouncementIcon(announcement.type);
+                                const colors = {
+                                    urgent: 'from-red-500 to-red-600',
+                                    info: 'from-blue-500 to-blue-600', 
+                                    reminder: 'from-amber-500 to-amber-600'
+                                };
                                 return (
-                                    <Card key={announcement.id} className={`border-2 rounded-lg transition-colors duration-200 hover:shadow-md ${getAnnouncementColor(announcement.type)}`}>
-                                        <CardContent className="p-3 sm:p-4">
-                                            <div className="flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                                <Icon className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />
-                                                <div className="min-w-0 flex-1">
-                                                    <h3 className="font-semibold text-xs sm:text-sm leading-tight">
-                                                        {announcement.title}
-                                                    </h3>
-                                                    <div className="flex items-center gap-1 mt-1">
-                                                        <Calendar className="w-3 h-3 flex-shrink-0" />
-                                                        <span className="text-xs opacity-75 truncate">
-                                                            {announcement.date}
-                                                        </span>
-                                                    </div>
+                                    <div key={announcement.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100">
+                                        <div className="flex items-start gap-4 mb-4">
+                                            <div className={`w-12 h-12 bg-gradient-to-r ${colors[announcement.type]} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                                <Icon className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold text-gray-900 text-sm leading-tight mb-2">
+                                                    {announcement.title}
+                                                </h3>
+                                                <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                                                    <Calendar className="w-3 h-3" />
+                                                    {announcement.date}
                                                 </div>
                                             </div>
-                                            <p className="text-xs sm:text-sm leading-relaxed">
-                                                {announcement.message}
-                                            </p>
-                                        </CardContent>
-                                    </Card>
+                                        </div>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            {announcement.message}
+                                        </p>
+                                    </div>
                                 );
                             })}
                         </div>
@@ -173,25 +169,30 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Examens disponibles - Layout plus simple */}
-            <section className="py-16">
+            {/* Examens Section - TailAdmin Professional Cards */}
+            <section className="py-20 bg-white">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12">
-                        Choisissez votre examen
-                    </h2>
+                    <div className="text-center mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-6">
+                            <GraduationCap className="w-4 h-4" />
+                            Examens disponibles
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            Choisissez votre examen
+                        </h2>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            Sélectionnez l'examen correspondant pour accéder à vos résultats en toute sécurité
+                        </p>
+                    </div>
 
                     {isLoading ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                             {[1, 2, 3].map((i) => (
-                                <Card key={i} className="animate-pulse rounded-lg">
-                                    <CardContent className="p-8">
-                                        <div className="h-24 bg-muted rounded-lg"></div>
-                                    </CardContent>
-                                </Card>
+                                <div key={i} className="animate-pulse bg-gray-100 rounded-3xl p-8 h-80"></div>
                             ))}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
                             {sessions.map((session) => {
                                 const ExamIcon = getExamIcon(session.exam_type);
                                 const isRecent = session.year >= new Date().getFullYear();
@@ -202,46 +203,49 @@ export default function HomePage() {
                                         href={`/${session.exam_type}-${session.year}-${session.id}`}
                                         className="group"
                                     >
-                                        <Card className="h-full rounded-lg hover:shadow-xl transition-colors duration-200 hover:border-slate-300 relative overflow-hidden">
+                                        <div className="relative bg-white border border-gray-200 rounded-2xl md:rounded-3xl p-4 md:p-8 hover:border-blue-300 hover:shadow-xl transition-all duration-200 group-hover:scale-105">
                                             {isRecent && (
-                                                <div className="absolute top-4 right-4 bg-green-500 text-white text-xs px-2 py-1 rounded-md">
+                                                <div className="absolute -top-3 -right-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-3 py-1.5 rounded-xl font-medium shadow-lg">
                                                     NOUVEAU
                                                 </div>
                                             )}
 
-                                            <CardContent className="p-8 text-center">
-                                                <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                                                    <ExamIcon className="w-8 h-8 text-primary" />
+                                            <div className="text-center">
+                                                {/* Icon with gradient background */}
+                                                <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-200">
+                                                    <ExamIcon className="w-8 h-8 md:w-10 md:h-10 text-white" />
                                                 </div>
 
-                                                <h3 className="text-xl font-bold mb-2">
+                                                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
                                                     {getExamLabel(session.exam_type)}
                                                 </h3>
 
-                                                <p className="text-2xl font-bold text-primary mb-4">
+                                                <p className="text-2xl md:text-3xl font-bold text-blue-600 mb-4 md:mb-6">
                                                     {session.year}
                                                 </p>
 
-                                                <div className="space-y-2 text-sm text-muted-foreground">
-                                                    <div className="flex items-center justify-between">
-                                                        <span>Candidats:</span>
-                                                        <span className="font-medium">{session.total_candidates.toLocaleString()}</span>
+                                                {/* Statistics cards */}
+                                                <div className="space-y-2 md:space-y-3 mb-4 md:mb-6">
+                                                    <div className="flex items-center justify-between p-2 md:p-3 bg-gray-50 rounded-xl">
+                                                        <span className="text-xs md:text-sm font-medium text-gray-600">Candidats</span>
+                                                        <span className="text-xs md:text-sm font-bold text-gray-900">{session.total_candidates.toLocaleString()}</span>
                                                     </div>
-                                                    <div className="flex items-center justify-between">
-                                                        <span>Admis:</span>
-                                                        <span className="font-medium text-green-600">{session.total_passed.toLocaleString()}</span>
+                                                    <div className="flex items-center justify-between p-2 md:p-3 bg-green-50 rounded-xl">
+                                                        <span className="text-xs md:text-sm font-medium text-gray-600">Admis</span>
+                                                        <span className="text-xs md:text-sm font-bold text-green-600">{session.total_passed.toLocaleString()}</span>
                                                     </div>
-                                                    <div className="flex items-center justify-between">
-                                                        <span>Taux:</span>
-                                                        <span className="font-medium text-primary">{formatTauxReussite(session.pass_rate)}</span>
+                                                    <div className="flex items-center justify-between p-2 md:p-3 bg-blue-50 rounded-xl">
+                                                        <span className="text-xs md:text-sm font-medium text-gray-600">Taux de réussite</span>
+                                                        <span className="text-xs md:text-sm font-bold text-blue-600">{formatTauxReussite(session.pass_rate)}</span>
                                                     </div>
                                                 </div>
 
-                                                <Button className="w-full mt-4 rounded-lg" variant="outline">
+                                                {/* CTA Button */}
+                                                <button className="w-full px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg text-sm md:text-base">
                                                     Consulter les résultats
-                                                </Button>
-                                            </CardContent>
-                                        </Card>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </Link>
                                 );
                             })}
@@ -250,41 +254,67 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Guide rapide - Plus concis */}
-            <section className="bg-muted/30 py-12">
-                <div className="container mx-auto px-4 text-center">
-                    <h3 className="text-2xl font-bold mb-8">Comment ça marche ?</h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                        <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-primary text-primary-foreground rounded-lg flex items-center justify-center text-xl font-bold mb-4">
-                                1
-                            </div>
-                            <h4 className="font-semibold mb-2">Choisissez l'examen</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Cliquez sur l'examen correspondant
-                            </p>
+            {/* How it works - TailAdmin Style */}
+            <section className="py-20 bg-gray-50">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-16">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-6">
+                            <Clock className="w-4 h-4" />
+                            Guide d'utilisation
                         </div>
+                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            Comment ça marche ?
+                        </h3>
+                        <p className="text-lg text-gray-600">
+                            Trois étapes simples pour accéder à vos résultats
+                        </p>
+                    </div>
 
-                        <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-green-500 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-4">
-                                2
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                        {[
+                            { 
+                                number: 1, 
+                                title: "Sélectionnez votre examen", 
+                                desc: "Choisissez le type d'examen et l'année correspondante",
+                                color: "from-blue-500 to-blue-600",
+                                icon: GraduationCap
+                            },
+                            { 
+                                number: 2, 
+                                title: "Entrez vos informations", 
+                                desc: "Utilisez votre NNI, nom complet ou numéro de dossier",
+                                color: "from-green-500 to-green-600",
+                                icon: BookOpen
+                            },
+                            { 
+                                number: 3, 
+                                title: "Consultez vos résultats", 
+                                desc: "Accédez à vos résultats détaillés et partagez-les",
+                                color: "from-purple-500 to-purple-600",
+                                icon: Award
+                            }
+                        ].map((step, index) => (
+                            <div key={step.number} className="relative">
+                                {/* Connector line */}
+                                {index < 2 && (
+                                    <div className="hidden md:block absolute top-20 left-full w-full h-0.5 bg-gray-300 z-0"></div>
+                                )}
+                                
+                                <div className="relative z-10 bg-white rounded-3xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100">
+                                    {/* Step number with icon */}
+                                    <div className={`w-16 h-16 bg-gradient-to-r ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
+                                        <step.icon className="w-8 h-8 text-white" />
+                                    </div>
+                                    
+                                    <div className={`w-8 h-8 bg-gradient-to-r ${step.color} rounded-full flex items-center justify-center mx-auto mb-4 text-white text-sm font-bold`}>
+                                        {step.number}
+                                    </div>
+                                    
+                                    <h4 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h4>
+                                    <p className="text-gray-600 leading-relaxed">{step.desc}</p>
+                                </div>
                             </div>
-                            <h4 className="font-semibold mb-2">Recherchez</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Utilisez votre NNI ou nom
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-purple-500 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-4">
-                                3
-                            </div>
-                            <h4 className="font-semibold mb-2">Consultez</h4>
-                            <p className="text-sm text-muted-foreground">
-                                Voir tous les détails
-                            </p>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>

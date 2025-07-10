@@ -212,15 +212,15 @@ export default function GlobalStatsPage() {
                 {globalStats && (
                     <>
                         {/* Statistiques globales */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                             <Card>
-                                <CardContent className="p-6">
+                                <CardContent className="p-4 md:p-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-blue-100 rounded-lg">
-                                            <Users className="w-6 h-6 text-blue-600" />
+                                        <div className="p-2 md:p-3 bg-blue-100 rounded-lg">
+                                            <Users className="w-5 h-5 md:w-6 md:h-6 text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-foreground">
+                                            <p className="text-xl md:text-2xl font-bold text-foreground">
                                                 {globalStats.total_candidats.toLocaleString()}
                                             </p>
                                             <p className="text-sm text-muted-foreground">Total candidats</p>
@@ -230,13 +230,13 @@ export default function GlobalStatsPage() {
                             </Card>
 
                             <Card>
-                                <CardContent className="p-6">
+                                <CardContent className="p-4 md:p-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-green-100 rounded-lg">
-                                            <Award className="w-6 h-6 text-green-600" />
+                                        <div className="p-2 md:p-3 bg-green-100 rounded-lg">
+                                            <Award className="w-5 h-5 md:w-6 md:h-6 text-green-600" />
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-green-600">
+                                            <p className="text-xl md:text-2xl font-bold text-green-600">
                                                 {globalStats.total_admis.toLocaleString()}
                                             </p>
                                             <p className="text-sm text-muted-foreground">Candidats admis</p>
@@ -246,13 +246,13 @@ export default function GlobalStatsPage() {
                             </Card>
 
                             <Card>
-                                <CardContent className="p-6">
+                                <CardContent className="p-4 md:p-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-primary/10 rounded-lg">
-                                            <TrendingUp className="w-6 h-6 text-primary" />
+                                        <div className="p-2 md:p-3 bg-primary/10 rounded-lg">
+                                            <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-primary">
+                                            <p className="text-xl md:text-2xl font-bold text-primary">
                                                 {formatTauxReussite(globalStats.taux_reussite_global)}
                                             </p>
                                             <p className="text-sm text-muted-foreground">Taux de réussite</p>
@@ -262,13 +262,13 @@ export default function GlobalStatsPage() {
                             </Card>
 
                             <Card>
-                                <CardContent className="p-6">
+                                <CardContent className="p-4 md:p-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="p-3 bg-purple-100 rounded-lg">
-                                            <MapPin className="w-6 h-6 text-purple-600" />
+                                        <div className="p-2 md:p-3 bg-purple-100 rounded-lg">
+                                            <MapPin className="w-5 h-5 md:w-6 md:h-6 text-purple-600" />
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-purple-600">
+                                            <p className="text-xl md:text-2xl font-bold text-purple-600">
                                                 {globalStats.wilayas.length}
                                             </p>
                                             <p className="text-sm text-muted-foreground">Wilayas participantes</p>
@@ -383,7 +383,7 @@ export default function GlobalStatsPage() {
                                     </CardHeader>
 
                                     <CardContent>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                             {globalStats.series
                                                 .sort((a, b) => b.taux_reussite - a.taux_reussite)
                                                 .map((serie, index) => (

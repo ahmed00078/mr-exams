@@ -145,7 +145,7 @@ export default function HomePage() {
                                 return (
                                     <div key={announcement.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100">
                                         <div className="flex items-start gap-4 mb-4">
-                                            <div className={`w-12 h-12 bg-gradient-to-r ${colors[announcement.type]} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                                            <div className={`w-12 h-12 bg-gradient-to-r ${colors[announcement.type] || 'from-gray-500 to-gray-600'} rounded-xl flex items-center justify-center flex-shrink-0`}>
                                                 <Icon className="w-6 h-6 text-white" />
                                             </div>
                                             <div className="flex-1 min-w-0">

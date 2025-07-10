@@ -137,7 +137,7 @@ export default function HomePage() {
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {announcements.map((announcement) => {
                                 const Icon = getAnnouncementIcon(announcement.type);
-                                const colors = {
+                                const colors: Record<string, string> = {
                                     urgent: 'from-red-500 to-red-600',
                                     info: 'from-blue-500 to-blue-600', 
                                     reminder: 'from-amber-500 to-amber-600'

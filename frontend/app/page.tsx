@@ -70,7 +70,7 @@ export default function HomePage() {
     };
 
     const getExamLabel = (type: string) => {
-        const labels = {
+        const labels: Record<string, string> = {
             'bac': 'Baccalauréat',
             'bepc': 'BEPC',
             'concours': 'Concours'

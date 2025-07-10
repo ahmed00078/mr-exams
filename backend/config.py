@@ -4,7 +4,7 @@ import os
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/railway"
+    database_url: str = "postgresql://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/mauritania_exams"
     database_url_async: str = "postgresql+asyncpg://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/railway"
     
     # Redis

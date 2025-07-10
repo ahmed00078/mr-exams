@@ -4,8 +4,8 @@ import os
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://user:password@localhost/mauritania_exams"
-    database_url_async: str = "postgresql+asyncpg://user:password@localhost/mauritania_exams"
+    database_url: str = "postgresql://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/railway"
+    database_url_async: str = "postgresql+asyncpg://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/railway"
     
     # Redis
     redis_url: str = "redis://localhost:6379"
@@ -16,14 +16,14 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # CORS
-    cors_origins: list = ["http://localhost:3000", "http://localhost:8080"]
+    cors_origins: list = ["https://exam.ahmed78.me/", "https://exam.ahmed78.me/"]
     
     # File Upload
     upload_max_size: int = 50 * 1024 * 1024  # 50MB
     upload_path: str = "./uploads"
     
     # Social Media
-    base_url: str = "https://examens.mauritanie.mr"
+    base_url: str = "https://exam.ahmed78.me/"
     social_share_expire_days: int = 30
     
     # Pagination

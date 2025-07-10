@@ -484,7 +484,7 @@ VALUES
     ('M', 'Mathématiques', 'الرياضيات', 'bac'),
     ('LM', 'Lettres modernes', 'الآداب العصرية', 'bac'),
     ('LO', 'Lettres Originales', 'الآداب الأصلية', 'bac'),
-    ('TM', 'Filière technique', 'القطاع التقني', 'bac'),
+    ('TM', 'Filière technique', 'الشعبة التقنية', 'bac'),
     ('TS', 'Génie électrique', 'الهندسة الكهربائية', 'bac'),
     ('LA', 'Langues ', 'اللغات', 'bac')
 ON CONFLICT (code) DO UPDATE SET

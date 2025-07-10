@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -19,6 +19,7 @@ import {
 export default function Header() {
     const [searchTerm, setSearchTerm] = useState('');
     const pathname = usePathname();
+    const router = useRouter();
 
     const navigationItems = [
         { href: '/', label: 'Accueil', icon: Home },

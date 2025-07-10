@@ -177,10 +177,6 @@ export default function HomePage() {
                             <GraduationCap className="w-4 h-4" />
                             Examens disponibles
                         </div>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-xl text-sm font-medium mb-6">
-                            <GraduationCap className="w-4 h-4" />
-                            Examens disponibles
-                        </div>
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                             Choisissez votre examen
                         </h2>

@@ -50,12 +50,12 @@ export default function Footer() {
                         <h4 className="text-lg font-semibold mb-4">Support</h4>
                         <ul className="space-y-2 text-gray-300">
                             <li>
-                                <a href="#" className="hover:text-white transition-colors duration-200">
+                                <a href="/how-to-search" className="hover:text-white transition-colors duration-200">
                                     Comment rechercher
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-white transition-colors duration-200">
+                                <a href="/faq" className="hover:text-white transition-colors duration-200">
                                     FAQ
                                 </a>
                             </li>
@@ -65,7 +65,7 @@ export default function Footer() {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" className="hover:text-white transition-colors duration-200">
+                                <a href="/report" className="hover:text-white transition-colors duration-200">
                                     Signaler un problème
                                 </a>
                             </li>
@@ -78,10 +78,10 @@ export default function Footer() {
                         © 2024 La plateforme d’examens de référence en Mauritanie. Tous droits réservés.
                     </p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
-                        <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
+                        <a href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
                             Politique de confidentialité
                         </a>
-                        <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
+                        <a href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors duration-200">
                             Conditions d&apos;utilisation
                         </a>
                     </div>

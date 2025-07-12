@@ -17,7 +17,7 @@ import {
     BulkUploadStatus
 } from '@/types';
 
-const API_BASE_URL = process.env.API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 class ApiError extends Error {
     constructor(public status: number, message: string) {
@@ -27,7 +27,8 @@ class ApiError extends Error {
 }
 
 async function fetchApi(endpoint: string, options: RequestInit = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    const url = `${baseUrl}${endpoint}`;
 
     const defaultHeaders = {
         'Content-Type': 'application/json',
@@ -111,11 +112,11 @@ export const sessionsApi = {
         if (exam_type) query.append('exam_type', exam_type);
         if (year) query.append('year', year.toString());
 
-        return fetchApi(`/sessions?${query.toString()}`);
+        return fetchApi(`/sessions/?${query.toString()}`);
     },
 
     getCurrent: async (exam_type: string): Promise<Session> => {
-        return fetchApi(`/sessions/current?exam_type=${exam_type}`);
+        return fetchApi(`/sessions/current/?exam_type=${exam_type}`);
     },
 };
 
@@ -145,7 +146,7 @@ export const statsApi = {
 // API functions pour le partage social
 export const socialApi = {
     getShareData: async (token: string): Promise<SocialSharePublic> => {
-        return fetchApi(`/share/${token}/data`);
+        return fetchApi(`/share/${token}/data/`);
     },
 };
 
@@ -156,7 +157,7 @@ export const authApi = {
         formData.append('username', username);
         formData.append('password', password);
 
-        return fetchApi('/auth/login', {
+        return fetchApi('/auth/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -166,7 +167,7 @@ export const authApi = {
     },
 
     getProfile: async (token: string): Promise<any> => {
-        return fetchApi('/auth/me', {
+        return fetchApi('/auth/me/', {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -181,7 +182,7 @@ export const adminApi = {
         formData.append('file', file);
         formData.append('session_id', session_id.toString());
 
-        const response = await fetch(`${API_BASE_URL}/admin/upload`, {
+        const response = await fetch(`${API_BASE_URL}/admin/upload/`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -198,7 +199,7 @@ export const adminApi = {
     },
 
     getUploadStatus: async (task_id: string, token: string): Promise<BulkUploadStatus> => {
-        return fetchApi(`/admin/upload/${task_id}/status`, {
+        return fetchApi(`/admin/upload/${task_id}/status/`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

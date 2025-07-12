@@ -157,7 +157,7 @@ export const authApi = {
         formData.append('username', username);
         formData.append('password', password);
 
-        return fetchApi('/auth/login/', {
+        return fetchApi('/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -203,6 +203,59 @@ export const adminApi = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+        });
+    },
+
+    createSession: async (data: { 
+        year: number; 
+        exam_type: string; 
+        session_name: string;
+        start_date?: string;
+        end_date?: string;
+        publication_date?: string;
+        is_published?: boolean;
+        is_archived?: boolean;
+    }, token: string): Promise<Session> => {
+        const formData = new URLSearchParams();
+        formData.append('year', data.year.toString());
+        formData.append('exam_type', data.exam_type);
+        formData.append('session_name', data.session_name);
+        
+        if (data.start_date) formData.append('start_date', data.start_date);
+        if (data.end_date) formData.append('end_date', data.end_date);
+        if (data.publication_date) formData.append('publication_date', data.publication_date);
+        if (data.is_published !== undefined) formData.append('is_published', data.is_published.toString());
+        if (data.is_archived !== undefined) formData.append('is_archived', data.is_archived.toString());
+
+        return fetchApi('/admin/sessions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData.toString(),
+        });
+    },
+
+    getAllSessions: async (token: string): Promise<Session[]> => {
+        return fetchApi('/admin/sessions', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    },
+
+    toggleSessionPublication: async (sessionId: number, isPublished: boolean, token: string): Promise<{ message: string; session: Session }> => {
+        const formData = new URLSearchParams();
+        formData.append('is_published', isPublished.toString());
+
+        return fetchApi(`/admin/sessions/${sessionId}/publish`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData.toString(),
         });
     },
 };

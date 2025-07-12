@@ -12,7 +12,12 @@ import {
     X,
     Eye,
     EyeOff,
-    Lock
+    Lock,
+    Plus,
+    Calendar,
+    Globe,
+    EyeIcon,
+    Settings
 } from 'lucide-react';
 import { adminApi, authApi, sessionsApi } from '@/lib/api';
 import { BulkUploadStatus, Session, Token } from '@/types';
@@ -35,6 +40,23 @@ export default function SecureAdminPage() {
     const [isUploading, setIsUploading] = useState(false);
     const [uploadStatus, setUploadStatus] = useState<BulkUploadStatus | null>(null);
     const [uploadError, setUploadError] = useState<string | null>(null);
+
+    // États de création de session
+    const [showCreateSession, setShowCreateSession] = useState(false);
+    const [sessionForm, setSessionForm] = useState({
+        year: new Date().getFullYear(),
+        exam_type: 'bac',
+        session_name: '',
+        start_date: '',
+        end_date: '',
+        publication_date: '',
+        is_published: true,
+        is_archived: false
+    });
+    const [isCreatingSession, setIsCreatingSession] = useState(false);
+    const [sessionError, setSessionError] = useState<string | null>(null);
+    const [sessionSuccess, setSessionSuccess] = useState<string | null>(null);
+    const [updatingSessionId, setUpdatingSessionId] = useState<number | null>(null);
 
     // Vérification auth au montage
     useEffect(() => {
@@ -147,6 +169,87 @@ export default function SecureAdminPage() {
                 clearInterval(interval);
             }
         }, 2000);
+    };
+
+    // Création de session
+    const handleCreateSession = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const token = localStorage.getItem('admin_token');
+        if (!token) return;
+
+        setIsCreatingSession(true);
+        setSessionError(null);
+        setSessionSuccess(null);
+
+        try {
+            // Préparer les données avec formatage des dates
+            const sessionData = {
+                ...sessionForm,
+                // Convertir datetime-local en format attendu par le backend
+                publication_date: sessionForm.publication_date ? 
+                    sessionForm.publication_date.replace('T', ' ') : undefined,
+                // Les dates de début/fin sont déjà au bon format YYYY-MM-DD
+                start_date: sessionForm.start_date || undefined,
+                end_date: sessionForm.end_date || undefined
+            };
+
+            const newSession = await adminApi.createSession(sessionData, token);
+            setSessions(prev => [newSession, ...prev]);
+            setSessionSuccess(`Session "${sessionForm.session_name}" créée avec succès`);
+            setSessionForm({
+                year: new Date().getFullYear(),
+                exam_type: 'bac',
+                session_name: '',
+                start_date: '',
+                end_date: '',
+                publication_date: '',
+                is_published: true,
+                is_archived: false
+            });
+            setShowCreateSession(false);
+            
+            // Auto-sélectionner la nouvelle session
+            setSelectedSession(newSession.id);
+        } catch (error: any) {
+            if (error.message.includes('existe déjà')) {
+                setSessionError('Une session pour cette année existe déjà');
+            } else if (error.message.includes('Format de date')) {
+                setSessionError('Format de date invalide. Vérifiez les dates saisies.');
+            } else {
+                setSessionError('Erreur lors de la création de la session');
+            }
+        } finally {
+            setIsCreatingSession(false);
+        }
+    };
+
+    // Changer le statut de publication d'une session
+    const handleTogglePublication = async (sessionId: number, currentStatus: boolean) => {
+        const token = localStorage.getItem('admin_token');
+        if (!token) return;
+
+        setUpdatingSessionId(sessionId);
+        setSessionError(null);
+
+        try {
+            const response = await adminApi.toggleSessionPublication(sessionId, !currentStatus, token);
+            
+            // Mettre à jour la session dans la liste
+            setSessions(prev => prev.map(session => 
+                session.id === sessionId 
+                    ? { ...session, is_published: !currentStatus }
+                    : session
+            ));
+
+            setSessionSuccess(response.message);
+            
+            // Effacer le message après 3 secondes
+            setTimeout(() => setSessionSuccess(null), 3000);
+        } catch (error: any) {
+            setSessionError('Erreur lors de la mise à jour du statut');
+        } finally {
+            setUpdatingSessionId(null);
+        }
     };
 
     // Page de connexion
@@ -302,6 +405,282 @@ export default function SecureAdminPage() {
                                 </p>
                                 <p className="text-sm text-gray-600">Upload actif</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Messages de succès/erreur globaux */}
+                {sessionSuccess && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div className="flex items-center space-x-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <p className="text-green-800">{sessionSuccess}</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Section gestion des sessions */}
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center space-x-3">
+                            <Calendar className="w-6 h-6 text-green-600" />
+                            <h2 className="text-xl font-bold text-gray-900">Gestion des sessions</h2>
+                        </div>
+                        <button
+                            onClick={() => setShowCreateSession(!showCreateSession)}
+                            className="btn-primary flex items-center space-x-2"
+                        >
+                            <Plus className="w-4 h-4" />
+                            <span>Nouvelle session</span>
+                        </button>
+                    </div>
+
+                    {/* Formulaire de création de session */}
+                    {showCreateSession && (
+                        <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Créer une nouvelle session</h3>
+                            
+                            {sessionError && (
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                                    <div className="flex items-center space-x-2">
+                                        <AlertCircle className="w-5 h-5 text-red-500" />
+                                        <p className="text-red-800">{sessionError}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            <form onSubmit={handleCreateSession} className="space-y-6">
+                                {/* Informations de base */}
+                                <div>
+                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Informations générales</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Année
+                                            </label>
+                                            <input
+                                                type="number"
+                                                value={sessionForm.year}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, year: parseInt(e.target.value) }))}
+                                                className="form-input"
+                                                min="2020"
+                                                max="2030"
+                                                required
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Type d'examen
+                                            </label>
+                                            <select
+                                                value={sessionForm.exam_type}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, exam_type: e.target.value }))}
+                                                className="form-select"
+                                                required
+                                            >
+                                                <option value="bac">Baccalauréat</option>
+                                                <option value="bem">BEM</option>
+                                                <option value="bfem">BFEM</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Nom de la session
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={sessionForm.session_name}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, session_name: e.target.value }))}
+                                                className="form-input"
+                                                placeholder="ex: Session principale"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Dates */}
+                                <div>
+                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Calendrier</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Date de début
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={sessionForm.start_date}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, start_date: e.target.value }))}
+                                                className="form-input"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Date de fin
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={sessionForm.end_date}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, end_date: e.target.value }))}
+                                                className="form-input"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Date de publication
+                                            </label>
+                                            <input
+                                                type="datetime-local"
+                                                value={sessionForm.publication_date}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, publication_date: e.target.value }))}
+                                                className="form-input"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Options */}
+                                <div>
+                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Options</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="flex items-center space-x-3">
+                                            <input
+                                                type="checkbox"
+                                                id="is_published"
+                                                checked={sessionForm.is_published}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, is_published: e.target.checked }))}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            />
+                                            <label htmlFor="is_published" className="text-sm font-medium text-gray-700">
+                                                Session publiée (visible au public)
+                                            </label>
+                                        </div>
+
+                                        <div className="flex items-center space-x-3">
+                                            <input
+                                                type="checkbox"
+                                                id="is_archived"
+                                                checked={sessionForm.is_archived}
+                                                onChange={(e) => setSessionForm(prev => ({ ...prev, is_archived: e.target.checked }))}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                                            />
+                                            <label htmlFor="is_archived" className="text-sm font-medium text-gray-700">
+                                                Session archivée
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-4">
+                                    <button
+                                        type="submit"
+                                        disabled={isCreatingSession}
+                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isCreatingSession ? (
+                                            <div className="flex items-center space-x-2">
+                                                <LoadingSpinner size="small" />
+                                                <span>Création...</span>
+                                            </div>
+                                        ) : (
+                                            'Créer la session'
+                                        )}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setShowCreateSession(false);
+                                            setSessionError(null);
+                                        }}
+                                        className="btn-secondary"
+                                    >
+                                        Annuler
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+                    {/* Liste des sessions existantes */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Sessions existantes</h3>
+                        <div className="max-h-96 overflow-y-auto">
+                            {sessions.length > 0 ? (
+                                <div className="space-y-3">
+                                    {sessions.map(session => (
+                                        <div key={session.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className={`w-3 h-3 rounded-full ${session.is_published ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900">
+                                                                {session.exam_type.toUpperCase()} {session.year}
+                                                            </p>
+                                                            <p className="text-sm text-gray-600">{session.session_name}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                                                        <span className="flex items-center">
+                                                            <Users className="w-3 h-3 mr-1" />
+                                                            {session.total_candidates.toLocaleString()} candidats
+                                                        </span>
+                                                        {session.start_date && (
+                                                            <span className="flex items-center">
+                                                                <Calendar className="w-3 h-3 mr-1" />
+                                                                {new Date(session.start_date).toLocaleDateString('fr-FR')}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="flex items-center space-x-2">
+                                                    {/* Statut visuel */}
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                        session.is_published 
+                                                            ? 'bg-green-100 text-green-800' 
+                                                            : 'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                        {session.is_published ? 'Publiée' : 'Brouillon'}
+                                                    </span>
+                                                    
+                                                    {/* Bouton de basculement */}
+                                                    <button
+                                                        onClick={() => handleTogglePublication(session.id, session.is_published)}
+                                                        disabled={updatingSessionId === session.id}
+                                                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                                                            session.is_published
+                                                                ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                                                : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                        } disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1`}
+                                                        title={session.is_published ? 'Retirer la session' : 'Publier la session'}
+                                                    >
+                                                        {updatingSessionId === session.id ? (
+                                                            <LoadingSpinner size="small" />
+                                                        ) : session.is_published ? (
+                                                            <>
+                                                                <EyeOff className="w-3 h-3" />
+                                                                <span>Retirer</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Globe className="w-3 h-3" />
+                                                                <span>Publier</span>
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 text-center py-8">Aucune session disponible</p>
+                            )}
                         </div>
                     </div>
                 </div>

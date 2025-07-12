@@ -346,25 +346,25 @@ export default function SecureAdminPage() {
     // Interface d'administration
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
 
                 {/* En-tête */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">
                     <div className="flex items-center space-x-3">
-                        <Shield className="w-8 h-8 text-red-600" />
-                        <h1 className="text-3xl font-bold text-gray-900">Administration</h1>
+                        <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Administration</h1>
                     </div>
 
-                    <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                         <button
                             onClick={() => router.push('/')}
-                            className="btn-secondary"
+                            className="btn-secondary text-sm sm:text-base"
                         >
                             Portail Public
                         </button>
                         <button
                             onClick={handleLogout}
-                            className="btn-primary flex items-center space-x-2"
+                            className="btn-primary flex items-center justify-center space-x-2 text-sm sm:text-base"
                         >
                             <X className="w-4 h-4" />
                             <span>Déconnexion</span>
@@ -373,37 +373,37 @@ export default function SecureAdminPage() {
                 </div>
 
                 {/* Statistiques rapides */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
                         <div className="flex items-center">
-                            <FileText className="w-10 h-10 text-blue-500 mr-4" />
+                            <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 mr-3 sm:mr-4" />
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">{sessions.length}</p>
-                                <p className="text-sm text-gray-600">Sessions disponibles</p>
+                                <p className="text-xl sm:text-2xl font-bold text-gray-900">{sessions.length}</p>
+                                <p className="text-xs sm:text-sm text-gray-600">Sessions disponibles</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
                         <div className="flex items-center">
-                            <Users className="w-10 h-10 text-green-500 mr-4" />
+                            <Users className="w-8 h-8 sm:w-10 sm:h-10 text-green-500 mr-3 sm:mr-4" />
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                                     {sessions.reduce((total, s) => total + s.total_candidates, 0).toLocaleString()}
                                 </p>
-                                <p className="text-sm text-gray-600">Total candidats</p>
+                                <p className="text-xs sm:text-sm text-gray-600">Total candidats</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
                         <div className="flex items-center">
-                            <Upload className="w-10 h-10 text-purple-500 mr-4" />
+                            <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-purple-500 mr-3 sm:mr-4" />
                             <div>
-                                <p className="text-2xl font-bold text-gray-900">
+                                <p className="text-xl sm:text-2xl font-bold text-gray-900">
                                     {uploadStatus ? 1 : 0}
                                 </p>
-                                <p className="text-sm text-gray-600">Upload actif</p>
+                                <p className="text-xs sm:text-sm text-gray-600">Upload actif</p>
                             </div>
                         </div>
                     </div>
@@ -420,25 +420,26 @@ export default function SecureAdminPage() {
                 )}
 
                 {/* Section gestion des sessions */}
-                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8 mb-8">
-                    <div className="flex items-center justify-between mb-6">
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
                         <div className="flex items-center space-x-3">
-                            <Calendar className="w-6 h-6 text-green-600" />
-                            <h2 className="text-xl font-bold text-gray-900">Gestion des sessions</h2>
+                            <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Gestion des sessions</h2>
                         </div>
                         <button
                             onClick={() => setShowCreateSession(!showCreateSession)}
-                            className="btn-primary flex items-center space-x-2"
+                            className="btn-primary flex items-center justify-center space-x-2 text-sm sm:text-base"
                         >
                             <Plus className="w-4 h-4" />
-                            <span>Nouvelle session</span>
+                            <span className="hidden xs:inline">Nouvelle session</span>
+                            <span className="xs:hidden">Nouveau</span>
                         </button>
                     </div>
 
                     {/* Formulaire de création de session */}
                     {showCreateSession && (
-                        <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Créer une nouvelle session</h3>
+                        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Créer une nouvelle session</h3>
                             
                             {sessionError && (
                                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
@@ -449,11 +450,11 @@ export default function SecureAdminPage() {
                                 </div>
                             )}
 
-                            <form onSubmit={handleCreateSession} className="space-y-6">
+                            <form onSubmit={handleCreateSession} className="space-y-4 sm:space-y-6">
                                 {/* Informations de base */}
                                 <div>
-                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Informations générales</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <h4 className="text-sm sm:text-md font-semibold text-gray-800 mb-2 sm:mb-3">Informations générales</h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                 Année
@@ -503,8 +504,8 @@ export default function SecureAdminPage() {
 
                                 {/* Dates */}
                                 <div>
-                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Calendrier</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <h4 className="text-sm sm:text-md font-semibold text-gray-800 mb-2 sm:mb-3">Calendrier</h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                                 Date de début
@@ -545,8 +546,8 @@ export default function SecureAdminPage() {
 
                                 {/* Options */}
                                 <div>
-                                    <h4 className="text-md font-semibold text-gray-800 mb-3">Options</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <h4 className="text-sm sm:text-md font-semibold text-gray-800 mb-2 sm:mb-3">Options</h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                         <div className="flex items-center space-x-3">
                                             <input
                                                 type="checkbox"
@@ -575,14 +576,14 @@ export default function SecureAdminPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-4">
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                                     <button
                                         type="submit"
                                         disabled={isCreatingSession}
-                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                                     >
                                         {isCreatingSession ? (
-                                            <div className="flex items-center space-x-2">
+                                            <div className="flex items-center justify-center space-x-2">
                                                 <LoadingSpinner size="small" />
                                                 <span>Création...</span>
                                             </div>
@@ -596,7 +597,7 @@ export default function SecureAdminPage() {
                                             setShowCreateSession(false);
                                             setSessionError(null);
                                         }}
-                                        className="btn-secondary"
+                                        className="btn-secondary text-sm sm:text-base"
                                     >
                                         Annuler
                                     </button>
@@ -607,24 +608,24 @@ export default function SecureAdminPage() {
 
                     {/* Liste des sessions existantes */}
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Sessions existantes</h3>
-                        <div className="max-h-96 overflow-y-auto">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Sessions existantes</h3>
+                        <div className="max-h-80 sm:max-h-96 overflow-y-auto">
                             {sessions.length > 0 ? (
-                                <div className="space-y-3">
+                                <div className="space-y-2 sm:space-y-3">
                                     {sessions.map(session => (
-                                        <div key={session.id} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                                            <div className="flex items-center justify-between">
+                                        <div key={session.id} className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 shadow-sm">
+                                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                                                 <div className="flex-1">
                                                     <div className="flex items-center space-x-3">
                                                         <div className={`w-3 h-3 rounded-full ${session.is_published ? 'bg-green-500' : 'bg-gray-400'}`}></div>
                                                         <div>
-                                                            <p className="font-semibold text-gray-900">
+                                                            <p className="font-semibold text-sm sm:text-base text-gray-900">
                                                                 {session.exam_type.toUpperCase()} {session.year}
                                                             </p>
-                                                            <p className="text-sm text-gray-600">{session.session_name}</p>
+                                                            <p className="text-xs sm:text-sm text-gray-600">{session.session_name}</p>
                                                         </div>
                                                     </div>
-                                                    <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                                                    <div className="mt-2 flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-gray-500">
                                                         <span className="flex items-center">
                                                             <Users className="w-3 h-3 mr-1" />
                                                             {session.total_candidates.toLocaleString()} candidats
@@ -638,7 +639,7 @@ export default function SecureAdminPage() {
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="flex items-center space-x-2">
+                                                <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-3">
                                                     {/* Statut visuel */}
                                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                                                         session.is_published 
@@ -652,7 +653,7 @@ export default function SecureAdminPage() {
                                                     <button
                                                         onClick={() => handleTogglePublication(session.id, session.is_published)}
                                                         disabled={updatingSessionId === session.id}
-                                                        className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                                                        className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                                                             session.is_published
                                                                 ? 'bg-red-100 text-red-700 hover:bg-red-200'
                                                                 : 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -664,12 +665,12 @@ export default function SecureAdminPage() {
                                                         ) : session.is_published ? (
                                                             <>
                                                                 <EyeOff className="w-3 h-3" />
-                                                                <span>Retirer</span>
+                                                                <span className="hidden sm:inline">Retirer</span>
                                                             </>
                                                         ) : (
                                                             <>
                                                                 <Globe className="w-3 h-3" />
-                                                                <span>Publier</span>
+                                                                <span className="hidden sm:inline">Publier</span>
                                                             </>
                                                         )}
                                                     </button>
@@ -679,17 +680,17 @@ export default function SecureAdminPage() {
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-500 text-center py-8">Aucune session disponible</p>
+                                <p className="text-gray-500 text-center py-6 sm:py-8 text-sm sm:text-base">Aucune session disponible</p>
                             )}
                         </div>
                     </div>
                 </div>
 
                 {/* Section upload */}
-                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-8">
-                    <div className="flex items-center space-x-3 mb-6">
-                        <Upload className="w-6 h-6 text-blue-600" />
-                        <h2 className="text-xl font-bold text-gray-900">Upload de résultats</h2>
+                <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
+                    <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+                        <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Upload de résultats</h2>
                     </div>
 
                     {uploadError && (

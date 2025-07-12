@@ -4,8 +4,8 @@ import os
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/mauritania_exams"
-    database_url_async: str = "postgresql+asyncpg://postgres:zRgVlJsLnCsqpXzxUcYrOmqvmTztVBzF@gondola.proxy.rlwy.net:14631/railway"
+    database_url: str = "postgresql://postgres:wwJnoIKrFtVyOEvctyWbihfUpzHfYnDq@centerbeam.proxy.rlwy.net:45355/railway"
+    database_url_async: str = "postgresql+asyncpg://postgres:wwJnoIKrFtVyOEvctyWbihfUpzHfYnDq@centerbeam.proxy.rlwy.net:45355/railway"
     
     # Redis
     redis_url: str = "redis://localhost:6379"
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # CORS
-    cors_origins: list = ["https://exam.ahmed78.me/", "https://exam.ahmed78.me/"]
+    cors_origins: list = ["http://localhost:3000", "https://127.0.0.1:3000", "https://exam.ahmed78.me/", "https://exam.ahmed78.me/"]
     
     # File Upload
     upload_max_size: int = 50 * 1024 * 1024  # 50MB

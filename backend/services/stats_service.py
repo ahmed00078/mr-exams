@@ -46,7 +46,7 @@ class StatsService:
             return None
         
         total_candidats = len(results)
-        admis = [r for r in results if r.decision in ['Admis', 'Passable']]
+        admis = [r for r in results if r.decision in ['Admis', 'Delibérable', 'Sessionnaire']]
         total_admis = len(admis)
         taux_reussite = round((total_admis / total_candidats * 100), 2) if total_candidats > 0 else 0
         
@@ -61,7 +61,7 @@ class StatsService:
         for serie in series:
             serie_results = [r for r in results if r.serie_id == serie.id]
             if serie_results:
-                serie_admis = [r for r in serie_results if r.decision in ['Admis', 'Passable']]
+                serie_admis = [r for r in serie_results if r.decision in ['Admis', 'Delibérable', 'Sessionnaire']]
                 stats_par_serie[serie.code] = {
                     "name_fr": serie.name_fr,
                     "name_ar": serie.name_ar,
@@ -74,7 +74,7 @@ class StatsService:
         all_wilayas_stats = self.db.query(
             ExamResult.wilaya_id,
             func.count(ExamResult.id).label('total'),
-            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('admis')
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire'])).label('admis')
         ).filter(
             and_(ExamResult.session_id == session.id, ExamResult.is_published == True)
         ).group_by(ExamResult.wilaya_id).all()
@@ -139,7 +139,7 @@ class StatsService:
             return None
         
         total_candidats = len(results)
-        admis = [r for r in results if r.decision in ['Admis', 'Passable']]
+        admis = [r for r in results if r.decision in ['Admis', 'Delibérable', 'Sessionnaire']]
         total_admis = len(admis)
         taux_reussite = round((total_admis / total_candidats * 100), 2) if total_candidats > 0 else 0
         
@@ -151,7 +151,7 @@ class StatsService:
         wilaya_etablissements = self.db.query(
             ExamResult.etablissement_id,
             func.count(ExamResult.id).label('total'),
-            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('admis')
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire'])).label('admis')
         ).filter(
             and_(
                 ExamResult.session_id == session.id,
@@ -201,7 +201,7 @@ class StatsService:
             RefWilaya.name_fr,
             RefWilaya.name_ar,
             func.count(ExamResult.id).label('total_candidats'),
-            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('total_admis'),
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire'])).label('total_admis'),
             func.avg(ExamResult.moyenne_generale).label('moyenne')
         ).join(
             ExamResult, RefWilaya.id == ExamResult.wilaya_id
@@ -216,7 +216,7 @@ class StatsService:
             RefSerie.name_fr,
             RefSerie.name_ar,
             func.count(ExamResult.id).label('total_candidats'),
-            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('total_admis')
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire'])).label('total_admis')
         ).join(
             ExamResult, RefSerie.id == ExamResult.serie_id
         ).filter(
@@ -300,13 +300,13 @@ class StatsService:
             RefWilaya, ExamResult.wilaya_id == RefWilaya.id
         ).join(
             RefSerie, ExamResult.serie_id == RefSerie.id
-        ).join(
+        ).outerjoin(
             RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
         ).filter(
             and_(
                 ExamResult.session_id == session.id,
                 ExamResult.is_published == True,
-                ExamResult.decision.in_(['Admis', 'Passable']),
+                ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire']),
                 ExamResult.moyenne_generale.isnot(None)
             )
         ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
@@ -341,7 +341,7 @@ class StatsService:
             RefEtablissement.name_ar,
             RefWilaya.name_fr.label('wilaya_name'),
             func.count(ExamResult.id).label('total_candidats'),
-            func.count().filter(ExamResult.decision.in_(['Admis', 'Passable'])).label('total_admis'),
+            func.count().filter(ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire'])).label('total_admis'),
             func.avg(ExamResult.moyenne_generale).label('moyenne_etablissement')
         ).join(
             ExamResult, RefEtablissement.id == ExamResult.etablissement_id

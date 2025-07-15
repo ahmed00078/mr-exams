@@ -76,11 +76,14 @@ export default function ExamPage() {
                         statsApi.getTopStudents(numericYear, examType, 5),
                         statsApi.getTopSchools(numericYear, examType, 5)
                     ]);
+                    console.log('Stats data:', stats);
+                    console.log('Students data:', studentsData);
+                    console.log('Schools data:', schoolsData);
                     setGlobalStats(stats);
-                    setTopStudents(studentsData.top_students || []);
-                    setTopSchools(schoolsData.top_schools || []);
+                    setTopStudents(studentsData.top_students || studentsData || []);
+                    setTopSchools(schoolsData.top_schools || schoolsData || []);
                 } catch (error) {
-                    console.log('Stats not available');
+                    console.error('Stats error:', error);
                 }
 
             } catch (error) {
@@ -433,7 +436,7 @@ export default function ExamPage() {
                             </div>
 
                             <div className="space-y-3 md:space-y-4">
-                                {topStudents.map((student: any, index: number) => (
+                                {topStudents.length > 0 ? topStudents.map((student: any, index: number) => (
                                     <Link key={student.id} href={`/result/${student.id}`} className="block">
                                         <div className="flex items-center justify-between p-2 md:p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl md:rounded-2xl border border-gray-100 hover:shadow-md hover:scale-[1.02] transition-all cursor-pointer">
                                             <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
@@ -462,7 +465,11 @@ export default function ExamPage() {
                                             </div>
                                         </div>
                                     </Link>
-                                ))}
+                                )) : (
+                                    <div className="text-center py-8">
+                                        <p className="text-gray-500">Aucune donnée disponible pour le classement des élèves</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -524,7 +531,7 @@ export default function ExamPage() {
                                 </div>
 
                                 <div className="space-y-2 md:space-y-3">
-                                    {topSchools.slice(0, 5).map((school: any, index: number) => (
+                                    {topSchools.length > 0 ? topSchools.slice(0, 5).map((school: any, index: number) => (
                                         <Link 
                                             key={school.id} 
                                             href={`/${examParam}/resultats?etablissement=${school.id}`}
@@ -547,7 +554,11 @@ export default function ExamPage() {
                                                 </span>
                                             </div>
                                         </Link>
-                                    ))}
+                                    )) : (
+                                        <div className="text-center py-8">
+                                            <p className="text-gray-500">Aucune donnée disponible pour le classement des écoles</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

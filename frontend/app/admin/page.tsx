@@ -464,7 +464,7 @@ export default function SecureAdminPage() {
                                                 value={sessionForm.year}
                                                 onChange={(e) => setSessionForm(prev => ({ ...prev, year: parseInt(e.target.value) }))}
                                                 className="form-input"
-                                                min="2020"
+                                                min="2010"
                                                 max="2030"
                                                 required
                                             />
@@ -481,8 +481,8 @@ export default function SecureAdminPage() {
                                                 required
                                             >
                                                 <option value="bac">Baccalauréat</option>
-                                                <option value="bem">BEM</option>
-                                                <option value="bfem">BFEM</option>
+                                                <option value="bem">BEPC</option>
+                                                <option value="bfem">Concours</option>
                                             </select>
                                         </div>
 

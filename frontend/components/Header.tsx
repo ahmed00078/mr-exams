@@ -47,8 +47,15 @@ export default function Header() {
 
                     {/* Logo et titre */}
                     <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-                        <div className="mauritania-flag w-8 h-6 rounded-sm"></div>
-                        <div className="hidden sm:flex flex-col">
+                        <div className="flex items-center">
+                            <img
+                                src="/logo.png"
+                                alt="Logo"
+                                className="h-8 w-auto mr-3"
+                            />
+                            {/* <span className="font-bold">Nom du site</span> */}
+                        </div>
+                        {/* <div className="hidden sm:flex flex-col">
                             <h1 className="text-lg font-bold text-foreground leading-tight">
                                 Résultats d'Examens
                             </h1>
@@ -60,7 +67,7 @@ export default function Header() {
                             <h1 className="text-base font-bold text-foreground">
                                 Examens MR
                             </h1>
-                        </div>
+                        </div> */}
                     </Link>
 
                     {/* Navigation desktop */}

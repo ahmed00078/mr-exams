@@ -6,7 +6,13 @@ export default function Footer() {
                     {/* Informations officielles */}
                     <div className="lg:col-span-2">
                         <div className="flex items-center space-x-3 mb-4">
-                            <div className="mauritania-flag"></div>
+                            <div className="flex items-center">
+                                <img
+                                    src="/logo.png"
+                                    alt="Logo"
+                                    className="h-8 w-auto mr-3"
+                                />
+                            </div>
                             <h3 className="text-lg font-bold">La plateforme d’examens de référence en Mauritanie</h3>
                         </div>
                         <p className="text-gray-300 mb-4">

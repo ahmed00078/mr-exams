@@ -98,8 +98,8 @@ class ResultsService:
         return SearchResponse(**result_data)
     
     def get_result_by_id(self, result_id: uuid.UUID) -> Optional[ExamResult]:
-        """Récupère un résultat par son ID"""
-        return self.db.query(ExamResult).options(
+        """Récupère un résultat par son ID avec rangs calculés dynamiquement"""
+        result = self.db.query(ExamResult).options(
             joinedload(ExamResult.etablissement),
             joinedload(ExamResult.serie),
             joinedload(ExamResult.wilaya),
@@ -110,6 +110,14 @@ class ResultsService:
                 ExamResult.is_published == True
             )
         ).first()
+        
+        if result and result.decision.lower() == "admis" and result.moyenne_generale:
+            # Calculer les rangs dynamiquement pour les candidats admis seulement
+            result.rang_etablissement = self._calculate_school_rank(result)
+            result.rang_wilaya = self._calculate_wilaya_rank(result)
+            result.rang_national = self._calculate_national_rank(result)
+        
+        return result
     
     def increment_view_count(self, result_id: uuid.UUID):
         """Incrémente le compteur de vues"""
@@ -117,3 +125,56 @@ class ResultsService:
             {ExamResult.view_count: ExamResult.view_count + 1}
         )
         self.db.commit()
+    
+    def _calculate_school_rank(self, result: ExamResult) -> Optional[int]:
+        """Calcule le rang dans l'établissement"""
+        if not result.etablissement_id or not result.moyenne_generale:
+            return None
+            
+        # Compter combien d'étudiants ont une meilleure moyenne dans le même établissement
+        count = self.db.query(ExamResult).filter(
+            and_(
+                ExamResult.etablissement_id == result.etablissement_id,
+                ExamResult.session_id == result.session_id,
+                ExamResult.decision.ilike("admis"),
+                ExamResult.moyenne_generale > result.moyenne_generale,
+                ExamResult.is_published == True
+            )
+        ).count()
+        
+        return count + 1
+    
+    def _calculate_wilaya_rank(self, result: ExamResult) -> Optional[int]:
+        """Calcule le rang dans la wilaya"""
+        if not result.wilaya_id or not result.moyenne_generale:
+            return None
+            
+        # Compter combien d'étudiants ont une meilleure moyenne dans la même wilaya
+        count = self.db.query(ExamResult).filter(
+            and_(
+                ExamResult.wilaya_id == result.wilaya_id,
+                ExamResult.session_id == result.session_id,
+                ExamResult.decision.ilike("admis"),
+                ExamResult.moyenne_generale > result.moyenne_generale,
+                ExamResult.is_published == True
+            )
+        ).count()
+        
+        return count + 1
+    
+    def _calculate_national_rank(self, result: ExamResult) -> Optional[int]:
+        """Calcule le rang national"""
+        if not result.moyenne_generale:
+            return None
+            
+        # Compter combien d'étudiants ont une meilleure moyenne au niveau national
+        count = self.db.query(ExamResult).filter(
+            and_(
+                ExamResult.session_id == result.session_id,
+                ExamResult.decision.ilike("admis"),
+                ExamResult.moyenne_generale > result.moyenne_generale,
+                ExamResult.is_published == True
+            )
+        ).count()
+        
+        return count + 1

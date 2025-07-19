@@ -259,26 +259,42 @@ class StatsService:
         # Trier par taux de réussite décroissant
         series_sorted.sort(key=lambda x: x["taux_reussite"], reverse=True)
 
+        # Calculer les statistiques globales dynamiquement
+        total_candidats = self.db.query(func.count(ExamResult.id)).filter(
+            and_(ExamResult.session_id == session.id, ExamResult.is_published == True)
+        ).scalar() or 0
+        
+        total_admis = self.db.query(func.count(ExamResult.id)).filter(
+            and_(
+                ExamResult.session_id == session.id, 
+                ExamResult.is_published == True,
+                ExamResult.decision.ilike("admis")
+            )
+        ).scalar() or 0
+        
+        # Calculer le taux de réussite dynamiquement
+        taux_reussite_global = round((total_admis / total_candidats * 100), 2) if total_candidats > 0 else 0
+        
         # Calculer le nombre d'établissements ayant des candidats
         total_etablissements = self.db.query(
             func.count(func.distinct(ExamResult.etablissement_id))
         ).filter(
             and_(ExamResult.session_id == session.id, ExamResult.is_published == True)
-        ).scalar()
+        ).scalar() or 0
 
         return {
             "year": year,
             "exam_type": exam_type,
-            "total_candidats": session.total_candidates,
-            "total_admis": session.total_passed,
-            "taux_reussite_global": float(session.pass_rate) if session.pass_rate else 0,
-            "total_etablissements": total_etablissements or 0,
+            "total_candidats": total_candidats,           # ✅ Calculé dynamiquement
+            "total_admis": total_admis,                   # ✅ Calculé dynamiquement
+            "taux_reussite_global": taux_reussite_global, # ✅ Calculé dynamiquement
+            "total_etablissements": total_etablissements,
             "wilayas": wilayas_sorted,
             "series": series_sorted
         }
     
     def get_top_students(self, year: int, exam_type: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Récupère le top des élèves pour une année donnée"""
+        """Récupère le top des élèves avec les meilleures moyennes pour une année donnée"""
         
         session = self.db.query(ExamSession).filter(
             and_(ExamSession.year == year, ExamSession.exam_type == exam_type)
@@ -287,7 +303,7 @@ class StatsService:
         if not session:
             return []
         
-        # Récupérer les meilleurs élèves
+        # Récupérer les élèves avec les meilleures moyennes (indépendamment du statut d'admission)
         top_students = self.db.query(
             ExamResult.id,
             ExamResult.nom_complet_fr,
@@ -306,8 +322,7 @@ class StatsService:
             and_(
                 ExamResult.session_id == session.id,
                 ExamResult.is_published == True,
-                ExamResult.decision.in_(['Admis', 'Delibérable', 'Sessionnaire']),
-                ExamResult.moyenne_generale.isnot(None)
+                ExamResult.moyenne_generale.isnot(None)  # Seule condition: avoir une moyenne
             )
         ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
         

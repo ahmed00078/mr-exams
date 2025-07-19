@@ -266,130 +266,117 @@ export default function IndividualResultPage() {
                                 )}
                             </div>
 
-                            {/* Informations - Design compact */}
-                            <div className="space-y-2">
-                                {/* Établissement */}
-                                {result.etablissement && (
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <Building className="w-3 h-3 text-orange-600" />
+                            {/* Informations et Classements - Design 2 colonnes */}
+                            <div className="grid grid-cols-2 gap-3">
+                                {/* Colonne gauche: Informations */}
+                                <div className="space-y-2">
+                                    <div className="text-center mb-2">
+                                        <div className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                                            <Building className="w-3 h-3 text-blue-500" />
+                                            Informations
                                         </div>
-                                        <div>
-                                            <div className="text-xs text-slate-500">École</div>
-                                            <div className="text-xs font-semibold text-slate-900 leading-tight">
+                                    </div>
+
+                                    {/* Établissement */}
+                                    {result.etablissement && (
+                                        <div className="bg-orange-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="w-4 h-4 bg-orange-100 rounded-full flex items-center justify-center">
+                                                    <Building className="w-2.5 h-2.5 text-orange-600" />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">École</span>
+                                            </div>
+                                            <div className="text-xs font-bold text-orange-600 leading-tight">
                                                 {result.etablissement.name_fr}
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* Wilaya */}
-                                {result.wilaya && (
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <MapPin className="w-3 h-3 text-emerald-600" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs text-slate-500">Wilaya</div>
-                                            <div className="text-xs font-semibold text-slate-900">
+                                    {/* Wilaya */}
+                                    {result.wilaya && (
+                                        <div className="bg-emerald-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="w-4 h-4 bg-emerald-100 rounded-full flex items-center justify-center">
+                                                    <MapPin className="w-2.5 h-2.5 text-emerald-600" />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">Wilaya</span>
+                                            </div>
+                                            <div className="text-xs font-bold text-emerald-600 leading-tight">
                                                 {result.wilaya.name_fr}
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* Centre d'examen */}
-                                {result.centre_examen && (
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <Building className="w-3 h-3 text-slate-600" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs text-slate-500">Centre</div>
-                                            <div className="text-xs font-semibold text-slate-900">
-                                                {result.centre_examen}
+                                    {/* Série */}
+                                    {result.serie && (
+                                        <div className="bg-purple-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <div className="w-4 h-4 bg-purple-100 rounded-full flex items-center justify-center">
+                                                    <GraduationCap className="w-2.5 h-2.5 text-purple-600" />
+                                                </div>
+                                                <span className="text-xs font-medium text-slate-700">Série</span>
                                             </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Série */}
-                                {result.serie && (
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <GraduationCap className="w-3 h-3 text-purple-600" />
-                                        </div>
-                                        <div>
-                                            <div className="text-xs text-slate-500">Série</div>
-                                            <div className="text-xs font-semibold text-slate-900">
+                                            <div className="text-xs font-bold text-purple-600 leading-tight">
                                                 {result.serie.code}
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
+                                    )}
+                                </div>
 
-                            {/* Classements - Design élégant */}
-                            {(result.rang_etablissement || result.rang_wilaya || result.rang_national) && (
-                                <div className="pt-4 border-t border-slate-100">
-                                    <div className="text-center mb-4">
-                                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
-                                            <Trophy className="w-4 h-4 text-amber-500" />
-                                            Classements
+                                {/* Colonne droite: Classements */}
+                                {(result.rang_etablissement || result.rang_wilaya || result.rang_national) && (
+                                    <div className="space-y-2">
+                                        <div className="text-center mb-2">
+                                            <div className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700">
+                                                <Trophy className="w-3 h-3 text-amber-500" />
+                                                Classements
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div className="space-y-3">
                                         {result.rang_etablissement && (
-                                            <div className="flex items-center justify-between bg-amber-50 rounded-2xl p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-                                                        <Medal className="w-4 h-4 text-amber-600" />
+                                            <div className="bg-amber-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <div className="w-4 h-4 bg-amber-100 rounded-full flex items-center justify-center">
+                                                        <Medal className="w-2.5 h-2.5 text-amber-600" />
                                                     </div>
-                                                    <span className="text-sm font-medium text-slate-700">École</span>
+                                                    <span className="text-xs font-medium text-slate-700">École</span>
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="text-lg font-bold text-amber-600">
-                                                        🥈 #{result.rang_etablissement}
-                                                    </div>
+                                                <div className="text-xs font-bold text-amber-600 leading-tight">
+                                                    🥈 #{result.rang_etablissement}
                                                 </div>
                                             </div>
                                         )}
 
                                         {result.rang_wilaya && (
-                                            <div className="flex items-center justify-between bg-blue-50 rounded-2xl p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                                        <Award className="w-4 h-4 text-blue-600" />
+                                            <div className="bg-blue-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <div className="w-4 h-4 bg-blue-100 rounded-full flex items-center justify-center">
+                                                        <Award className="w-2.5 h-2.5 text-blue-600" />
                                                     </div>
-                                                    <span className="text-sm font-medium text-slate-700">Wilaya</span>
+                                                    <span className="text-xs font-medium text-slate-700">Wilaya</span>
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="text-lg font-bold text-blue-600">
-                                                        #{result.rang_wilaya}
-                                                    </div>
+                                                <div className="text-xs font-bold text-blue-600 leading-tight">
+                                                    #{result.rang_wilaya}
                                                 </div>
                                             </div>
                                         )}
 
                                         {result.rang_national && (
-                                            <div className="flex items-center justify-between bg-emerald-50 rounded-2xl p-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                                                        <Trophy className="w-4 h-4 text-emerald-600" />
+                                            <div className="bg-emerald-50 rounded-lg p-2 h-12 flex flex-col justify-center">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <div className="w-4 h-4 bg-emerald-100 rounded-full flex items-center justify-center">
+                                                        <Trophy className="w-2.5 h-2.5 text-emerald-600" />
                                                     </div>
-                                                    <span className="text-sm font-medium text-slate-700">National</span>
+                                                    <span className="text-xs font-medium text-slate-700">National</span>
                                                 </div>
-                                                <div className="text-right">
-                                                    <div className="text-lg font-bold text-emerald-600">
-                                                        #{result.rang_national}
-                                                    </div>
+                                                <div className="text-xs font-bold text-emerald-600 leading-tight">
+                                                    #{result.rang_national}
                                                 </div>
                                             </div>
                                         )}
                                     </div>
-                                </div>
-                            )}
+                                )}
+                            </div>
 
                             {/* Footer compact */}
                             <div className="pt-3 border-t border-slate-100 text-center space-y-1">

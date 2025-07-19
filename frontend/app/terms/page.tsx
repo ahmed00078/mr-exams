@@ -194,7 +194,7 @@ export default function TermsOfServicePage() {
                             <div className="text-gray-700">
                                 <p><strong>Email :</strong> ahmed@ahmed78.me</p>
                                 <p><strong>Téléphone :</strong> +222 20087182</p>
-                                <p><strong>Adresse :</strong> Ministère de l'Éducation Nationale, Nouakchott, Mauritanie</p>
+                                <p><strong>Adresse :</strong> Arafat, Nouakchott, Mauritanie</p>
                             </div>
                         </section>
 

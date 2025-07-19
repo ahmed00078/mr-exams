@@ -120,7 +120,7 @@ export default function HomePage() {
                         
                         <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto font-light leading-relaxed">
                             Consultez vos résultats d'examens en toute sécurité sur la plateforme officielle 
-                            du Ministère de l'Éducation Nationale
+                            du NatijtiMR
                         </p>
                     </div>
 

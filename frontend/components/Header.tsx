@@ -249,7 +249,7 @@ export default function Header() {
                                     {/* Informations */}
                                     <div className="space-y-2 text-center text-xs text-muted-foreground">
                                         <p>La plateforme d’examens de référence en Mauritanie</p>
-                                        <p>Ministère de l'Éducation Nationale</p>
+                                        <p>NatijtiMR</p>
                                         <p className="font-medium">Portail Officiel des Résultats</p>
                                     </div>
                                 </div>

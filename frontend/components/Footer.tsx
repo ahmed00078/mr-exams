@@ -20,7 +20,7 @@ export default function Footer() {
                             Consultez vos résultats du BAC, BEPC et autres concours en toute sécurité.
                         </p>
                         <p className="text-sm text-gray-400">
-                            Ministère de l&apos;Éducation Nationale et de la Réforme du Système Éducatif
+                            NatijtiMR
                         </p>
                     </div>
 

@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func, and_
 from typing import List, Optional
+from decimal import Decimal
 from database import get_db
-from models.database import ExamSession
+from models.database import ExamSession, ExamResult
 from models.schemas import SessionResponse, SessionListResponse
 
 router = APIRouter(prefix="/sessions", tags=["Sessions"])
@@ -13,7 +15,7 @@ async def get_published_sessions(
     year: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
-    """Liste toutes les sessions d'examens publiées"""
+    """Liste toutes les sessions d'examens publiées avec statistiques calculées dynamiquement"""
     
     query = db.query(ExamSession).filter(ExamSession.is_published == True)
     
@@ -24,7 +26,40 @@ async def get_published_sessions(
         query = query.filter(ExamSession.year == year)
     
     sessions = query.order_by(ExamSession.year.desc(), ExamSession.exam_type).all()
-    return [SessionResponse.from_orm(session) for session in sessions]
+    
+    # Calculer les statistiques dynamiquement pour chaque session
+    result = []
+    for session in sessions:
+        # Calculer le nombre total de candidats
+        total_candidates = db.query(ExamResult).filter(
+            and_(
+                ExamResult.session_id == session.id,
+                ExamResult.is_published == True
+            )
+        ).count()
+        
+        # Calculer le nombre d'admis
+        total_passed = db.query(ExamResult).filter(
+            and_(
+                ExamResult.session_id == session.id,
+                ExamResult.is_published == True,
+                ExamResult.decision.ilike("admis")
+            )
+        ).count()
+        
+        # Calculer le taux de réussite
+        pass_rate = Decimal('0')
+        if total_candidates > 0:
+            pass_rate = Decimal(str(round((total_passed / total_candidates) * 100, 2)))
+        
+        # Mettre à jour les champs calculés
+        session.total_candidates = total_candidates
+        session.total_passed = total_passed
+        session.pass_rate = pass_rate
+        
+        result.append(SessionResponse.from_orm(session))
+    
+    return result
 
 @router.get("/current", response_model=SessionResponse)
 async def get_current_session(

@@ -26,6 +26,7 @@ export default function HomePage() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showAllSessions, setShowAllSessions] = useState(false);
+    const [selectedExamType, setSelectedExamType] = useState<string>('all');
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -99,6 +100,20 @@ export default function HomePage() {
             case 'reminder': return 'border-yellow-500 bg-yellow-50 text-yellow-800';
             default: return 'border-gray-500 bg-gray-50 text-gray-800';
         }
+    };
+
+    // Fonction pour obtenir les types d'examens uniques
+    const getUniqueExamTypes = () => {
+        const types = Array.from(new Set(sessions.map(session => session.exam_type)));
+        return types.sort();
+    };
+
+    // Fonction pour filtrer les sessions par type
+    const getFilteredSessions = () => {
+        if (selectedExamType === 'all') {
+            return sessions;
+        }
+        return sessions.filter(session => session.exam_type === selectedExamType);
     };
 
     return (
@@ -192,6 +207,47 @@ export default function HomePage() {
                         </p>
                     </div>
 
+                    {/* Filtres par type d'examen */}
+                    {!isLoading && getUniqueExamTypes().length > 0 && (
+                        <div className="text-center mb-12">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl text-sm font-medium mb-4">
+                                <Award className="w-4 h-4 text-gray-600" />
+                                <span className="text-gray-700">Filtrer par type</span>
+                            </div>
+                            <div className="flex flex-wrap justify-center gap-3">
+                                <Button
+                                    variant={selectedExamType === 'all' ? 'default' : 'outline'}
+                                    onClick={() => setSelectedExamType('all')}
+                                    className={`px-6 py-2 rounded-xl font-semibold transition-all duration-200 ${
+                                        selectedExamType === 'all' 
+                                            ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md' 
+                                            : 'border-gray-300 text-gray-700 hover:border-blue-300 hover:bg-blue-50'
+                                    }`}
+                                >
+                                    Tous les examens
+                                </Button>
+                                {getUniqueExamTypes().map((examType) => {
+                                    const ExamIcon = getExamIcon(examType);
+                                    return (
+                                        <Button
+                                            key={examType}
+                                            variant={selectedExamType === examType ? 'default' : 'outline'}
+                                            onClick={() => setSelectedExamType(examType)}
+                                            className={`px-6 py-2 rounded-xl font-semibold transition-all duration-200 ${
+                                                selectedExamType === examType 
+                                                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md' 
+                                                    : 'border-gray-300 text-gray-700 hover:border-blue-300 hover:bg-blue-50'
+                                            }`}
+                                        >
+                                            <ExamIcon className="w-4 h-4 mr-2" />
+                                            {getExamLabel(examType)}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                             {[1, 2, 3].map((i) => (
@@ -201,7 +257,10 @@ export default function HomePage() {
                     ) : (
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
-                                {(showAllSessions ? sessions : sessions.slice(0, 6)).map((session) => {
+                                {(() => {
+                                    const filteredSessions = getFilteredSessions();
+                                    const sessionsToShow = showAllSessions ? filteredSessions : filteredSessions.slice(0, 6);
+                                    return sessionsToShow.map((session) => {
                                 const ExamIcon = getExamIcon(session.exam_type);
                                 const isRecent = session.year >= new Date().getFullYear();
 
@@ -256,31 +315,35 @@ export default function HomePage() {
                                         </div>
                                     </Link>
                                 );
-                            })}
+                                    });
+                                })()}
                             </div>
 
                             {/* Bouton Afficher plus/moins */}
-                            {sessions.length > 6 && (
-                                <div className="text-center mt-8">
-                                    <Button
-                                        onClick={() => setShowAllSessions(!showAllSessions)}
-                                        variant="outline"
-                                        className="px-8 py-3 text-blue-600 border-blue-300 hover:bg-blue-50 hover:border-blue-400 rounded-2xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
-                                    >
-                                        {showAllSessions ? (
-                                            <>
-                                                <ChevronUp className="w-4 h-4 mr-2" />
-                                                Afficher moins
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ChevronDown className="w-4 h-4 mr-2" />
-                                                Afficher plus ({sessions.length - 6} autres sessions)
-                                            </>
-                                        )}
-                                    </Button>
-                                </div>
-                            )}
+                            {(() => {
+                                const filteredSessions = getFilteredSessions();
+                                return filteredSessions.length > 6 && (
+                                    <div className="text-center mt-8">
+                                        <Button
+                                            onClick={() => setShowAllSessions(!showAllSessions)}
+                                            variant="outline"
+                                            className="px-8 py-3 text-blue-600 border-blue-300 hover:bg-blue-50 hover:border-blue-400 rounded-2xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
+                                        >
+                                            {showAllSessions ? (
+                                                <>
+                                                    <ChevronUp className="w-4 h-4 mr-2" />
+                                                    Afficher moins
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ChevronDown className="w-4 h-4 mr-2" />
+                                                    Afficher plus ({filteredSessions.length - 6} autres sessions)
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+                                );
+                            })()}
                         </>
                     )}
                 </div>

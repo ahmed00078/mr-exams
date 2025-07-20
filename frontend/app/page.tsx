@@ -12,7 +12,9 @@ import {
     Calendar,
     Bell,
     Clock,
-    AlertCircle
+    AlertCircle,
+    CalendarDays,
+    Search
 } from 'lucide-react';
 import { sessionsApi } from '@/lib/api';
 import { Session } from '@/types';
@@ -80,9 +82,9 @@ export default function HomePage() {
 
     const getAnnouncementIcon = (type: string) => {
         switch (type) {
-            case 'urgent': return AlertCircle;
-            case 'info': return Bell;
-            case 'reminder': return Clock;
+            case 'urgent': return AlertCircle;     // Publication des résultats - urgent ❗
+            case 'info': return CalendarDays;      // Calendrier des examens - calendrier 📅
+            case 'reminder': return Search;        // Vérification des résultats - recherche 🔍
             default: return Bell;
         }
     };

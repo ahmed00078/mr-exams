@@ -453,15 +453,15 @@ export default function ExamPage() {
                                                         {student.nom_complet}
                                                     </p>
                                                     <p className="text-xs text-gray-500 truncate">
-                                                        {student.wilaya} • Série {student.serie}
+                                                        {student.wilaya}{examType !== 'concours' ? ` • Série ${student.serie}` : ''}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="text-right flex-shrink-0 ml-2">
                                                 <div className="text-base md:text-2xl font-bold text-green-600 mb-1">
-                                                    {student.moyenne.toFixed(2)}
+                                                    {examType === 'concours' ? student.moyenne.toFixed(0) : student.moyenne.toFixed(2)}
                                                 </div>
-                                                <div className="text-xs text-gray-500">/ 20</div>
+                                                <div className="text-xs text-gray-500">/ {examType === 'concours' ? '200' : '20'}</div>
                                             </div>
                                         </div>
                                     </Link>

@@ -55,6 +55,7 @@ export interface ExamResult {
     date_naissance?: string;
     sexe?: 'M' | 'F';
     moyenne_generale?: number;
+    total_points?: number;  // Pour les concours (note sur 200)
     decision: string;
     mention?: string;
     rang_etablissement?: number;
@@ -69,6 +70,7 @@ export interface ExamResult {
     serie_code?: string;
     wilaya?: Wilaya;
     wilaya_name?: string;
+    session?: Session;  // Ajout des données de session
 }
 
 export interface ExamResultDetail extends ExamResult {

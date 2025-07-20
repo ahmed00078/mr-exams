@@ -49,7 +49,7 @@ export default function Header() {
                     <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
                         <div className="flex items-center">
                             <img
-                                src="/logo.png"
+                                src="/logo1.png"
                                 alt="Logo"
                                 className="h-8 w-auto mr-3"
                             />

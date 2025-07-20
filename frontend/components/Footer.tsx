@@ -8,7 +8,7 @@ export default function Footer() {
                         <div className="flex items-center space-x-3 mb-4">
                             <div className="flex items-center">
                                 <img
-                                    src="/logo.png"
+                                    src="/logo1.png"
                                     alt="Logo"
                                     className="h-8 w-auto mr-3"
                                 />

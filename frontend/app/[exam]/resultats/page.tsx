@@ -61,7 +61,10 @@ export default function ResultatsPage() {
                 ]);
 
                 setWilayas(wilayasData);
-                setSeries(seriesData.filter(s => s.exam_type === examType));
+                // Les concours n'ont pas de séries
+                if (examType !== 'concours') {
+                    setSeries(seriesData.filter(s => s.exam_type === examType));
+                }
 
                 // Charger les établissements si une wilaya est sélectionnée
                 if (wilayaFilter) {
@@ -243,32 +246,34 @@ export default function ResultatsPage() {
                             </Select>
                         </div>
 
-                        {/* Serie Filter */}
-                        <div className="space-y-2">
-                            <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
-                                <div className="w-4 h-4 md:w-6 md:h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
-                                    <GraduationCap className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
-                                </div>
-                                Série
-                            </label>
-                            <Select
-                                value={serieFilter || 'all'}
-                                onValueChange={(value) => updateFilter('serie', value)}
-                            >
-                                <SelectTrigger className="w-full h-9 md:h-12 rounded-lg md:rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-xs md:text-sm">
-                                    <SelectValue placeholder="Toutes" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">Toutes les séries</SelectItem>
-                                    {series.map((serie) => (
-                                        <SelectItem key={serie.id} value={serie.code}>
-                                            <span className="font-semibold">{serie.code}</span>
-                                            <span className="ml-2 text-gray-500 hidden sm:inline">- {serie.name_fr}</span>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        {/* Serie Filter - Masqué pour les concours */}
+                        {examType !== 'concours' && (
+                            <div className="space-y-2">
+                                <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
+                                    <div className="w-4 h-4 md:w-6 md:h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
+                                        <GraduationCap className="w-3 h-3 md:w-4 md:h-4 text-purple-600" />
+                                    </div>
+                                    Série
+                                </label>
+                                <Select
+                                    value={serieFilter || 'all'}
+                                    onValueChange={(value) => updateFilter('serie', value)}
+                                >
+                                    <SelectTrigger className="w-full h-9 md:h-12 rounded-lg md:rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-xs md:text-sm">
+                                        <SelectValue placeholder="Toutes" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">Toutes les séries</SelectItem>
+                                        {series.map((serie) => (
+                                            <SelectItem key={serie.id} value={serie.code}>
+                                                <span className="font-semibold">{serie.code}</span>
+                                                <span className="ml-2 text-gray-500 hidden sm:inline">- {serie.name_fr}</span>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
 
                         {/* Etablissement Filter */}
                         <div className="space-y-2">
@@ -316,7 +321,10 @@ export default function ResultatsPage() {
                                         <div className="flex items-center gap-2 flex-shrink-0">
                                             <div className="text-right">
                                                 <div className="text-base md:text-xl font-bold text-blue-600">
-                                                    {result.moyenne_generale}/20
+                                                    {examType === 'concours' 
+                                                        ? `${result.total_points || 0}/200`
+                                                        : `${result.moyenne_generale || 0}/20`
+                                                    }
                                                 </div>
                                                 <div className={`px-2 py-0.5 md:px-3 md:py-1 rounded text-xs font-semibold ${
                                                     result.decision === 'Admis' 
@@ -344,11 +352,13 @@ export default function ResultatsPage() {
                                             <span className="truncate max-w-20 md:max-w-none">{result.wilaya?.name_fr || 'N/A'}</span>
                                         </div>
                                         
-                                        {/* Serie */}
-                                        <div className="flex items-center gap-1 px-2 py-1 bg-purple-50 rounded text-purple-700">
-                                            <GraduationCap className="w-3 h-3" />
-                                            <span>{result.serie?.code || 'N/A'}</span>
-                                        </div>
+                                        {/* Serie - Masquée pour les concours */}
+                                        {examType !== 'concours' && (
+                                            <div className="flex items-center gap-1 px-2 py-1 bg-purple-50 rounded text-purple-700">
+                                                <GraduationCap className="w-3 h-3" />
+                                                <span>{result.serie?.code || 'N/A'}</span>
+                                            </div>
+                                        )}
                                         
                                         {/* Etablissement - Hidden on very small screens */}
                                         <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-gray-50 rounded text-gray-700 flex-1 min-w-0">

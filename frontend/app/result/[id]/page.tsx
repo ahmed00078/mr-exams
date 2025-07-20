@@ -126,6 +126,10 @@ export default function IndividualResultPage() {
 
     const isAdmis = result.decision.toLowerCase().includes('admis');
     const currentYear = new Date(result.created_at).getFullYear();
+    
+    // Détecter le type d'examen depuis la session
+    const examType = result.session?.exam_type || result.serie?.exam_type;
+    const isConcours = examType === 'concours';
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -220,20 +224,33 @@ export default function IndividualResultPage() {
                                         <div className={`text-lg font-bold mb-1 ${isAdmis ? 'text-emerald-700' : 'text-rose-700'}`}>
                                             {result.decision}
                                         </div>
-                                        {result.moyenne_generale && (
+                                        {/* Affichage conditionnel selon le type d'examen */}
+                                        {isConcours ? (
+                                            // Pour les concours: note sur 200 (affiche 0 si null)
                                             <div className="flex items-center justify-center gap-1 text-sm">
-                                                <span className="text-slate-600">Moy:</span>
+                                                <span className="text-slate-600">Note:</span>
                                                 <span className="text-xl font-black text-slate-900 bg-white/60 px-2 py-0.5 rounded">
-                                                    {formatMoyenne(result.moyenne_generale)}
+                                                    {result.total_points || 0}
                                                 </span>
-                                                <span className="text-slate-600">/20</span>
+                                                <span className="text-slate-600">/200</span>
                                             </div>
+                                        ) : (
+                                            // Pour BAC/BEPC: moyenne sur 20
+                                            result.moyenne_generale && (
+                                                <div className="flex items-center justify-center gap-1 text-sm">
+                                                    <span className="text-slate-600">Moy:</span>
+                                                    <span className="text-xl font-black text-slate-900 bg-white/60 px-2 py-0.5 rounded">
+                                                        {formatMoyenne(result.moyenne_generale)}
+                                                    </span>
+                                                    <span className="text-slate-600">/20</span>
+                                                </div>
+                                            )
                                         )}
                                     </div>
                                 </div>
 
-                                {/* Mention */}
-                                {result.mention && (
+                                {/* Mention - Seulement pour le BAC */}
+                                {result.mention && examType === 'bac' && (
                                     <div className="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full">
                                         <Star className="w-3 h-3 text-amber-500" />
                                         <span className="text-xs font-semibold text-amber-700">{result.mention}</span>
@@ -307,8 +324,8 @@ export default function IndividualResultPage() {
                                         </div>
                                     )}
 
-                                    {/* Série */}
-                                    {result.serie && (
+                                    {/* Série - Masquée pour les concours */}
+                                    {result.serie && !isConcours && (
                                         <div className="bg-purple-50 rounded-lg p-2 h-12 flex flex-col justify-center">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="w-4 h-4 bg-purple-100 rounded-full flex items-center justify-center">

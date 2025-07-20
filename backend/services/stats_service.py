@@ -303,41 +303,79 @@ class StatsService:
         if not session:
             return []
         
-        # Récupérer les élèves avec les meilleures moyennes (indépendamment du statut d'admission)
-        top_students = self.db.query(
-            ExamResult.id,
-            ExamResult.nom_complet_fr,
-            ExamResult.moyenne_generale,
-            ExamResult.decision,
-            RefWilaya.name_fr.label('wilaya_name'),
-            RefSerie.code.label('serie_code'),
-            RefEtablissement.name_fr.label('etablissement_name')
-        ).join(
-            RefWilaya, ExamResult.wilaya_id == RefWilaya.id
-        ).join(
-            RefSerie, ExamResult.serie_id == RefSerie.id
-        ).outerjoin(
-            RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
-        ).filter(
-            and_(
-                ExamResult.session_id == session.id,
-                ExamResult.is_published == True,
-                ExamResult.moyenne_generale.isnot(None)  # Seule condition: avoir une moyenne
-            )
-        ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
-        
-        return [
-            {
-                "id": str(student.id),
-                "nom_complet": student.nom_complet_fr,
-                "moyenne": float(student.moyenne_generale),
-                "decision": student.decision,
-                "wilaya": student.wilaya_name,
-                "serie": student.serie_code,
-                "etablissement": student.etablissement_name
-            }
-            for student in top_students
-        ]
+        # Adapter le classement selon le type d'examen
+        if exam_type == 'concours':
+            # Pour les concours: trier par total_points (note sur 200)
+            top_students = self.db.query(
+                ExamResult.id,
+                ExamResult.nom_complet_fr,
+                ExamResult.total_points,
+                ExamResult.decision,
+                RefWilaya.name_fr.label('wilaya_name'),
+                RefSerie.code.label('serie_code'),
+                RefEtablissement.name_fr.label('etablissement_name')
+            ).join(
+                RefWilaya, ExamResult.wilaya_id == RefWilaya.id
+            ).join(
+                RefSerie, ExamResult.serie_id == RefSerie.id
+            ).outerjoin(
+                RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
+            ).filter(
+                and_(
+                    ExamResult.session_id == session.id,
+                    ExamResult.is_published == True,
+                    ExamResult.total_points.isnot(None)  # Condition: avoir une note
+                )
+            ).order_by(desc(ExamResult.total_points)).limit(limit).all()
+            
+            return [
+                {
+                    "id": str(student.id),
+                    "nom_complet": student.nom_complet_fr,
+                    "moyenne": float(student.total_points),  # Note sur 200 pour concours
+                    "decision": student.decision,
+                    "wilaya": student.wilaya_name,
+                    "serie": student.serie_code,
+                    "etablissement": student.etablissement_name
+                }
+                for student in top_students
+            ]
+        else:
+            # Pour BAC/BEPC: trier par moyenne_generale (moyenne sur 20)
+            top_students = self.db.query(
+                ExamResult.id,
+                ExamResult.nom_complet_fr,
+                ExamResult.moyenne_generale,
+                ExamResult.decision,
+                RefWilaya.name_fr.label('wilaya_name'),
+                RefSerie.code.label('serie_code'),
+                RefEtablissement.name_fr.label('etablissement_name')
+            ).join(
+                RefWilaya, ExamResult.wilaya_id == RefWilaya.id
+            ).join(
+                RefSerie, ExamResult.serie_id == RefSerie.id
+            ).outerjoin(
+                RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
+            ).filter(
+                and_(
+                    ExamResult.session_id == session.id,
+                    ExamResult.is_published == True,
+                    ExamResult.moyenne_generale.isnot(None)  # Condition: avoir une moyenne
+                )
+            ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
+            
+            return [
+                {
+                    "id": str(student.id),
+                    "nom_complet": student.nom_complet_fr,
+                    "moyenne": float(student.moyenne_generale),
+                    "decision": student.decision,
+                    "wilaya": student.wilaya_name,
+                    "serie": student.serie_code,
+                    "etablissement": student.etablissement_name
+                }
+                for student in top_students
+            ]
     
     def get_top_schools(self, year: int, exam_type: str, limit: int = 10) -> List[Dict[str, Any]]:
         """Récupère le top des écoles pour une année donnée"""

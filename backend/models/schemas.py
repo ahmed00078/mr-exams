@@ -55,6 +55,7 @@ class ExamResultBase(BaseModel):
     date_naissance: Optional[date] = None
     sexe: Optional[str] = Field(None, pattern="^[MF]$")
     moyenne_generale: Optional[Decimal] = Field(None, ge=0, le=20)
+    total_points: Optional[Decimal] = Field(None, ge=0, le=200)  # Pour les concours
     decision: str
     mention: Optional[str] = None
 

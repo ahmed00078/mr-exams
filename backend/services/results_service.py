@@ -69,12 +69,21 @@ class ResultsService:
         # Compter le total
         total = query.count()
         
-        # Appliquer la pagination avec tri par moyenne décroissante
+        # Appliquer la pagination avec tri adapté selon le type d'examen
         offset = (params.page - 1) * params.size
-        results = query.order_by(
-            ExamResult.moyenne_generale.desc().nullslast(),
-            desc(ExamResult.created_at)
-        ).offset(offset).limit(params.size).all()
+        
+        if params.exam_type == 'concours':
+            # Pour les concours: trier par total_points décroissant
+            results = query.order_by(
+                ExamResult.total_points.desc().nullslast(),
+                desc(ExamResult.created_at)
+            ).offset(offset).limit(params.size).all()
+        else:
+            # Pour BAC/BEPC: trier par moyenne_generale décroissante
+            results = query.order_by(
+                ExamResult.moyenne_generale.desc().nullslast(),
+                desc(ExamResult.created_at)
+            ).offset(offset).limit(params.size).all()
         
         # Calculer les métadonnées de pagination
         total_pages = (total + params.size - 1) // params.size
@@ -111,11 +120,17 @@ class ResultsService:
             )
         ).first()
         
-        if result and result.decision.lower() == "admis" and result.moyenne_generale:
-            # Calculer les rangs dynamiquement pour les candidats admis seulement
-            result.rang_etablissement = self._calculate_school_rank(result)
-            result.rang_wilaya = self._calculate_wilaya_rank(result)
-            result.rang_national = self._calculate_national_rank(result)
+        if result and result.decision.lower() == "admis":
+            # Vérifier si on a la note appropriée selon le type d'examen
+            exam_type = result.session.exam_type if result.session else None
+            has_score = (exam_type == 'concours' and result.total_points is not None) or \
+                       (exam_type != 'concours' and result.moyenne_generale)
+            
+            if has_score:
+                # Calculer les rangs dynamiquement pour les candidats admis seulement
+                result.rang_etablissement = self._calculate_school_rank(result)
+                result.rang_wilaya = self._calculate_wilaya_rank(result)
+                result.rang_national = self._calculate_national_rank(result)
         
         return result
     
@@ -128,53 +143,103 @@ class ResultsService:
     
     def _calculate_school_rank(self, result: ExamResult) -> Optional[int]:
         """Calcule le rang dans l'établissement"""
-        if not result.etablissement_id or not result.moyenne_generale:
+        if not result.etablissement_id:
             return None
-            
-        # Compter combien d'étudiants ont une meilleure moyenne dans le même établissement
-        count = self.db.query(ExamResult).filter(
-            and_(
-                ExamResult.etablissement_id == result.etablissement_id,
-                ExamResult.session_id == result.session_id,
-                ExamResult.decision.ilike("admis"),
-                ExamResult.moyenne_generale > result.moyenne_generale,
-                ExamResult.is_published == True
-            )
-        ).count()
+        
+        exam_type = result.session.exam_type if result.session else None
+        
+        if exam_type == 'concours':
+            if result.total_points is None:
+                return None
+            # Compter combien d'étudiants ont une meilleure note dans le même établissement
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.etablissement_id == result.etablissement_id,
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.total_points > result.total_points,
+                    ExamResult.is_published == True
+                )
+            ).count()
+        else:
+            if not result.moyenne_generale:
+                return None
+            # Compter combien d'étudiants ont une meilleure moyenne dans le même établissement
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.etablissement_id == result.etablissement_id,
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.moyenne_generale > result.moyenne_generale,
+                    ExamResult.is_published == True
+                )
+            ).count()
         
         return count + 1
     
     def _calculate_wilaya_rank(self, result: ExamResult) -> Optional[int]:
         """Calcule le rang dans la wilaya"""
-        if not result.wilaya_id or not result.moyenne_generale:
+        if not result.wilaya_id:
             return None
-            
-        # Compter combien d'étudiants ont une meilleure moyenne dans la même wilaya
-        count = self.db.query(ExamResult).filter(
-            and_(
-                ExamResult.wilaya_id == result.wilaya_id,
-                ExamResult.session_id == result.session_id,
-                ExamResult.decision.ilike("admis"),
-                ExamResult.moyenne_generale > result.moyenne_generale,
-                ExamResult.is_published == True
-            )
-        ).count()
+        
+        exam_type = result.session.exam_type if result.session else None
+        
+        if exam_type == 'concours':
+            if result.total_points is None:
+                return None
+            # Compter combien d'étudiants ont une meilleure note dans la même wilaya
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.wilaya_id == result.wilaya_id,
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.total_points > result.total_points,
+                    ExamResult.is_published == True
+                )
+            ).count()
+        else:
+            if not result.moyenne_generale:
+                return None
+            # Compter combien d'étudiants ont une meilleure moyenne dans la même wilaya
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.wilaya_id == result.wilaya_id,
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.moyenne_generale > result.moyenne_generale,
+                    ExamResult.is_published == True
+                )
+            ).count()
         
         return count + 1
     
     def _calculate_national_rank(self, result: ExamResult) -> Optional[int]:
         """Calcule le rang national"""
-        if not result.moyenne_generale:
-            return None
-            
-        # Compter combien d'étudiants ont une meilleure moyenne au niveau national
-        count = self.db.query(ExamResult).filter(
-            and_(
-                ExamResult.session_id == result.session_id,
-                ExamResult.decision.ilike("admis"),
-                ExamResult.moyenne_generale > result.moyenne_generale,
-                ExamResult.is_published == True
-            )
-        ).count()
+        exam_type = result.session.exam_type if result.session else None
+        
+        if exam_type == 'concours':
+            if result.total_points is None:
+                return None
+            # Compter combien d'étudiants ont une meilleure note au niveau national
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.total_points > result.total_points,
+                    ExamResult.is_published == True
+                )
+            ).count()
+        else:
+            if not result.moyenne_generale:
+                return None
+            # Compter combien d'étudiants ont une meilleure moyenne au niveau national
+            count = self.db.query(ExamResult).filter(
+                and_(
+                    ExamResult.session_id == result.session_id,
+                    ExamResult.decision.ilike("admis"),
+                    ExamResult.moyenne_generale > result.moyenne_generale,
+                    ExamResult.is_published == True
+                )
+            ).count()
         
         return count + 1

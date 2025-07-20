@@ -112,7 +112,9 @@ export default function HomePage() {
                     {/* Header */}
                     <div className="text-center mb-12">
                         <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-2xl mb-8 border border-white/20">
-                            <div className="text-3xl">🇲🇷</div>
+                            <div className="w-8 h-6">
+                                <img src="/Flag_of_Mauritania.svg.png" alt="Drapeau de Mauritanie" className="w-full h-full object-cover rounded-sm" />
+                            </div>
                             <span className="text-sm font-medium text-white">République Islamique de Mauritanie</span>
                         </div>
                         

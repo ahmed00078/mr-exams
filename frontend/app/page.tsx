@@ -14,7 +14,9 @@ import {
     Clock,
     AlertCircle,
     CalendarDays,
-    Search
+    Search,
+    ChevronDown,
+    ChevronUp
 } from 'lucide-react';
 import { sessionsApi } from '@/lib/api';
 import { Session } from '@/types';
@@ -23,6 +25,7 @@ import { formatTauxReussite } from '@/lib/utils';
 export default function HomePage() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [showAllSessions, setShowAllSessions] = useState(false);
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -194,8 +197,9 @@ export default function HomePage() {
                             ))}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
-                            {sessions.map((session) => {
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto">
+                                {(showAllSessions ? sessions : sessions.slice(0, 6)).map((session) => {
                                 const ExamIcon = getExamIcon(session.exam_type);
                                 const isRecent = session.year >= new Date().getFullYear();
 
@@ -251,7 +255,31 @@ export default function HomePage() {
                                     </Link>
                                 );
                             })}
-                        </div>
+                            </div>
+
+                            {/* Bouton Afficher plus/moins */}
+                            {sessions.length > 6 && (
+                                <div className="text-center mt-8">
+                                    <Button
+                                        onClick={() => setShowAllSessions(!showAllSessions)}
+                                        variant="outline"
+                                        className="px-8 py-3 text-blue-600 border-blue-300 hover:bg-blue-50 hover:border-blue-400 rounded-2xl font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
+                                    >
+                                        {showAllSessions ? (
+                                            <>
+                                                <ChevronUp className="w-4 h-4 mr-2" />
+                                                Afficher moins
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ChevronDown className="w-4 h-4 mr-2" />
+                                                Afficher plus ({sessions.length - 6} autres sessions)
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </section>

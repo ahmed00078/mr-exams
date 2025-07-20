@@ -403,7 +403,7 @@ export default function IndividualResultPage() {
                                     <span>Publié le {formatDate(result.published_at || result.created_at)}</span>
                                 </div>
                                 <div className="text-xs text-slate-400">
-                                    <div>Document officiel • RIM</div>
+                                    <div>Document officiel • NatijtiMR</div>
                                 </div>
                             </div>
                         </div>

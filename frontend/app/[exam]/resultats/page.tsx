@@ -61,8 +61,8 @@ export default function ResultatsPage() {
                 ]);
 
                 setWilayas(wilayasData);
-                // Les concours n'ont pas de séries
-                if (examType !== 'concours') {
+                // Les concours et BEPC n'ont pas de séries
+                if (examType !== 'concours' && examType !== 'bepc') {
                     setSeries(seriesData.filter(s => s.exam_type === examType));
                 }
 
@@ -246,8 +246,8 @@ export default function ResultatsPage() {
                             </Select>
                         </div>
 
-                        {/* Serie Filter - Masqué pour les concours */}
-                        {examType !== 'concours' && (
+                        {/* Serie Filter - Masqué pour les concours et BEPC */}
+                        {examType !== 'concours' && examType !== 'bepc' && (
                             <div className="space-y-2">
                                 <label className="flex items-center text-xs md:text-sm font-semibold text-gray-700">
                                     <div className="w-4 h-4 md:w-6 md:h-6 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
@@ -352,8 +352,8 @@ export default function ResultatsPage() {
                                             <span className="truncate max-w-20 md:max-w-none">{result.wilaya?.name_fr || 'N/A'}</span>
                                         </div>
                                         
-                                        {/* Serie - Masquée pour les concours */}
-                                        {examType !== 'concours' && (
+                                        {/* Serie - Masquée pour les concours et BEPC */}
+                                        {examType !== 'concours' && examType !== 'bepc' && (
                                             <div className="flex items-center gap-1 px-2 py-1 bg-purple-50 rounded text-purple-700">
                                                 <GraduationCap className="w-3 h-3" />
                                                 <span>{result.serie?.code || 'N/A'}</span>

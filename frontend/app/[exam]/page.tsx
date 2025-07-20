@@ -453,7 +453,7 @@ export default function ExamPage() {
                                                         {student.nom_complet}
                                                     </p>
                                                     <p className="text-xs text-gray-500 truncate">
-                                                        {student.wilaya}{examType !== 'concours' ? ` • Série ${student.serie}` : ''}
+                                                        {student.wilaya}{examType !== 'concours' && examType !== 'bepc' ? ` • Série ${student.serie}` : ''}
                                                     </p>
                                                 </div>
                                             </div>

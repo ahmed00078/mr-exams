@@ -130,6 +130,7 @@ export default function IndividualResultPage() {
     // Détecter le type d'examen depuis la session
     const examType = result.session?.exam_type || result.serie?.exam_type;
     const isConcours = examType === 'concours';
+    const isBepc = examType === 'bepc';
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -324,8 +325,8 @@ export default function IndividualResultPage() {
                                         </div>
                                     )}
 
-                                    {/* Série - Masquée pour les concours */}
-                                    {result.serie && !isConcours && (
+                                    {/* Série - Masquée pour les concours et BEPC */}
+                                    {result.serie && !isConcours && !isBepc && (
                                         <div className="bg-purple-50 rounded-lg p-2 h-12 flex flex-col justify-center">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="w-4 h-4 bg-purple-100 rounded-full flex items-center justify-center">

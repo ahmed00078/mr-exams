@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # CORS
-    cors_origins: list = ["https://exam.ahmed78.me", "http://localhost:3000", "https://127.0.0.1:3000", "https://exam.ahmed78.me/", "https://natijti.com/", , "https://natijti.com", "https://www.natijti.com/", "https://exam.natijti.com/"]
+    cors_origins: list = ["https://exam.ahmed78.me", "http://localhost:3000", "https://127.0.0.1:3000", "https://exam.ahmed78.me/", "https://natijti.com/", "https://natijti.com", "https://www.natijti.com/", "https://exam.natijti.com/"]
     
     # File Upload
     upload_max_size: int = 50 * 1024 * 1024  # 50MB

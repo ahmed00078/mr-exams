@@ -10,6 +10,36 @@ from models.database import AdminUser, RefWilaya, RefSerie, ExamSession
 
 router = APIRouter(prefix="/admin", tags=["Administration"])
 
+@router.post("/upload/preview")
+async def preview_upload_file(
+    file: UploadFile = File(..., description="Fichier CSV ou Excel à prévisualiser"),
+    db: Session = Depends(get_db),
+    # current_user: AdminUser = Depends(get_current_user)
+):
+    """Prévisualise un fichier Excel/CSV avant upload complet"""
+    
+    # Vérifier le type de fichier
+    if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
+        raise HTTPException(
+            status_code=400,
+            detail="Format de fichier non supporté. Utilisez CSV ou Excel."
+        )
+    
+    # Vérifier la taille du fichier
+    if file.size > 50 * 1024 * 1024:  # 50MB
+        raise HTTPException(
+            status_code=400,
+            detail="Fichier trop volumineux. Taille maximale: 50MB"
+        )
+    
+    service = UploadService(db)
+    try:
+        return await service.preview_upload_file(file)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la prévisualisation: {str(e)}")
+
 @router.post("/upload", response_model=BulkUploadResponse)
 async def upload_bulk_results(
     file: UploadFile = File(..., description="Fichier CSV ou Excel avec les résultats"),

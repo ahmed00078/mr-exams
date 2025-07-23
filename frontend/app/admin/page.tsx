@@ -481,8 +481,8 @@ export default function SecureAdminPage() {
                                                 required
                                             >
                                                 <option value="bac">Baccalauréat</option>
-                                                <option value="bem">BEPC</option>
-                                                <option value="bfem">Concours</option>
+                                                <option value="bepc">BEPC</option>
+                                                <option value="concours">Concours</option>
                                             </select>
                                         </div>
 

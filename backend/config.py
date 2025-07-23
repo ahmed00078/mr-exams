@@ -16,14 +16,14 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # CORS
-    cors_origins: list = ["https://exam.ahmed78.me", "http://localhost:3000", "https://127.0.0.1:3000", "https://exam.ahmed78.me/", "https://exam.ahmed78.me/"]
+    cors_origins: list = ["https://exam.ahmed78.me", "http://localhost:3000", "https://127.0.0.1:3000", "https://exam.ahmed78.me/", "https://natijti.com/", , "https://natijti.com", "https://www.natijti.com/", "https://exam.natijti.com/"]
     
     # File Upload
     upload_max_size: int = 50 * 1024 * 1024  # 50MB
     upload_path: str = "./uploads"
     
     # Social Media
-    base_url: str = "https://exam.ahmed78.me/"
+    base_url: str = "https://natijti.com/"
     social_share_expire_days: int = 30
     
     # Pagination

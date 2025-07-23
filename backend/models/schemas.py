@@ -47,14 +47,14 @@ class SerieResponse(BaseModel):
 
 # Schémas pour résultats d'examen
 class ExamResultBase(BaseModel):
-    nni: str = Field(..., min_length=10, max_length=20)
+    nni: str = Field(..., min_length=1, max_length=20)  # Modifié pour concours (1-3 chiffres)
     numero_dossier: Optional[str] = None
     nom_complet_fr: str = Field(..., min_length=2, max_length=200)
     nom_complet_ar: Optional[str] = None
     lieu_naissance: Optional[str] = None
     date_naissance: Optional[date] = None
     sexe: Optional[str] = Field(None, pattern="^[MF]$")
-    moyenne_generale: Optional[Decimal] = Field(None, ge=0, le=20)
+    moyenne_generale: Optional[Decimal] = Field(None, ge=0, le=200)  # Modifié pour concours (sur 200)
     total_points: Optional[Decimal] = Field(None, ge=0, le=200)  # Pour les concours
     decision: str
     mention: Optional[str] = None

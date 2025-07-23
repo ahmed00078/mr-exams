@@ -148,24 +148,35 @@ class UploadService:
                     result_data = self._validate_and_map_row(row, session_id, etablissements_cache, wilayas_cache, series_cache, format_type)
                     
                     if result_data:
-                        # Vérifier si le résultat existe déjà
-                        existing = self.db.query(ExamResult).filter(
-                            and_(
-                                ExamResult.nni == result_data["nni"],
-                                ExamResult.session_id == session_id
-                            )
-                        ).first()
+                        # Pour les concours, utiliser NODOSS comme identifiant unique si disponible
+                        unique_identifier = result_data.get("numero_dossier") or result_data["nni"]
+                        
+                        # Vérifier si le résultat existe déjà (par NODOSS ou NNI selon le cas)
+                        if result_data.get("numero_dossier"):
+                            existing = self.db.query(ExamResult).filter(
+                                and_(
+                                    ExamResult.numero_dossier == result_data["numero_dossier"],
+                                    ExamResult.session_id == session_id
+                                )
+                            ).first()
+                        else:
+                            existing = self.db.query(ExamResult).filter(
+                                and_(
+                                    ExamResult.nni == result_data["nni"],
+                                    ExamResult.session_id == session_id
+                                )
+                            ).first()
                         
                         if existing:
                             # Mettre à jour
                             for key, value in result_data.items():
                                 setattr(existing, key, value)
-                            print(f"Ligne {index + 1}: Mise à jour NNI {result_data['nni']}")
+                            print(f"Ligne {index + 1}: Mise à jour {unique_identifier}")
                         else:
                             # Créer nouveau
                             result = ExamResult(**result_data)
                             self.db.add(result)
-                            print(f"Ligne {index + 1}: Ajout NNI {result_data['nni']}")
+                            print(f"Ligne {index + 1}: Ajout {unique_identifier}")
                         
                         success_count += 1
                     else:

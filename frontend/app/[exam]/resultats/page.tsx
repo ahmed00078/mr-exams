@@ -322,7 +322,7 @@ export default function ResultatsPage() {
                                             <div className="text-right">
                                                 <div className="text-base md:text-xl font-bold text-blue-600">
                                                     {examType === 'concours' 
-                                                        ? `${result.total_points || 0}/200`
+                                                        ? `${result.moyenne_generale || 0}/200`
                                                         : `${result.moyenne_generale || 0}/20`
                                                     }
                                                 </div>

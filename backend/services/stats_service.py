@@ -305,37 +305,35 @@ class StatsService:
         
         # Adapter le classement selon le type d'examen
         if exam_type == 'concours':
-            # Pour les concours: trier par total_points (note sur 200)
+            # Pour les concours: trier par moyenne_generale (note sur 200)
             top_students = self.db.query(
                 ExamResult.id,
                 ExamResult.nom_complet_fr,
-                ExamResult.total_points,
+                ExamResult.nom_complet_ar,
+                ExamResult.moyenne_generale,
                 ExamResult.decision,
                 RefWilaya.name_fr.label('wilaya_name'),
-                RefSerie.code.label('serie_code'),
                 RefEtablissement.name_fr.label('etablissement_name')
-            ).join(
+            ).outerjoin(
                 RefWilaya, ExamResult.wilaya_id == RefWilaya.id
-            ).join(
-                RefSerie, ExamResult.serie_id == RefSerie.id
             ).outerjoin(
                 RefEtablissement, ExamResult.etablissement_id == RefEtablissement.id
             ).filter(
                 and_(
                     ExamResult.session_id == session.id,
                     ExamResult.is_published == True,
-                    ExamResult.total_points.isnot(None)  # Condition: avoir une note
+                    ExamResult.moyenne_generale.isnot(None)  # Condition: avoir une moyenne
                 )
-            ).order_by(desc(ExamResult.total_points)).limit(limit).all()
+            ).order_by(desc(ExamResult.moyenne_generale)).limit(limit).all()
             
             return [
                 {
                     "id": str(student.id),
-                    "nom_complet": student.nom_complet_fr,
-                    "moyenne": float(student.total_points),  # Note sur 200 pour concours
+                    "nom_complet": student.nom_complet_fr or student.nom_complet_ar,
+                    "moyenne": float(student.moyenne_generale),  # Note sur 200 pour concours
                     "decision": student.decision,
-                    "wilaya": student.wilaya_name,
-                    "serie": student.serie_code,
+                    "wilaya": student.wilaya_name or "Non définie",
+                    "serie": None,  # Pas de série pour les concours
                     "etablissement": student.etablissement_name
                 }
                 for student in top_students

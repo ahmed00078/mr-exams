@@ -129,8 +129,12 @@ export default function IndividualResultPage() {
     
     // Détecter le type d'examen depuis la session
     const examType = result.session?.exam_type || result.serie?.exam_type;
-    const isConcours = examType === 'concours';
+    // Fallback: si la moyenne > 20, c'est probablement un concours (sur 200)
+    const isConcours = examType === 'concours' || (result.moyenne_generale && Number(result.moyenne_generale) > 20);
     const isBepc = examType === 'bepc';
+    
+    // Debug pour voir la valeur
+    console.log('Debug - examType:', examType, 'moyenne:', result.moyenne_generale, 'isConcours:', isConcours);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -195,11 +199,6 @@ export default function IndividualResultPage() {
                                 <h1 className="text-lg font-bold text-slate-900 leading-tight">
                                     {result.nom_complet_fr}
                                 </h1>
-                                {result.nom_complet_ar && (
-                                    <p className="text-xs text-slate-600 font-medium" dir="rtl">
-                                        {result.nom_complet_ar}
-                                    </p>
-                                )}
                             </div>
 
                             {/* Résultat principal - Design moderne */}
@@ -226,26 +225,14 @@ export default function IndividualResultPage() {
                                             {result.decision}
                                         </div>
                                         {/* Affichage conditionnel selon le type d'examen */}
-                                        {isConcours ? (
-                                            // Pour les concours: note sur 200 (affiche 0 si null)
+                                        {result.moyenne_generale && (
                                             <div className="flex items-center justify-center gap-1 text-sm">
-                                                <span className="text-slate-600">Note:</span>
+                                                <span className="text-slate-600">{isConcours ? 'Note:' : 'Moy:'}</span>
                                                 <span className="text-xl font-black text-slate-900 bg-white/60 px-2 py-0.5 rounded">
-                                                    {result.total_points || 0}
+                                                    {isConcours ? Math.round(Number(result.moyenne_generale)) : Number(result.moyenne_generale).toFixed(2)}
                                                 </span>
-                                                <span className="text-slate-600">/200</span>
+                                                <span className="text-slate-600">/{isConcours ? '200' : '20'}</span>
                                             </div>
-                                        ) : (
-                                            // Pour BAC/BEPC: moyenne sur 20
-                                            result.moyenne_generale && (
-                                                <div className="flex items-center justify-center gap-1 text-sm">
-                                                    <span className="text-slate-600">Moy:</span>
-                                                    <span className="text-xl font-black text-slate-900 bg-white/60 px-2 py-0.5 rounded">
-                                                        {formatMoyenne(result.moyenne_generale)}
-                                                    </span>
-                                                    <span className="text-slate-600">/20</span>
-                                                </div>
-                                            )
                                         )}
                                     </div>
                                 </div>

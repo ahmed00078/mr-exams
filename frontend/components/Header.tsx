@@ -139,32 +139,10 @@ export default function Header() {
                                     {/* Logo dans le menu mobile */}
                                     <div className="flex items-center space-x-3 pb-4">
                                         <img
-                                            src="/logo.png"
+                                            src="/logo1.png"
                                             alt="Logo"
                                             className="h-8 w-auto mr-3"
                                         />
-                                    </div>
-
-                                    <Separator />
-
-                                    {/* Recherche mobile */}
-                                    <div className="space-y-3">
-                                        <h3 className="text-sm font-medium text-foreground">Recherche rapide</h3>
-                                        <div className="flex space-x-2">
-                                            <Input
-                                                placeholder="Nom du candidat..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                onKeyPress={(e) => e.key === 'Enter' && handleQuickSearch()}
-                                            />
-                                            <Button
-                                                onClick={handleQuickSearch}
-                                                disabled={!searchTerm.trim()}
-                                                size="sm"
-                                            >
-                                                <Search className="w-4 h-4" />
-                                            </Button>
-                                        </div>
                                     </div>
 
                                     <Separator />
@@ -191,20 +169,6 @@ export default function Header() {
                                                     </Button>
                                                 );
                                             })}
-
-                                            {/* Admin mobile */}
-                                            {process.env.NODE_ENV === 'development' && (
-                                                    <Button
-                                                        asChild
-                                                        variant={pathname === '/admin' ? "default" : "ghost"}
-                                                        className="w-full justify-start h-10"
-                                                    >
-                                                        <Link href="/admin">
-                                                            <Shield className="w-4 h-4 mr-3" />
-                                                            Administration
-                                                        </Link>
-                                                    </Button>
-                                                )}
                                         </nav>
                                     </div>
 
@@ -246,7 +210,6 @@ export default function Header() {
                                     <div className="space-y-2 text-center text-xs text-muted-foreground">
                                         <p>La plateforme d’examens de référence en Mauritanie</p>
                                         <p>NatijtiMR</p>
-                                        <p className="font-medium">Portail Officiel des Résultats</p>
                                     </div>
                                 </div>
                             </SheetContent>

@@ -247,16 +247,18 @@ export default function IndividualResultPage() {
                             </div>
 
                             {/* Identifiants - Design compact */}
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="text-center">
-                                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
-                                        <CreditCard className="w-4 h-4 text-blue-600" />
+                            <div className={isConcours ? "flex justify-center" : "grid grid-cols-2 gap-3"}>
+                                {!isConcours && (
+                                    <div className="text-center">
+                                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                                            <CreditCard className="w-4 h-4 text-blue-600" />
+                                        </div>
+                                        <div className="text-xs text-slate-500">NNI</div>
+                                        <div className="text-xs font-mono font-bold text-slate-900">
+                                            {formatNNI(result.nni)}
+                                        </div>
                                     </div>
-                                    <div className="text-xs text-slate-500">NNI</div>
-                                    <div className="text-xs font-mono font-bold text-slate-900">
-                                        {formatNNI(result.nni)}
-                                    </div>
-                                </div>
+                                )}
 
                                 {result.numero_dossier && (
                                     <div className="text-center">

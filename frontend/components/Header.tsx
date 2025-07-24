@@ -94,7 +94,7 @@ export default function Header() {
                     </nav>
 
                     {/* Recherche rapide desktop */}
-                    <div className="hidden lg:flex items-center space-x-2 max-w-sm">
+                    {/* <div className="hidden lg:flex items-center space-x-2 max-w-sm">
                         <div className="relative flex-1">
                             <Input
                                 placeholder="Rechercher un candidat..."
@@ -112,11 +112,11 @@ export default function Header() {
                                 <Search className="w-3 h-3" />
                             </Button>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Bouton de recherche mobile */}
                     <div className="flex items-center space-x-2 lg:hidden">
-                        <Button
+                        {/* <Button
                             asChild
                             size="sm"
                             variant="outline"
@@ -124,7 +124,7 @@ export default function Header() {
                             <Link href="/">
                                 <Search className="w-4 h-4" />
                             </Link>
-                        </Button>
+                        </Button> */}
 
                         {/* Menu mobile */}
                         <Sheet>
@@ -138,15 +138,11 @@ export default function Header() {
                                 <div className="flex flex-col space-y-4 mt-8">
                                     {/* Logo dans le menu mobile */}
                                     <div className="flex items-center space-x-3 pb-4">
-                                        <div className="mauritania-flag w-8 h-6 rounded-sm"></div>
-                                        <div>
-                                            <h2 className="text-lg font-bold text-foreground">
-                                                Examens Mauritanie
-                                            </h2>
-                                            <p className="text-xs text-muted-foreground">
-                                                Portail officiel
-                                            </p>
-                                        </div>
+                                        <img
+                                            src="/logo.png"
+                                            alt="Logo"
+                                            className="h-8 w-auto mr-3"
+                                        />
                                     </div>
 
                                     <Separator />

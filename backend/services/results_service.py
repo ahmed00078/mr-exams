@@ -73,9 +73,9 @@ class ResultsService:
         offset = (params.page - 1) * params.size
         
         if params.exam_type == 'concours':
-            # Pour les concours: trier par total_points décroissant
+            # Pour les concours: trier par moyenne_generale décroissant
             results = query.order_by(
-                ExamResult.total_points.desc().nullslast(),
+                ExamResult.moyenne_generale.desc().nullslast(),
                 desc(ExamResult.created_at)
             ).offset(offset).limit(params.size).all()
         else:
@@ -123,8 +123,7 @@ class ResultsService:
         if result and result.decision.lower() == "admis":
             # Vérifier si on a la note appropriée selon le type d'examen
             exam_type = result.session.exam_type if result.session else None
-            has_score = (exam_type == 'concours' and result.total_points is not None) or \
-                       (exam_type != 'concours' and result.moyenne_generale)
+            has_score = result.moyenne_generale is not None
             
             if has_score:
                 # Calculer les rangs dynamiquement pour les candidats admis seulement
@@ -149,7 +148,7 @@ class ResultsService:
         exam_type = result.session.exam_type if result.session else None
         
         if exam_type == 'concours':
-            if result.total_points is None:
+            if result.moyenne_generale is None:
                 return None
             # Compter combien d'étudiants ont une meilleure note dans le même établissement
             count = self.db.query(ExamResult).filter(
@@ -157,7 +156,7 @@ class ResultsService:
                     ExamResult.etablissement_id == result.etablissement_id,
                     ExamResult.session_id == result.session_id,
                     ExamResult.decision.ilike("admis"),
-                    ExamResult.total_points > result.total_points,
+                    ExamResult.moyenne_generale > result.moyenne_generale,
                     ExamResult.is_published == True
                 )
             ).count()
@@ -185,7 +184,7 @@ class ResultsService:
         exam_type = result.session.exam_type if result.session else None
         
         if exam_type == 'concours':
-            if result.total_points is None:
+            if result.moyenne_generale is None:
                 return None
             # Compter combien d'étudiants ont une meilleure note dans la même wilaya
             count = self.db.query(ExamResult).filter(
@@ -193,7 +192,7 @@ class ResultsService:
                     ExamResult.wilaya_id == result.wilaya_id,
                     ExamResult.session_id == result.session_id,
                     ExamResult.decision.ilike("admis"),
-                    ExamResult.total_points > result.total_points,
+                    ExamResult.moyenne_generale > result.moyenne_generale,
                     ExamResult.is_published == True
                 )
             ).count()
@@ -218,14 +217,14 @@ class ResultsService:
         exam_type = result.session.exam_type if result.session else None
         
         if exam_type == 'concours':
-            if result.total_points is None:
+            if result.moyenne_generale is None:
                 return None
             # Compter combien d'étudiants ont une meilleure note au niveau national
             count = self.db.query(ExamResult).filter(
                 and_(
                     ExamResult.session_id == result.session_id,
                     ExamResult.decision.ilike("admis"),
-                    ExamResult.total_points > result.total_points,
+                    ExamResult.moyenne_generale > result.moyenne_generale,
                     ExamResult.is_published == True
                 )
             ).count()

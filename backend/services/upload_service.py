@@ -47,7 +47,8 @@ class UploadService:
                 "wilaya_ar": {"column": "WILAYA_AR", "alternatives": ["WILAYA"]},
                 "moughataa": {"column": "MOUGHATAA_AR", "alternatives": ["MOUGHATAA"]},
                 "centre_examen": {"column": "Centre Examen_AR", "alternatives": ["Centre"]},
-                "ecole": {"column": "Ecole_AR", "alternatives": ["Ecole"]},
+                "ecole_ar": {"column": "Ecole_AR", "alternatives": ["Ecole"]},
+                "noreg": {"column": "Noreg", "alternatives": ["NoReg", "Numero_Regional"]},
                 "type_candidat": {"column": "TYPE", "alternatives": ["Type"]},
                 "decision": {"auto_calculate": True}  # Auto-calculé selon la moyenne
             }
@@ -133,7 +134,13 @@ class UploadService:
                 return
             
             # Créer des caches pour les références
-            etablissements_cache = {e.code: e.id for e in self.db.query(RefEtablissement).all()}
+            # Cache mixte : par nom_ar ET par code pour les établissements
+            etablissements_all = self.db.query(RefEtablissement).all()
+            etablissements_cache = {}
+            for e in etablissements_all:
+                etablissements_cache[e.name_ar] = e.id
+                etablissements_cache[e.code] = e.id
+                
             wilayas_cache = {w.code: w.id for w in self.db.query(RefWilaya).all()}
             series_cache = {s.code: s.id for s in self.db.query(RefSerie).all()}
             
@@ -190,6 +197,13 @@ class UploadService:
                     error_msg = f"Ligne {index + 2}: {str(e)}"
                     task_status.errors.append(error_msg)
                     print(f"Erreur: {error_msg}")
+                    
+                    # Essayer de rollback pour cette ligne seulement
+                    try:
+                        self.db.rollback()
+                        print(f"Rollback effectué pour la ligne {index + 2}")
+                    except:
+                        pass
                 
                 # Mettre à jour le progrès
                 task_status.processed_rows = index + 1
@@ -204,7 +218,16 @@ class UploadService:
                         print(f"Commit batch à la ligne {index + 1}")
                     except Exception as e:
                         print(f"Erreur commit batch: {e}")
-                        self.db.rollback()
+                        try:
+                            self.db.rollback()
+                            # Essayer de continuer après rollback
+                            print("Rollback effectué, continuation du traitement...")
+                        except Exception as rollback_error:
+                            print(f"Erreur lors du rollback: {rollback_error}")
+                            # Arrêter le traitement en cas d'erreur critique
+                            task_status.status = "failed"
+                            task_status.errors.append(f"Erreur critique batch {index + 1}: {str(e)}")
+                            return
             
             # Commit final
             try:
@@ -228,6 +251,59 @@ class UploadService:
             task_status.errors.append(f"Erreur globale: {str(e)}")
             self.db.rollback()
     
+    def _get_or_create_etablissement(self, ecole_ar: str, wilaya_id: int, etablissements_cache: Dict) -> Optional[int]:
+        """Auto-crée un établissement s'il n'existe pas (spécifique aux concours)"""
+        try:
+            # Nettoyer le nom
+            ecole_ar_clean = ecole_ar.strip()
+            
+            # Vérifier d'abord dans le cache
+            if ecole_ar_clean in etablissements_cache:
+                return etablissements_cache[ecole_ar_clean]
+            
+            # Vérifier si l'établissement existe déjà dans la base
+            existing = self.db.query(RefEtablissement).filter(
+                RefEtablissement.name_ar == ecole_ar_clean
+            ).first()
+            
+            if existing:
+                # Mettre à jour le cache
+                etablissements_cache[ecole_ar_clean] = existing.id
+                return existing.id
+            
+            # Créer un nouveau code établissement de manière sécurisée
+            from sqlalchemy import func
+            max_id = self.db.query(func.max(RefEtablissement.id)).scalar() or 0
+            new_code = f"ETAB{max_id + 1:03d}"
+            
+            # Créer le nouvel établissement
+            new_etablissement = RefEtablissement(
+                code=new_code,
+                name_fr=ecole_ar_clean,  # Utiliser le nom arabe comme français temporairement
+                name_ar=ecole_ar_clean,
+                type_etablissement="ecole",
+                wilaya_id=wilaya_id,
+                status="active"
+            )
+            
+            self.db.add(new_etablissement)
+            self.db.flush()  # Pour obtenir l'ID
+            
+            # Mettre à jour le cache
+            etablissements_cache[ecole_ar_clean] = new_etablissement.id
+            
+            print(f"Nouvel établissement créé: {ecole_ar_clean} (ID: {new_etablissement.id}, Code: {new_code})")
+            return new_etablissement.id
+            
+        except Exception as e:
+            print(f"Erreur création établissement {ecole_ar}: {e}")
+            # Essayer de rollback uniquement cette opération
+            try:
+                self.db.rollback()
+            except:
+                pass
+            return None
+
     def _validate_and_map_row(self, row: pd.Series, session_id: int, etablissements_cache: Dict, wilayas_cache: Dict, series_cache: Dict, format_type: str = None) -> Dict[str, Any]:
         """Valide et mappe une ligne du fichier vers un ExamResult avec mapping flexible"""
         
@@ -278,22 +354,51 @@ class UploadService:
         elif mapping.get("decision", {}).get("auto_calculate"):
             # Auto-calculer la décision selon la moyenne
             moyenne = result_data.get("moyenne_generale", 0)
-            if moyenne >= 85:  # Seuil d'admission pour 1AS
+            seuil_admission = 85  # Seuil par défaut pour concours
+            
+            if format_type == "CONCOURS_1AS":
+                seuil_admission = 85  # Note minimale sur 200 pour être admis
+            
+            if moyenne >= seuil_admission:
                 result_data["decision"] = "Admis"
             else:
                 result_data["decision"] = "Ajourné"
+        
+        # Stocker le numero regional (Noreg) si disponible
+        if format_type == "CONCOURS_1AS":
+            noreg = self._extract_field(row, "noreg", mapping)
+            if noreg:
+                result_data["numero_regional"] = str(noreg).zfill(2)
         
         # Série (pour BAC)
         serie_code = self._extract_field(row, "serie_code", mapping)
         if serie_code and serie_code in series_cache:
             result_data["serie_id"] = series_cache[serie_code]
         
-        # Wilaya avec mapping AR/FR
-        wilaya_name = self._extract_field(row, "wilaya_ar", mapping) or self._extract_field(row, "wilaya_fr", mapping)
-        if wilaya_name:
-            wilaya_id = self._find_wilaya_id(wilaya_name, wilayas_cache)
-            if wilaya_id:
-                result_data["wilaya_id"] = wilaya_id
+        # Wilaya - traitement spécifique selon le type d'examen
+        if format_type == "CONCOURS_1AS":
+            # Pour les concours: utiliser Noreg comme code de wilaya
+            noreg = self._extract_field(row, "noreg", mapping)
+            if noreg:
+                wilaya_code = str(noreg).zfill(2)  # S'assurer qu'on a 2 chiffres (01, 02, etc.)
+                if wilaya_code in wilayas_cache:
+                    result_data["wilaya_id"] = wilayas_cache[wilaya_code]
+        else:
+            # Pour BAC/BEPC: utiliser le mapping par nom
+            wilaya_name = self._extract_field(row, "wilaya_ar", mapping) or self._extract_field(row, "wilaya_fr", mapping)
+            if wilaya_name:
+                wilaya_id = self._find_wilaya_id(wilaya_name, wilayas_cache)
+                if wilaya_id:
+                    result_data["wilaya_id"] = wilaya_id
+
+        # Établissement - traitement spécifique pour les concours
+        if format_type == "CONCOURS_1AS":
+            ecole_ar = self._extract_field(row, "ecole_ar", mapping)
+            if ecole_ar and result_data.get("wilaya_id"):
+                # Auto-créer l'établissement s'il n'existe pas
+                etablissement_id = self._get_or_create_etablissement(ecole_ar, result_data["wilaya_id"], etablissements_cache)
+                if etablissement_id:
+                    result_data["etablissement_id"] = etablissement_id
         
         # Validation minimale - adapter selon le format
         nni = result_data.get("nni")

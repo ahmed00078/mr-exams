@@ -283,7 +283,7 @@ export default function IndividualResultPage() {
                                     </div>
 
                                     {/* Établissement */}
-                                    {result.etablissement && (
+                                    {result.etablissement && result.etablissement.name_fr && result.etablissement.name_fr !== result.wilaya?.name_fr && (
                                         <div className="bg-orange-50 rounded-lg p-2 h-12 flex flex-col justify-center">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <div className="w-4 h-4 bg-orange-100 rounded-full flex items-center justify-center">
@@ -347,7 +347,7 @@ export default function IndividualResultPage() {
                                                     <span className="text-xs font-medium text-slate-700">École</span>
                                                 </div>
                                                 <div className="text-xs font-bold text-amber-600 leading-tight">
-                                                    🥈 #{result.rang_etablissement}
+                                                    #{result.rang_etablissement}
                                                 </div>
                                             </div>
                                         )}
